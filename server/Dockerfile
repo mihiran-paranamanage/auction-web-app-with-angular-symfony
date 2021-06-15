@@ -1,7 +1,7 @@
+# PHP Configurations
+
 FROM php:7.4-fpm-buster
-
 ARG TIMEZONE
-
 COPY ./php.ini /usr/local/etc/php/conf.d/docker-php-config.ini
 
 RUN apt-get update && apt-get install -y \
@@ -21,9 +21,7 @@ RUN apt-get update && apt-get install -y \
     libxslt1-dev \
     acl \
     && echo 'alias sf="php bin/console"' >> ~/.bashrc
-
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype
-
 RUN docker-php-ext-install \
     pdo pdo_mysql zip xsl gd intl opcache exif mbstring
 
@@ -33,7 +31,18 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} >
     && "date"
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
 RUN curl -sS https://get.symfony.com/cli/installer | bash && mv /root/.symfony/bin/symfony /usr/local/bin/symfony
-
 WORKDIR /var/www/symfony
+COPY composer.json ./
+COPY composer.lock ./
+RUN composer update
+
+
+# NGINX Configurations
+
+FROM nginx:1.20-alpine
+COPY ./nginx.conf  /etc/nginx/
+COPY ./default.conf /etc/nginx/conf.d/
+RUN echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
+EXPOSE 80
+EXPOSE 443

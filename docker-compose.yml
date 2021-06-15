@@ -15,29 +15,18 @@ services:
     networks:
       - auction-network
 
-  php:
+  server:
     build:
-      context: ./php
+      context: ./server
       dockerfile: Dockerfile
       args:
         TIMEZONE: ${TIMEZONE}
+    ports:
+      - 8001:80
     volumes:
       - ./server/:/var/www/symfony/
     restart: always
-    container_name: auction_php
-    networks:
-      - auction-network
-    depends_on:
-      - mysql
-
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    ports:
-      - 8001:80
-    restart: always
-    container_name: auction_nginx
+    container_name: auction_server
     networks:
       - auction-network
     depends_on:
