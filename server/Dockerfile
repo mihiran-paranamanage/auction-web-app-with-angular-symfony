@@ -1,5 +1,3 @@
-# PHP Configurations
-
 FROM php:7.4-fpm-buster
 ARG TIMEZONE
 COPY ./php.ini /usr/local/etc/php/conf.d/docker-php-config.ini
@@ -36,13 +34,3 @@ WORKDIR /var/www/symfony
 COPY composer.json ./
 COPY composer.lock ./
 RUN composer update
-
-
-# NGINX Configurations
-
-FROM nginx:1.20-alpine
-COPY ./nginx.conf  /etc/nginx/
-COPY ./default.conf /etc/nginx/conf.d/
-RUN echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
-EXPOSE 80
-EXPOSE 443

@@ -21,8 +21,6 @@ services:
       dockerfile: Dockerfile
       args:
         TIMEZONE: ${TIMEZONE}
-    ports:
-      - 8001:80
     volumes:
       - ./server/:/var/www/symfony/
     restart: always
@@ -32,8 +30,23 @@ services:
     depends_on:
       - mysql
 
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - 8001:80
+    volumes:
+      - ./server/:/var/www/symfony/
+    restart: always
+    container_name: auction_nginx
+    networks:
+      - auction-network
+    depends_on:
+      - mysql
+
   mysql:
-    image: mysql
+    image: mysql:8.0.24
     ports:
       - 3306:3306
     volumes:
