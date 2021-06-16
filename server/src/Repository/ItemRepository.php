@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Item;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,37 +15,58 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ItemRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    private $manager;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        EntityManagerInterface $manager
+    ) {
         parent::__construct($registry, Item::class);
+        $this->manager = $manager;
     }
 
-    // /**
-    //  * @return Item[] Returns an array of Item objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    public function findByParams(array $params)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $q = $this->createQueryBuilder('u');
+        if (isset($params['filter']['name'])) {
+            $q->andWhere('u.name LIKE :name')->setParameter('name', '%'.$params['filter']['name'].'%');
+        }
+        if (isset($params['filter']['description'])) {
+            $q->andWhere('u.name LIKE :description')->setParameter('description', '%'.$params['filter']['description'].'%');
+        }
+        if (isset($params['limit'])) {
+            $q->setMaxResults($params['limit']);
+        }
+        if (isset($params['offset'])) {
+            $q->setFirstResult($params['offset']);
+        }
+        if (isset($params['sortField']) && isset($params['sortOrder'])) {
+            $q->orderBy('u.'.$params['sortField'], $params['sortOrder']);
+        }
+        return $q->getQuery()->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Item
+    /**
+     * @param Item $item
+     * @return Item|null
+     */
+    public function saveItem(Item $item): ?Item
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $this->manager->persist($item);
+        $this->manager->flush();
+        return $item;
     }
-    */
+
+    /**
+     * @param Item $item
+     */
+    public function removeItem(Item $item)
+    {
+        $this->manager->remove($item);
+        $this->manager->flush();
+    }
 }
