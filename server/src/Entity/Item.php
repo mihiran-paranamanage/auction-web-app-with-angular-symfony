@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ItemRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,43 +22,37 @@ class Item
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $code;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $name;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=2000, nullable=true)
      */
-    private $cost;
+    private $description;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=10, scale=2, options={"default" = "0"})
      */
     private $price;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=10, scale=2, options={"default" = "0"})
      */
-    private $quantity;
+    private $bid;
 
-    public function getId(): ?int
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $closeDateTime;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Bid::class, mappedBy="item")
+     */
+    private $bids;
+
+    public function __construct()
     {
-        return $this->id;
-    }
-
-    public function getCode(): ?string
-    {
-        return $this->code;
-    }
-
-    public function setCode(string $code): self
-    {
-        $this->code = $code;
-
-        return $this;
+        $this->accessTokens = new ArrayCollection();
+        $this->bids = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -71,38 +67,80 @@ class Item
         return $this;
     }
 
-    public function getCost(): ?int
+    public function getDescription(): ?string
     {
-        return $this->cost;
+        return $this->description;
     }
 
-    public function setCost(int $cost): self
+    public function setDescription(?string $description): self
     {
-        $this->cost = $cost;
+        $this->description = $description;
 
         return $this;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    public function setPrice(int $price): self
+    public function setPrice(string $price): self
     {
         $this->price = $price;
 
         return $this;
     }
 
-    public function getQuantity(): ?int
+    public function getBid(): ?string
     {
-        return $this->quantity;
+        return $this->bid;
     }
 
-    public function setQuantity(int $quantity): self
+    public function setBid(string $bid): self
     {
-        $this->quantity = $quantity;
+        $this->bid = $bid;
+
+        return $this;
+    }
+
+    public function getCloseDateTime(): ?\DateTimeInterface
+    {
+        return $this->closeDateTime;
+    }
+
+    public function setCloseDateTime(\DateTimeInterface $closeDateTime): self
+    {
+        $this->closeDateTime = $closeDateTime;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Bid[]
+     */
+    public function getBids(): Collection
+    {
+        return $this->bids;
+    }
+
+    public function addBid(Bid $bid): self
+    {
+        if (!$this->bids->contains($bid)) {
+            $this->bids[] = $bid;
+            $bid->setItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBid(Bid $bid): self
+    {
+        if ($this->bids->removeElement($bid)) {
+            // set the owning side to null (unless already changed)
+            if ($bid->getItem() === $this) {
+                $bid->setItem(null);
+            }
+        }
 
         return $this;
     }

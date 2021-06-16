@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Item;
+use App\Entity\UserRole;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Item|null find($id, $lockMode = null, $lockVersion = null)
- * @method Item|null findOneBy(array $criteria, array $orderBy = null)
- * @method Item[]    findAll()
- * @method Item[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method UserRole|null find($id, $lockMode = null, $lockVersion = null)
+ * @method UserRole|null findOneBy(array $criteria, array $orderBy = null)
+ * @method UserRole[]    findAll()
+ * @method UserRole[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ItemRepository extends ServiceEntityRepository
+class UserRoleRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Item::class);
+        parent::__construct($registry, UserRole::class);
     }
 
     // /**
-    //  * @return Item[] Returns an array of Item objects
+    //  * @return UserRole[] Returns an array of UserRole objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class ItemRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Item
+    public function findOneBySomeField($value): ?UserRole
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.exampleField = :val')

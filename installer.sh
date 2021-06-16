@@ -11,4 +11,7 @@ sudo cp -R ./server/composer.lock ./php/src/
 sudo docker-compose build
 sudo docker-compose up -d
 
+# Database configurations
+sudo docker exec -it auction_mysql mysql -uroot -p1234 -hauction_mysql -e "CREATE DATABASE IF NOT EXISTS auction_mysql;"
+
 echo "Installation Completed. Browse http://localhost:4200/";
