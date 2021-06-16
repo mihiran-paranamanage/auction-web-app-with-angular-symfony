@@ -13,5 +13,7 @@ sudo docker-compose up -d
 
 # Database configurations
 sudo docker exec -it auction_mysql mysql -uroot -p1234 -hauction_mysql -e "CREATE DATABASE IF NOT EXISTS auction_mysql;"
+# sudo docker exec -it auction_php php bin/console make:migration
+sudo docker exec -it auction_php php bin/console doctrine:migrations:migrate
 
 echo "Installation Completed. Browse http://localhost:4200/";

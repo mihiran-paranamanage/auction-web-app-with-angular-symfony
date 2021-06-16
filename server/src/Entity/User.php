@@ -45,10 +45,16 @@ class User
      */
     private $bids;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserBidConfig::class, mappedBy="user")
+     */
+    private $userBidConfigs;
+
     public function __construct()
     {
         $this->accessTokens = new ArrayCollection();
         $this->bids = new ArrayCollection();
+        $this->userBidConfigs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,6 +152,36 @@ class User
             // set the owning side to null (unless already changed)
             if ($bid->getUser() === $this) {
                 $bid->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserBidConfig[]
+     */
+    public function getUserBidConfigs(): Collection
+    {
+        return $this->userBidConfigs;
+    }
+
+    public function addUserBidConfig(UserBidConfig $userBidConfig): self
+    {
+        if (!$this->userBidConfigs->contains($userBidConfig)) {
+            $this->userBidConfigs[] = $userBidConfig;
+            $userBidConfig->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserBidConfig(UserBidConfig $userBidConfig): self
+    {
+        if ($this->userBidConfigs->removeElement($userBidConfig)) {
+            // set the owning side to null (unless already changed)
+            if ($userBidConfig->getUser() === $this) {
+                $userBidConfig->setUser(null);
             }
         }
 
