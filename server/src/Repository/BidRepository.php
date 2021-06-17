@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Bid;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,37 +15,42 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BidRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    private $manager;
+
+    /**
+     * BidRepository constructor.
+     * @param ManagerRegistry $registry
+     * @param EntityManagerInterface $manager
+     */
+    public function __construct(
+        ManagerRegistry $registry,
+        EntityManagerInterface $manager
+    ) {
         parent::__construct($registry, Bid::class);
+        $this->manager = $manager;
     }
 
-    // /**
-    //  * @return Bid[] Returns an array of Bid objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    public function findByParams(array $params)
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $q = $this->createQueryBuilder('u');
+        if (isset($params['filter']['itemId'])) {
+            $q->andWhere('u.item = :itemId')->setParameter('itemId', $params['filter']['itemId']);
+        }
+        return $q->getQuery()->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Bid
+    /**
+     * @param Bid $bid
+     * @return Bid
+     */
+    public function saveBid(Bid $bid): Bid
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $this->manager->persist($bid);
+        $this->manager->flush();
+        return $bid;
     }
-    */
 }
