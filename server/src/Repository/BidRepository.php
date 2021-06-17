@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Bid;
 use App\Entity\UserBidConfig;
+use App\Utility\AutoBidManager;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,6 +21,8 @@ class BidRepository extends ServiceEntityRepository
     private $manager;
     private $itemRepository;
     private $userBidConfigRepository;
+    private $userRepository;
+    private $autoBidManager;
 
     /**
      * BidRepository constructor.
@@ -27,17 +30,42 @@ class BidRepository extends ServiceEntityRepository
      * @param EntityManagerInterface $manager
      * @param ItemRepository $itemRepository
      * @param UserBidConfigRepository $userBidConfigRepository
+     * @param UserRepository $userRepository
      */
     public function __construct(
         ManagerRegistry $registry,
         EntityManagerInterface $manager,
         ItemRepository $itemRepository,
-        UserBidConfigRepository $userBidConfigRepository
+        UserBidConfigRepository $userBidConfigRepository,
+        UserRepository $userRepository
     ) {
         parent::__construct($registry, Bid::class);
         $this->manager = $manager;
         $this->itemRepository = $itemRepository;
         $this->userBidConfigRepository = $userBidConfigRepository;
+        $this->userRepository = $userRepository;
+    }
+
+    /**
+     * @return AutoBidManager
+     */
+    public function getAutoBidManager() : AutoBidManager {
+        if (!($this->autoBidManager instanceof AutoBidManager)) {
+            $this->autoBidManager = new AutoBidManager(
+                $this->userRepository,
+                $this->manager,
+                $this->userBidConfigRepository,
+                $this->itemRepository
+            );
+        }
+        return $this->autoBidManager;
+    }
+
+    /**
+     * @param AutoBidManager $autoBidManager
+     */
+    public function setAutoBidManager(AutoBidManager $autoBidManager) {
+        $this->autoBidManager = $autoBidManager;
     }
 
     /**
@@ -60,7 +88,7 @@ class BidRepository extends ServiceEntityRepository
      */
     public function saveBid(Bid $bid): Bid
     {
-        $this->manager->getConnection()->beginTransaction();
+//        $this->manager->getConnection()->beginTransaction();
         try {
             $item = $bid->getItem();
             $item->setBid($bid->getBid());
@@ -77,10 +105,12 @@ class BidRepository extends ServiceEntityRepository
 
             $this->manager->persist($bid);
             $this->manager->flush();
-            $this->manager->getConnection()->commit();
+
+            $this->getAutoBidManager()->autoBid($bid);
+//            $this->manager->getConnection()->commit();
             return $bid;
         } catch (Exception $e) {
-            $this->manager->getConnection()->rollBack();
+//            $this->manager->getConnection()->rollBack();
             throw $e;
         }
     }
