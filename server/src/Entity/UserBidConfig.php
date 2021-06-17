@@ -28,6 +28,11 @@ class UserBidConfig
      */
     private $maxBidAmount;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default" = "0"})
+     */
+    private $isAutoBidEnabled;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -53,6 +58,18 @@ class UserBidConfig
     public function setMaxBidAmount(string $maxBidAmount): self
     {
         $this->maxBidAmount = $maxBidAmount;
+
+        return $this;
+    }
+
+    public function getIsAutoBidEnabled(): ?bool
+    {
+        return $this->isAutoBidEnabled;
+    }
+
+    public function setIsAutoBidEnabled(bool $isAutoBidEnabled): self
+    {
+        $this->isAutoBidEnabled = $isAutoBidEnabled;
 
         return $this;
     }

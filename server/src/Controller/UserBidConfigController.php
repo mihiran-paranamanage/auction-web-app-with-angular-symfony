@@ -99,7 +99,8 @@ class UserBidConfigController extends BaseController
     {
         $validator = v::keySet(
             v::key('accessToken', v::stringVal()->notEmpty(), true),
-            v::key('maxBidAmount', v::intVal()->positive(), true)
+            v::key('maxBidAmount', v::intVal()->positive(), true),
+            v::key('isAutoBidEnabled', v::boolVal(), true)
         );
         $this->validate($validator, json_decode($request->getContent(), true));
     }

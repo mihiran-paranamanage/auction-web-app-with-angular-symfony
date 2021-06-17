@@ -55,10 +55,18 @@ class UserBidConfigService extends BaseService
      * @return UserBidConfig
      */
     public function saveUserBidConfig(array $params) : UserBidConfig {
-        $userBidConfig = $this->getUserBidConfig($params['accessToken']);
         $user = $this->getUser($params['accessToken']);
+        if ($user instanceof User) {
+            $userBidConfig = $this->userBidConfigRepository->findOneBy(array('user' => $user));
+            if (!($userBidConfig instanceof UserBidConfig)) {
+                $userBidConfig = new UserBidConfig();
+            }
+        } else {
+            throw new UnauthorizedHttpException(Response::$statusTexts[Response::HTTP_UNAUTHORIZED]);
+        }
         $userBidConfig->setUser($user);
         $userBidConfig->setMaxBidAmount($params['maxBidAmount']);
+        $userBidConfig->setIsAutoBidEnabled(!!$params['isAutoBidEnabled']);
         return $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
     }
 
@@ -71,7 +79,8 @@ class UserBidConfigService extends BaseService
         return array(
             'id' => $userBidConfig->getId(),
             'userId' => $userBidConfig->getUser()->getId(),
-            'maxBidAmount' => $userBidConfig->getMaxBidAmount()
+            'maxBidAmount' => $userBidConfig->getMaxBidAmount(),
+            'isAutoBidEnabled' => $userBidConfig->getIsAutoBidEnabled()
         );
     }
 }

@@ -72,7 +72,7 @@ class BidService extends BaseService
     public function saveBid(array $params) : Bid {
         $item = $this->getItemService()->getItem($params['itemId']);
         if ($params['bid'] <= $item->getBid()) {
-            throw new BadRequestHttpException(Response::$statusTexts[Response::HTTP_BAD_REQUEST]);
+            throw new BadRequestHttpException('Bid should be higher than the item bid');
         }
         $bid = new Bid();
         $user = $this->getUser($params['accessToken']);
