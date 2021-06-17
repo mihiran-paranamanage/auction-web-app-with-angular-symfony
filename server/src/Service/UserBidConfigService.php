@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\UserBidConfig;
 use App\Repository\AccessTokenRepository;
 use App\Repository\UserBidConfigRepository;
+use App\Repository\UserRoleDataGroupRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -16,19 +17,23 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
  */
 class UserBidConfigService extends BaseService
 {
+    private $userRoleDataGroupRepository;
     private $userBidConfigRepository;
 
     /**
      * UserBidConfigService constructor.
      * @param AccessTokenRepository $accessTokenRepository
      * @param UserBidConfigRepository $userBidConfigRepository
+     * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
-        UserBidConfigRepository $userBidConfigRepository
+        UserBidConfigRepository $userBidConfigRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository
     ) {
-        parent::__construct($accessTokenRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
         $this->userBidConfigRepository = $userBidConfigRepository;
+        $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
     }
 
     /**

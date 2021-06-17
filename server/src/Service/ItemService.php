@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Item;
 use App\Repository\AccessTokenRepository;
 use App\Repository\ItemRepository;
+use App\Repository\UserRoleDataGroupRepository;
 use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -15,19 +16,23 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ItemService extends BaseService
 {
+    private $userRoleDataGroupRepository;
     private $itemRepository;
 
     /**
      * ItemService constructor.
      * @param AccessTokenRepository $accessTokenRepository
      * @param ItemRepository $itemRepository
+     * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
-        ItemRepository $itemRepository
+        ItemRepository $itemRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository
     ) {
-        parent::__construct($accessTokenRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
         $this->itemRepository = $itemRepository;
+        $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
 use App\Repository\ItemRepository;
+use App\Repository\UserRoleDataGroupRepository;
 use App\Service\BidService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ use Respect\Validation\Validator as v;
  */
 class BidController extends BaseController
 {
+    private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $bidRepository;
     private $itemRepository;
@@ -29,16 +31,19 @@ class BidController extends BaseController
      * @param AccessTokenRepository $accessTokenRepository
      * @param BidRepository $bidRepository
      * @param ItemRepository $itemRepository
+     * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         BidRepository $bidRepository,
-        ItemRepository $itemRepository
+        ItemRepository $itemRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository
     ) {
-        parent::__construct($accessTokenRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->bidRepository = $bidRepository;
         $this->itemRepository = $itemRepository;
+        $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
     }
 
     /**
@@ -46,7 +51,12 @@ class BidController extends BaseController
      */
     public function getBidService() : BidService {
         if (!($this->bidService instanceof BidService)) {
-            $this->bidService = new BidService($this->accessTokenRepository, $this->bidRepository, $this->itemRepository);
+            $this->bidService = new BidService(
+                $this->accessTokenRepository,
+                $this->bidRepository,
+                $this->itemRepository,
+                $this->userRoleDataGroupRepository
+            );
         }
         return $this->bidService;
     }

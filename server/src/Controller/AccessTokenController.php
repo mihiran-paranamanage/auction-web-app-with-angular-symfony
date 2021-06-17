@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserRoleDataGroupRepository;
 use App\Service\AccessTokenService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,7 @@ use Respect\Validation\Validator as v;
  */
 class AccessTokenController extends BaseController
 {
+    private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userRepository;
     private $accessToken;
@@ -26,14 +28,17 @@ class AccessTokenController extends BaseController
      * AccessTokenController constructor.
      * @param AccessTokenRepository $accessTokenRepository
      * @param UserRepository $userRepository
+     * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository
     ) {
-        parent::__construct($accessTokenRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userRepository = $userRepository;
+        $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
     }
 
     /**
@@ -41,7 +46,11 @@ class AccessTokenController extends BaseController
      */
     public function getAccessTokenService() : AccessTokenService {
         if (!($this->accessToken instanceof AccessTokenService)) {
-            $this->accessToken = new AccessTokenService($this->accessTokenRepository, $this->userRepository);
+            $this->accessToken = new AccessTokenService(
+                $this->accessTokenRepository,
+                $this->userRepository,
+                $this->userRoleDataGroupRepository
+            );
         }
         return $this->accessToken;
     }

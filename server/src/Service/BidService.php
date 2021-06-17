@@ -6,6 +6,7 @@ use App\Entity\Bid;
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
 use App\Repository\ItemRepository;
+use App\Repository\UserRoleDataGroupRepository;
 use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class BidService extends BaseService
 {
+    private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $bidRepository;
     private $itemRepository;
@@ -26,7 +28,11 @@ class BidService extends BaseService
      */
     public function getItemService() : ItemService {
         if (!($this->itemService instanceof ItemService)) {
-            $this->itemService = new ItemService($this->accessTokenRepository, $this->itemRepository);
+            $this->itemService = new ItemService(
+                $this->accessTokenRepository,
+                $this->itemRepository,
+                $this->userRoleDataGroupRepository
+            );
         }
         return $this->itemService;
     }
@@ -43,16 +49,19 @@ class BidService extends BaseService
      * @param AccessTokenRepository $accessTokenRepository
      * @param BidRepository $bidRepository
      * @param ItemRepository $itemRepository
+     * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         BidRepository $bidRepository,
-        ItemRepository $itemRepository
+        ItemRepository $itemRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository
     ) {
-        parent::__construct($accessTokenRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->bidRepository = $bidRepository;
         $this->itemRepository = $itemRepository;
+        $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
     }
 
     /**

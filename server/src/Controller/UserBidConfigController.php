@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
 use App\Repository\UserBidConfigRepository;
+use App\Repository\UserRoleDataGroupRepository;
 use App\Service\UserBidConfigService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,22 +19,26 @@ use Respect\Validation\Validator as v;
  */
 class UserBidConfigController extends BaseController
 {
+    private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userBidConfigRepository;
     private $userBidConfigService;
 
     /**
-     * UserBidConfigService constructor.
+     * UserBidConfigController constructor.
      * @param AccessTokenRepository $accessTokenRepository
      * @param UserBidConfigRepository $userBidConfigRepository
+     * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
-        UserBidConfigRepository $userBidConfigRepository
+        UserBidConfigRepository $userBidConfigRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository
     ) {
-        parent::__construct($accessTokenRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userBidConfigRepository = $userBidConfigRepository;
+        $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
     }
 
     /**
@@ -41,7 +46,11 @@ class UserBidConfigController extends BaseController
      */
     public function getUserBidConfigService() : UserBidConfigService {
         if (!($this->userBidConfigService instanceof UserBidConfigService)) {
-            $this->userBidConfigService = new UserBidConfigService($this->accessTokenRepository, $this->userBidConfigRepository);
+            $this->userBidConfigService = new UserBidConfigService(
+                $this->accessTokenRepository,
+                $this->userBidConfigRepository,
+                $this->userRoleDataGroupRepository
+            );
         }
         return $this->userBidConfigService;
     }

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\AccessTokenRepository;
+use App\Repository\UserRoleDataGroupRepository;
 use App\Utility\UserRoleManager;
 
 /**
@@ -12,6 +13,7 @@ use App\Utility\UserRoleManager;
  */
 class BaseService
 {
+    private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userRoleManager;
     private $user;
@@ -21,7 +23,7 @@ class BaseService
      */
     public function getUserRoleManager() : UserRoleManager {
         if (!($this->userRoleManager instanceof UserRoleManager)) {
-            $this->userRoleManager = new UserRoleManager($this->accessTokenRepository);
+            $this->userRoleManager = new UserRoleManager($this->accessTokenRepository, $this->userRoleDataGroupRepository);
         }
         return $this->userRoleManager;
     }
@@ -52,12 +54,15 @@ class BaseService
     }
 
     /**
-     * AutoBidConfigController constructor.
+     * BaseService constructor.
      * @param AccessTokenRepository $accessTokenRepository
+     * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      */
     public function __construct(
-        AccessTokenRepository $accessTokenRepository
+        AccessTokenRepository $accessTokenRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository
     ) {
         $this->accessTokenRepository = $accessTokenRepository;
+        $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
     }
 }

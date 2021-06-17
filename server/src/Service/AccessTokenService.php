@@ -6,6 +6,7 @@ use App\Entity\AccessToken;
 use App\Entity\User;
 use App\Repository\AccessTokenRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserRoleDataGroupRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -16,21 +17,25 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
  */
 class AccessTokenService extends BaseService
 {
+    private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userRepository;
 
     /**
-     * AccessTokenController constructor.
+     * AccessTokenService constructor.
      * @param AccessTokenRepository $accessTokenRepository
      * @param UserRepository $userRepository
+     * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository
     ) {
-        parent::__construct($accessTokenRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userRepository = $userRepository;
+        $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
     }
 
     /**
