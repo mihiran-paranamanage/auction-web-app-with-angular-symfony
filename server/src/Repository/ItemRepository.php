@@ -17,6 +17,11 @@ class ItemRepository extends ServiceEntityRepository
 {
     private $manager;
 
+    /**
+     * ItemRepository constructor.
+     * @param ManagerRegistry $registry
+     * @param EntityManagerInterface $manager
+     */
     public function __construct(
         ManagerRegistry $registry,
         EntityManagerInterface $manager
@@ -36,7 +41,7 @@ class ItemRepository extends ServiceEntityRepository
             $q->andWhere('u.name LIKE :name')->setParameter('name', '%'.$params['filter']['name'].'%');
         }
         if (isset($params['filter']['description'])) {
-            $q->andWhere('u.name LIKE :description')->setParameter('description', '%'.$params['filter']['description'].'%');
+            $q->andWhere('u.description LIKE :description')->setParameter('description', '%'.$params['filter']['description'].'%');
         }
         if (isset($params['limit'])) {
             $q->setMaxResults($params['limit']);
@@ -52,9 +57,9 @@ class ItemRepository extends ServiceEntityRepository
 
     /**
      * @param Item $item
-     * @return Item|null
+     * @return Item
      */
-    public function saveItem(Item $item): ?Item
+    public function saveItem(Item $item): Item
     {
         $this->manager->persist($item);
         $this->manager->flush();
@@ -64,7 +69,7 @@ class ItemRepository extends ServiceEntityRepository
     /**
      * @param Item $item
      */
-    public function removeItem(Item $item)
+    public function removeItem(Item $item) : void
     {
         $this->manager->remove($item);
         $this->manager->flush();

@@ -2,13 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\Item;
+use App\Repository\AccessTokenRepository;
 use App\Repository\ItemRepository;
-use DateTime;
+use App\Service\ItemService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Respect\Validation\Validator as v;
 
@@ -19,16 +18,39 @@ use Respect\Validation\Validator as v;
  */
 class ItemController extends BaseController
 {
+    private $accessTokenRepository;
     private $itemRepository;
+    private $itemService;
 
-    /**
+    /***
      * ItemController constructor.
+     * @param AccessTokenRepository $accessTokenRepository
      * @param ItemRepository $itemRepository
      */
     public function __construct(
+        AccessTokenRepository $accessTokenRepository,
         ItemRepository $itemRepository
     ) {
+        parent::__construct($accessTokenRepository);
+        $this->accessTokenRepository = $accessTokenRepository;
         $this->itemRepository = $itemRepository;
+    }
+
+    /**
+     * @return ItemService
+     */
+    public function getItemService() : ItemService {
+        if (!($this->itemService instanceof ItemService)) {
+            $this->itemService = new ItemService($this->accessTokenRepository, $this->itemRepository);
+        }
+        return $this->itemService;
+    }
+
+    /**
+     * @param ItemService $itemService
+     */
+    public function setItemService(ItemService $itemService) {
+        $this->itemService = $itemService;
     }
 
     /**
@@ -39,6 +61,8 @@ class ItemController extends BaseController
     public function getItems(Request $request): JsonResponse
     {
         $this->validateGetRequest($request);
+        $accessToken = $request->get('accessToken');
+        $this->checkAuthorization($accessToken);
         $params = array(
             'filter' => $request->get('filter'),
             'limit' => $request->get('limit'),
@@ -46,19 +70,23 @@ class ItemController extends BaseController
             'sortField' => $request->get('sortField'),
             'sortOrder' => $request->get('sortOrder')
         );
-        $items = $this->getItemsByParams($params);
-        return new JsonResponse($this->formatGetResponse($items), Response::HTTP_OK);
+        $items = $this->getItemService()->getItems($params);
+        return new JsonResponse($this->getItemService()->formatItemsResponse($items), Response::HTTP_OK);
     }
 
     /**
+     * @param Request $request
      * @param int $id
      * @return JsonResponse
      * @Route("/items/{id}", name="getItem", methods={"GET"})
      */
-    public function getItem(int $id): JsonResponse
+    public function getItem(Request $request, int $id): JsonResponse
     {
-        $item = $this->getItemById($id);
-        return new JsonResponse($this->formatItemResponse($item), Response::HTTP_OK);
+        $this->validateGetResourceRequest($request);
+        $accessToken = $request->get('accessToken');
+        $this->checkAuthorization($accessToken);
+        $item = $this->getItemService()->getItem($id);
+        return new JsonResponse($this->getItemService()->formatItemResponse($item), Response::HTTP_OK);
     }
 
     /**
@@ -70,8 +98,9 @@ class ItemController extends BaseController
     {
         $this->validatePostRequest($request);
         $params = json_decode($request->getContent(), true);
-        $item = $this->saveNewItem($params);
-        return new JsonResponse($this->formatItemResponse($item), Response::HTTP_CREATED);
+        $this->checkAuthorization($params['accessToken']);
+        $item = $this->getItemService()->saveItem($params);
+        return new JsonResponse($this->getItemService()->formatItemResponse($item), Response::HTTP_CREATED);
     }
 
     /**
@@ -84,8 +113,9 @@ class ItemController extends BaseController
     {
         $this->validatePostRequest($request);
         $params = json_decode($request->getContent(), true);
-        $item = $this->updateExistingItem($params, $id);
-        return new JsonResponse($this->formatItemResponse($item), Response::HTTP_CREATED);
+        $this->checkAuthorization($params['accessToken']);
+        $item = $this->getItemService()->updateItem($params, $id);
+        return new JsonResponse($this->getItemService()->formatItemResponse($item), Response::HTTP_OK);
     }
 
     /**
@@ -96,31 +126,11 @@ class ItemController extends BaseController
      */
     public function deleteItem(Request $request, int $id): JsonResponse
     {
-        $this->deleteItemById($id);
+        $this->validateDeleteRequest($request);
+        $params = json_decode($request->getContent(), true);
+        $this->checkAuthorization($params['accessToken']);
+        $this->getItemService()->deleteItem($id);
         return new JsonResponse('', Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * @param array $params
-     * @return array
-     */
-    protected function getItemsByParams(array $params) : array
-    {
-        return $this->itemRepository->findByParams($params);
-    }
-
-    /**
-     * @param int $id
-     * @return Item
-     */
-    protected function getItemById(int $id): Item
-    {
-        $item = $this->itemRepository->findOneBy(array('id' => $id));
-        if ($item instanceof Item) {
-            return $item;
-        } else {
-            throw new NotFoundHttpException(Response::$statusTexts[Response::HTTP_NOT_FOUND]);
-        }
     }
 
     /**
@@ -133,6 +143,7 @@ class ItemController extends BaseController
             v::key('description', v::stringVal()->notEmpty(), false)
         );
         $validator = v::keySet(
+            v::key('accessToken', v::stringVal()->notEmpty(), true),
             v::key('filter', $filterValidator, false),
             v::key('limit', v::intVal()->positive(), false),
             v::key('offset', v::intVal()->not(v::negative()), false),
@@ -145,90 +156,38 @@ class ItemController extends BaseController
     /**
      * @param Request $request
      */
+    protected function validateGetResourceRequest(Request $request) : void
+    {
+        $validator = v::keySet(
+            v::key('accessToken', v::stringVal()->notEmpty(), true)
+        );
+        $this->validate($validator, $request->query->all());
+    }
+
+    /**
+     * @param Request $request
+     */
     protected function validatePostRequest(Request $request) : void
     {
         $validator = v::keySet(
+            v::key('accessToken', v::stringVal()->notEmpty(), true),
             v::key('name', v::stringVal()->notEmpty(), true),
             v::key('description', v::stringVal(), false),
             v::key('price', v::intVal()->positive(), true),
-            v::key('bid', v::intVal()->positive(), true),
+            v::key('bid', v::intVal()->not(v::negative()), true),
             v::key('closeDateTime', v::dateTime('Y-m-d H:i'), true)
         );
         $this->validate($validator, json_decode($request->getContent(), true));
     }
 
     /**
-     * @param array $items
-     * @return array
+     * @param Request $request
      */
-    protected function formatGetResponse(array $items) : array
+    protected function validateDeleteRequest(Request $request) : void
     {
-        $itemsArr = array();
-        foreach ($items as $item) {
-            if ($item instanceof Item) {
-                $itemArr = array();
-                $itemArr['id'] = $item->getId();
-                $itemArr['name'] = $item->getName();
-                $itemArr['description'] = $item->getDescription();
-                $itemArr['price'] = $item->getPrice();
-                $itemArr['bid'] = $item->getBid();
-                $itemArr['closeDateTime'] = $item->getCloseDateTime();
-                $itemsArr[] = $itemArr;
-            }
-        }
-        return $itemsArr;
-    }
-
-    /**
-     * @param Item $item
-     * @return array
-     */
-    protected function formatItemResponse(Item $item) : array
-    {
-        return array(
-            'id' => $item->getId(),
-            'name' => $item->getName(),
-            'description' => $item->getDescription(),
-            'price' => $item->getPrice(),
-            'bid' => $item->getBid(),
-            'closeDateTime' => $item->getCloseDateTime()
+        $validator = v::keySet(
+            v::key('accessToken', v::stringVal()->notEmpty(), true)
         );
-    }
-
-    /**
-     * @param array $params
-     * @return Item
-     */
-    protected function saveNewItem(array $params) : Item {
-        $item = new Item();
-        $item->setName($params['name']);
-        $item->setDescription($params['description']);
-        $item->setPrice($params['price']);
-        $item->setBid($params['bid']);
-        $item->setCloseDateTime(DateTime::createFromFormat('Y-m-d H:i', $params['closeDateTime']));
-        return $this->itemRepository->saveItem($item);
-    }
-
-    /**
-     * @param array $params
-     * @param int $id
-     * @return Item
-     */
-    protected function updateExistingItem(array $params, int $id) : Item {
-        $item = $this->getItemById($id);
-        $item->setName($params['name']);
-        $item->setDescription($params['description']);
-        $item->setPrice($params['price']);
-        $item->setBid($params['bid']);
-        $item->setCloseDateTime(DateTime::createFromFormat('Y-m-d H:i', $params['closeDateTime']));
-        return $this->itemRepository->saveItem($item);
-    }
-
-    /**
-     * @param int $id
-     */
-    protected function deleteItemById(int $id) : void {
-        $item = $this->getItemById($id);
-        $this->itemRepository->removeItem($item);
+        $this->validate($validator, json_decode($request->getContent(), true));
     }
 }

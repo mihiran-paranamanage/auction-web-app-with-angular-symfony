@@ -2,15 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\AccessToken;
-use App\Entity\User;
 use App\Repository\AccessTokenRepository;
 use App\Repository\UserRepository;
+use App\Service\AccessTokenService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Respect\Validation\Validator as v;
 
@@ -23,6 +20,7 @@ class AccessTokenController extends BaseController
 {
     private $accessTokenRepository;
     private $userRepository;
+    private $accessToken;
 
     /**
      * AccessTokenController constructor.
@@ -33,8 +31,26 @@ class AccessTokenController extends BaseController
         AccessTokenRepository $accessTokenRepository,
         UserRepository $userRepository
     ) {
+        parent::__construct($accessTokenRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userRepository = $userRepository;
+    }
+
+    /**
+     * @return AccessTokenService
+     */
+    public function getAccessTokenService() : AccessTokenService {
+        if (!($this->accessToken instanceof AccessTokenService)) {
+            $this->accessToken = new AccessTokenService($this->accessTokenRepository, $this->userRepository);
+        }
+        return $this->accessToken;
+    }
+
+    /**
+     * @param AccessTokenService $accessToken
+     */
+    public function setAccessTokenService(AccessTokenService $accessToken) {
+        $this->accessToken = $accessToken;
     }
 
     /**
@@ -46,27 +62,8 @@ class AccessTokenController extends BaseController
     {
         $this->validateGetRequest($request);
         $username = $request->get('username');
-        $accessToken = $this->getAccessTokenByUsername($username);
-        return new JsonResponse($this->formatGetResponse($accessToken), Response::HTTP_OK);
-    }
-
-    /**
-     * @param string $username
-     * @return AccessToken
-     */
-    protected function getAccessTokenByUsername(string $username) : AccessToken
-    {
-        $user = $this->userRepository->findOneBy(array('username' => $username));
-        if ($user instanceof User) {
-            $accessToken = $this->accessTokenRepository->findOneBy(array('user' => $user));
-            if ($accessToken instanceof AccessToken) {
-                return $accessToken;
-            } else {
-                throw new UnauthorizedHttpException(Response::$statusTexts[Response::HTTP_UNAUTHORIZED]);
-            }
-        } else {
-            throw new NotFoundHttpException(Response::$statusTexts[Response::HTTP_NOT_FOUND]);
-        }
+        $accessToken = $this->getAccessTokenService()->getAccessToken($username);
+        return new JsonResponse($this->getAccessTokenService()->formatAccessTokenResponse($accessToken), Response::HTTP_OK);
     }
 
     /**
@@ -76,18 +73,5 @@ class AccessTokenController extends BaseController
     {
         $validator = v::key('username', v::stringVal()->notEmpty(), true);
         $this->validate($validator, $request->query->all());
-    }
-
-    /**
-     * @param AccessToken $accessToken
-     * @return array
-     */
-    protected function formatGetResponse(AccessToken $accessToken) : array
-    {
-        return array(
-            'id' => $accessToken->getId(),
-            'username' => $accessToken->getUser()->getUsername(),
-            'token' => $accessToken->getToken()
-        );
     }
 }

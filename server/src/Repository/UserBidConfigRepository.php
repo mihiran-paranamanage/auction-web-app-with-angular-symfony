@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\UserBidConfig;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,37 +15,29 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserBidConfigRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    private $manager;
+
+    /**
+     * UserBidConfigRepository constructor.
+     * @param ManagerRegistry $registry
+     * @param EntityManagerInterface $manager
+     */
+    public function __construct(
+        ManagerRegistry $registry,
+        EntityManagerInterface $manager
+    ) {
         parent::__construct($registry, UserBidConfig::class);
+        $this->manager = $manager;
     }
 
-    // /**
-    //  * @return UserBidConfig[] Returns an array of UserBidConfig objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param UserBidConfig $userBidConfig
+     * @return UserBidConfig
+     */
+    public function saveUserBidConfig(UserBidConfig $userBidConfig): UserBidConfig
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $this->manager->persist($userBidConfig);
+        $this->manager->flush();
+        return $userBidConfig;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?UserBidConfig
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
