@@ -6,6 +6,7 @@ use App\Entity\Bid;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @method Bid|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,18 +17,22 @@ use Doctrine\Persistence\ManagerRegistry;
 class BidRepository extends ServiceEntityRepository
 {
     private $manager;
+    private $itemRepository;
 
     /**
      * BidRepository constructor.
      * @param ManagerRegistry $registry
      * @param EntityManagerInterface $manager
+     * @param ItemRepository $itemRepository
      */
     public function __construct(
         ManagerRegistry $registry,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        ItemRepository $itemRepository
     ) {
         parent::__construct($registry, Bid::class);
         $this->manager = $manager;
+        $this->itemRepository = $itemRepository;
     }
 
     /**
@@ -46,11 +51,22 @@ class BidRepository extends ServiceEntityRepository
     /**
      * @param Bid $bid
      * @return Bid
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function saveBid(Bid $bid): Bid
     {
-        $this->manager->persist($bid);
-        $this->manager->flush();
-        return $bid;
+        $this->manager->getConnection()->beginTransaction();
+        try {
+            $item = $bid->getItem();
+            $item->setBid($bid->getBid());
+            $this->itemRepository->saveItem($item);
+            $this->manager->persist($bid);
+            $this->manager->flush();
+            $this->manager->getConnection()->commit();
+            return $bid;
+        } catch (Exception $e) {
+            $this->manager->getConnection()->rollBack();
+            throw $e;
+        }
     }
 }

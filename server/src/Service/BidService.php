@@ -7,6 +7,8 @@ use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
 use App\Repository\ItemRepository;
 use DateTime;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class BidService
@@ -65,12 +67,16 @@ class BidService extends BaseService
     /**
      * @param array $params
      * @return Bid
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function saveBid(array $params) : Bid {
+        $item = $this->getItemService()->getItem($params['itemId']);
+        if ($params['bid'] <= $item->getBid()) {
+            throw new BadRequestHttpException(Response::$statusTexts[Response::HTTP_BAD_REQUEST]);
+        }
         $bid = new Bid();
         $user = $this->getUser($params['accessToken']);
         $bid->setUser($user);
-        $item = $this->getItemService()->getItem($params['itemId']);
         $bid->setItem($item);
         $bid->setBid($params['bid']);
         $bid->setIsAutoBid(!!$params['isAutoBid']);
