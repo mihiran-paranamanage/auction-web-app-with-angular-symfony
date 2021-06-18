@@ -123,7 +123,7 @@ class BidController extends BaseController
         $validator = v::keySet(
             v::key('accessToken', v::stringVal()->notEmpty(), true),
             v::key('itemId', v::intVal()->positive(), true),
-            v::key('bid', v::intVal()->positive(), true),
+            v::key('bid', v::anyOf(v::intVal()->positive(), v::decimal(2)), true),
             v::key('isAutoBid', v::boolVal(), true)
         );
         $this->validate($validator, json_decode($request->getContent(), true));

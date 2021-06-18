@@ -1,0 +1,60 @@
+import { Injectable } from '@angular/core';
+import {Subject} from 'rxjs';
+
+import {Item} from '../../interfaces/item';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ItemEventListenerService {
+
+  private itemEventUpdateInputSource = new Subject<Item>();
+  private itemEventDeleteInputSource = new Subject<Item>();
+  private itemEventAddInputSource = new Subject<Item>();
+
+  private itemEventUpdateEmitSource = new Subject<Item>();
+  private itemEventDeleteEmitSource = new Subject<any>();
+  private itemEventAddEmitSource = new Subject<Item>();
+
+  private itemEventFailureEmitSource = new Subject<any>();
+
+  itemEventUpdateInput$ = this.itemEventUpdateInputSource.asObservable();
+  itemEventDeleteInput$ = this.itemEventDeleteInputSource.asObservable();
+  itemEventAddInput$ = this.itemEventAddInputSource.asObservable();
+
+  itemEventUpdateEmit$ = this.itemEventUpdateEmitSource.asObservable();
+  itemEventDeleteEmit$ = this.itemEventDeleteEmitSource.asObservable();
+  itemEventAddEmit$ = this.itemEventAddEmitSource.asObservable();
+
+  itemEventFailureEmit$ = this.itemEventFailureEmitSource.asObservable();
+
+  constructor() { }
+
+  onUpdate(item: Item): void {
+    this.itemEventUpdateInputSource.next(item);
+  }
+
+  onUpdated(item: Item): void {
+    this.itemEventUpdateEmitSource.next(item);
+  }
+
+  onDelete(item: Item): void {
+    this.itemEventDeleteInputSource.next();
+  }
+
+  onDeleted(): void {
+    this.itemEventDeleteEmitSource.next();
+  }
+
+  onAdd(item: Item): void {
+    this.itemEventAddInputSource.next(item);
+  }
+
+  onAdded(item: Item): void {
+    this.itemEventAddEmitSource.next(item);
+  }
+
+  onFailure(error: any): void {
+    this.itemEventFailureEmitSource.next(error);
+  }
+}

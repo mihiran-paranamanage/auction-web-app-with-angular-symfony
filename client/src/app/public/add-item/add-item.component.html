@@ -1,0 +1,61 @@
+<form [formGroup]="itemForm" (ngSubmit)="onAdd()">
+
+  <mat-card-title>{{itemActionTitle}}</mat-card-title>
+
+  <mat-divider></mat-divider>
+
+  <br />
+
+  <div class="mat-action-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="e.g. Antique Statue" formControlName="name" required>
+    </mat-form-field>
+
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>Closing Date of the Auction</mat-label>-->
+<!--      <input matInput [matDatepicker]="closeDateTime" required>-->
+<!--      <mat-datepicker-toggle matSuffix [for]="closeDateTime"></mat-datepicker-toggle>-->
+<!--      <mat-datepicker #closeDateTime></mat-datepicker>-->
+<!--    </mat-form-field>-->
+
+<!--    Todo Use angular material date picker-->
+    <mat-form-field appearance="outline">
+      <mat-label>Closing Date and Time</mat-label>
+      <input matInput placeholder="Closing Date and Time" formControlName="closeDateTime" required>
+    </mat-form-field>
+  </div>
+
+  <div class="mat-action-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput placeholder="e.g. This item is best gift for home, office, car dashboard, office table/desk, etc." formControlName="description" required></textarea>
+    </mat-form-field>
+  </div>
+
+  <br />
+
+  <div class="mat-action-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Price</mat-label>
+      <input matInput placeholder="Price" formControlName="price" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Starting Bid Amount</mat-label>
+      <input matInput placeholder="Starting Bid Amount" formControlName="bid" required>
+    </mat-form-field>
+  </div>
+
+  <br />
+
+  <br />
+
+  <ng-container>
+    <button mat-stroked-button>Cancel</button>
+    <button
+      mat-raised-button color="primary"
+      [disabled]="!itemForm.valid">{{submitButtonLabel}}</button>
+  </ng-container>
+
+</form>

@@ -132,8 +132,8 @@ class ItemController extends BaseController
     public function deleteItem(Request $request, int $id): JsonResponse
     {
         $this->validateDeleteRequest($request);
-        $params = json_decode($request->getContent(), true);
-        $this->checkAuthorization($params['accessToken']);
+        $accessToken = $request->get('accessToken');
+        $this->checkAuthorization($accessToken);
         $this->getItemService()->deleteItem($id);
         return new JsonResponse('', Response::HTTP_NO_CONTENT);
     }
@@ -177,9 +177,9 @@ class ItemController extends BaseController
         $validator = v::keySet(
             v::key('accessToken', v::stringVal()->notEmpty(), true),
             v::key('name', v::stringVal()->notEmpty(), true),
-            v::key('description', v::stringVal(), false),
-            v::key('price', v::intVal()->positive(), true),
-            v::key('bid', v::intVal()->not(v::negative()), true),
+            v::key('description', v::stringVal(), true),
+            v::key('price', v::anyOf(v::intVal()->positive(), v::decimal(2)), true),
+            v::key('bid', v::anyOf(v::intVal()->positive(), v::decimal(2)), true),
             v::key('closeDateTime', v::dateTime('Y-m-d H:i'), true)
         );
         $this->validate($validator, json_decode($request->getContent(), true));
@@ -193,6 +193,6 @@ class ItemController extends BaseController
         $validator = v::keySet(
             v::key('accessToken', v::stringVal()->notEmpty(), true)
         );
-        $this->validate($validator, json_decode($request->getContent(), true));
+        $this->validate($validator, $request->query->all());
     }
 }

@@ -122,7 +122,7 @@ class ItemService extends BaseService
             'description' => $item->getDescription(),
             'price' => $item->getPrice(),
             'bid' => $item->getBid(),
-            'closeDateTime' => $item->getCloseDateTime()
+            'closeDateTime' => $item->getCloseDateTime()->format('Y-m-d H:i')
         );
     }
 }
