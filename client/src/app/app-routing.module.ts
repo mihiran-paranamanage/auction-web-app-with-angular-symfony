@@ -6,6 +6,7 @@ import {AddItemComponent} from './public/add-item/add-item.component';
 import {PageNotFoundComponent} from './shared/page-not-found/page-not-found.component';
 import {AutoBidConfigComponent} from './public/auto-bid-config/auto-bid-config.component';
 import {ItemDetailsComponent} from './public/item-details/item-details.component';
+import {BidHistoryComponent} from './public/bid-history/bid-history.component';
 
 const routes: Routes = [
   {
@@ -26,8 +27,12 @@ const routes: Routes = [
     component: AutoBidConfigComponent,
   },
   {
-    path: 'items/bid',
+    path: 'items/:id/bid',
     component: ItemDetailsComponent,
+  },
+  {
+    path: 'items/:id/bidHistory',
+    component: BidHistoryComponent,
   },
   {
     path: '**',

@@ -8,6 +8,7 @@ import {ItemEventListenerService} from '../item-event-listener/item-event-listen
 import {Permission} from '../../interfaces/permission';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 import {Bid} from '../../interfaces/bid';
+import {ItemBid} from '../../interfaces/item-bid';
 
 @Injectable({
   providedIn: 'root'
@@ -86,8 +87,8 @@ export class ItemService {
       );
   }
 
-  getBids(url: string): Observable<Bid[]> {
-    return this.http.get<Bid>(url)
+  getBids(url: string): Observable<ItemBid[]> {
+    return this.http.get<ItemBid>(url)
       .pipe(
         catchError(error => this.handleError(error))
       );

@@ -7,6 +7,7 @@ import {Item} from '../../interfaces/item';
 import {Bid} from '../../interfaces/bid';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 import {Observable} from 'rxjs';
+import {ActivatedRoute, Params} from '@angular/router';
 
 @Component({
   selector: 'app-item-details',
@@ -18,6 +19,7 @@ export class ItemDetailsComponent implements AfterViewInit {
   title = 'Item Details';
   submitButtonLabel = 'Submit';
 
+  itemId?: number;
   item$!: Observable<Item>;
 
   private item: Item = {
@@ -40,7 +42,8 @@ export class ItemDetailsComponent implements AfterViewInit {
     private formBuilder: FormBuilder,
     private itemService: ItemService,
     private snackbarService: SnackbarService,
-    private itemEventListenerService: ItemEventListenerService
+    private itemEventListenerService: ItemEventListenerService,
+    private route: ActivatedRoute
   ) {
     this.subscribeForItemEvents();
   }
@@ -55,11 +58,17 @@ export class ItemDetailsComponent implements AfterViewInit {
   });
 
   ngAfterViewInit(): void {
-    this.fetchItemDetails();
+    this.route.params
+      .subscribe(
+        (params: Params) => {
+          this.itemId = +params.id;
+          this.fetchItemDetails();
+        }
+      );
   }
 
   fetchItemDetails(): void {
-    const url = localStorage.getItem('serverUrl') + '/items/1?accessToken=' + localStorage.getItem('accessToken');
+    const url = localStorage.getItem('serverUrl') + '/items/' + this.itemId + '?accessToken=' + localStorage.getItem('accessToken');
     this.item$ = this.itemService.getItem(url);
     this.itemService.getItem(url)
       .subscribe(item => {

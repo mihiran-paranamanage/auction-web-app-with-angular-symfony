@@ -4,8 +4,6 @@
 
 <br />
 
-<br />
-
 <ng-container *ngIf="item$ | async as item">
   <mat-card>
     <mat-card-content>
@@ -24,7 +22,11 @@
       </ng-container>
 
       <ng-container>
-        <h4>{{'Closing Date: '}}{{ item.closeDateTime | date }}</h4>
+        <h4>{{'Closing Date: '}}{{ item.closeDateTime | date: 'MMM d, y, h:mm a' }}</h4>
+      </ng-container>
+
+      <ng-container>
+        <a mat-stroked-button color="primary" [routerLink]="['/items/', item.id, 'bidHistory']">View Bid History</a>
       </ng-container>
 
     </mat-card-content>

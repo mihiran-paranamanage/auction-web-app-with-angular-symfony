@@ -17,7 +17,7 @@ export class ItemListComponent implements AfterViewInit {
 
   private items: Item[] = [];
   dataSource = new MatTableDataSource<Item>(this.items);
-  displayedColumns: string[] = ['name', 'description', 'price', 'bid', 'actions'];
+  displayedColumns: string[] = ['name', 'price', 'bid', 'closeDateTime', 'actions'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

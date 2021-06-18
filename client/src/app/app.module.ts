@@ -40,6 +40,7 @@ import { ItemBidComponent } from './public/item-bid/item-bid.component';
 import { AutoBidConfigComponent } from './public/auto-bid-config/auto-bid-config.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ItemDetailsComponent } from './public/item-details/item-details.component';
+import { BidHistoryComponent } from './public/bid-history/bid-history.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { ItemDetailsComponent } from './public/item-details/item-details.compone
     ItemDetailsFormComponent,
     ItemBidComponent,
     AutoBidConfigComponent,
-    ItemDetailsComponent
+    ItemDetailsComponent,
+    BidHistoryComponent
   ],
   imports: [
     BrowserModule,

@@ -4,9 +4,11 @@ namespace App\Service;
 
 use App\Entity\Item;
 use App\Repository\AccessTokenRepository;
+use App\Repository\BidRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use DateTime;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -18,21 +20,25 @@ class ItemService extends BaseService
 {
     private $userRoleDataGroupRepository;
     private $itemRepository;
+    private $bidRepository;
 
     /**
      * ItemService constructor.
      * @param AccessTokenRepository $accessTokenRepository
      * @param ItemRepository $itemRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
+     * @param BidRepository $bidRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         ItemRepository $itemRepository,
-        UserRoleDataGroupRepository $userRoleDataGroupRepository
+        UserRoleDataGroupRepository $userRoleDataGroupRepository,
+        BidRepository $bidRepository
     ) {
         parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
         $this->itemRepository = $itemRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
+        $this->bidRepository = $bidRepository;
     }
 
     /**
@@ -89,10 +95,19 @@ class ItemService extends BaseService
 
     /**
      * @param int $id
+     * @throws Exception
      */
     public function deleteItem(int $id) : void {
-        $item = $this->getItem($id);
-        $this->itemRepository->removeItem($item);
+//        $this->manager->getConnection()->beginTransaction();
+        try {
+            $item = $this->getItem($id);
+            $this->bidRepository->removeByItemId($id);
+            $this->itemRepository->removeItem($item);
+//            $this->manager->getConnection()->commit();
+        } catch (Exception $e) {
+//            $this->manager->getConnection()->rollBack();
+            throw $e;
+        }
     }
 
     /**

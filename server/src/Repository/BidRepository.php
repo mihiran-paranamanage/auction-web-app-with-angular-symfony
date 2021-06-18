@@ -114,4 +114,17 @@ class BidRepository extends ServiceEntityRepository
             throw $e;
         }
     }
+
+    /**
+     * @param int $itemId
+     * @return int|mixed|string
+     */
+    public function removeByItemId(int $itemId)
+    {
+        $q = $this->createQueryBuilder('u')
+            ->delete('App:Bid', 'u')
+            ->where('u.item = :itemId')
+            ->setParameter('itemId', $itemId);
+        return $q->getQuery()->execute();
+    }
 }

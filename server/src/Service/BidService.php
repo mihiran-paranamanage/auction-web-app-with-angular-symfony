@@ -31,7 +31,8 @@ class BidService extends BaseService
             $this->itemService = new ItemService(
                 $this->accessTokenRepository,
                 $this->itemRepository,
-                $this->userRoleDataGroupRepository
+                $this->userRoleDataGroupRepository,
+                $this->bidRepository
             );
         }
         return $this->itemService;
@@ -120,7 +121,11 @@ class BidService extends BaseService
             'itemId' => $bid->getItem()->getId(),
             'bid' => $bid->getBid(),
             'isAutoBid' => $bid->getIsAutoBid(),
-            'dateTime' => $bid->getDateTime()
+            'dateTime' => $bid->getDateTime()->format('Y-m-d H:i'),
+            'user' => array(
+                'userId' => $bid->getUser()->getId(),
+                'username' => $bid->getUser()->getUsername(),
+            )
         );
     }
 }

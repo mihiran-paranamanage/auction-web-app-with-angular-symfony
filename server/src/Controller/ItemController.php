@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
+use App\Repository\BidRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use App\Service\ItemService;
@@ -22,6 +23,7 @@ class ItemController extends BaseController
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $itemRepository;
+    private $bidRepository;
     private $itemService;
 
     /**
@@ -29,16 +31,19 @@ class ItemController extends BaseController
      * @param AccessTokenRepository $accessTokenRepository
      * @param ItemRepository $itemRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
+     * @param BidRepository $bidRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         ItemRepository $itemRepository,
-        UserRoleDataGroupRepository $userRoleDataGroupRepository
+        UserRoleDataGroupRepository $userRoleDataGroupRepository,
+        BidRepository $bidRepository
     ) {
         parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->itemRepository = $itemRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
+        $this->bidRepository = $bidRepository;
     }
 
     /**
@@ -46,7 +51,12 @@ class ItemController extends BaseController
      */
     public function getItemService() : ItemService {
         if (!($this->itemService instanceof ItemService)) {
-            $this->itemService = new ItemService($this->accessTokenRepository, $this->itemRepository, $this->userRoleDataGroupRepository);
+            $this->itemService = new ItemService(
+                $this->accessTokenRepository,
+                $this->itemRepository,
+                $this->userRoleDataGroupRepository,
+                $this->bidRepository
+            );
         }
         return $this->itemService;
     }
@@ -127,6 +137,7 @@ class ItemController extends BaseController
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \Exception
      * @Route("/items/{id}", name="deleteItem", methods={"DELETE"})
      */
     public function deleteItem(Request $request, int $id): JsonResponse
