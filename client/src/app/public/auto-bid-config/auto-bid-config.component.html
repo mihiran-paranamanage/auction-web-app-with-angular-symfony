@@ -1,6 +1,6 @@
-<form [formGroup]="itemForm" (ngSubmit)="onSave()">
+<form [formGroup]="autoBidConfigForm" (ngSubmit)="onSave()">
 
-  <mat-card-title>{{itemActionTitle}}</mat-card-title>
+  <mat-card-title>{{title}}</mat-card-title>
 
   <mat-divider></mat-divider>
 
@@ -9,7 +9,7 @@
   <br />
 
   <div class="mat-action-row">
-    <mat-checkbox class="example-margin" formControlName="isAutoBidEnabled">Enable Auto Bid</mat-checkbox>
+    <mat-checkbox class="example-margin" formControlName="isAutoBidEnabled">Activate Auto Bid</mat-checkbox>
   </div>
 
   <br />
@@ -29,7 +29,7 @@
     <button mat-stroked-button>Cancel</button>
     <button
       mat-raised-button color="primary"
-      [disabled]="!itemForm.valid">{{submitButtonLabel}}</button>
+      [disabled]="!autoBidConfigForm.valid">{{submitButtonLabel}}</button>
   </ng-container>
 
 </form>

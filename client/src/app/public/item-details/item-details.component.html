@@ -1,1 +1,60 @@
-<p>item-details works!</p>
+<mat-card-title>{{title}}</mat-card-title>
+
+<mat-divider></mat-divider>
+
+<br />
+
+<br />
+
+<ng-container *ngIf="item$ | async as item">
+  <mat-card>
+    <mat-card-content>
+
+      <ng-container>
+        <h2>{{ item.name }}</h2>
+        <h4><i>{{ item.description }}</i></h4>
+      </ng-container>
+
+      <ng-container>
+        <h4>{{'Price: '}}{{ item.price | currency:'USD' }}</h4>
+      </ng-container>
+
+      <ng-container>
+        <h4>{{'Current Bid: '}}{{ item.bid | currency:'USD' }}</h4>
+      </ng-container>
+
+      <ng-container>
+        <h4>{{'Closing Date: '}}{{ item.closeDateTime | date }}</h4>
+      </ng-container>
+
+    </mat-card-content>
+  </mat-card>
+</ng-container>
+
+<form [formGroup]="bidForm" (ngSubmit)="onSave()">
+
+  <br />
+
+  <br />
+
+  <div class="mat-action-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Maximum Bid Amount</mat-label>
+      <input matInput placeholder="Maximum Bid Amount" formControlName="bid" required>
+    </mat-form-field>
+
+    <mat-checkbox class="example-margin" formControlName="isAutoBid">Activate Auto Bid</mat-checkbox>
+  </div>
+
+  <br />
+
+  <br />
+
+  <ng-container>
+    <button mat-stroked-button>Cancel</button>
+    <button
+      mat-raised-button color="primary"
+      [disabled]="!bidForm.valid">{{submitButtonLabel}}</button>
+  </ng-container>
+
+</form>

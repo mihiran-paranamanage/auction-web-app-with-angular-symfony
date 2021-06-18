@@ -3,6 +3,7 @@ import {Subject} from 'rxjs';
 
 import {Item} from '../../interfaces/item';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
+import {Bid} from '../../interfaces/bid';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,13 @@ export class ItemEventListenerService {
   private itemEventDeleteInputSource = new Subject<Item>();
   private itemEventAddInputSource = new Subject<Item>();
   private autoBidConfigEventSaveInputSource = new Subject<Item>();
+  private bidEventSaveInputSource = new Subject<Item>();
 
   private itemEventUpdateEmitSource = new Subject<Item>();
   private itemEventDeleteEmitSource = new Subject<any>();
   private itemEventAddEmitSource = new Subject<Item>();
   private autoBidConfigEventSaveEmitSource = new Subject<Item>();
+  private bidEventSaveEmitSource = new Subject<Item>();
 
   private itemEventFailureEmitSource = new Subject<any>();
 
@@ -25,11 +28,13 @@ export class ItemEventListenerService {
   itemEventDeleteInput$ = this.itemEventDeleteInputSource.asObservable();
   itemEventAddInput$ = this.itemEventAddInputSource.asObservable();
   autoBidConfigEventSaveInput$ = this.autoBidConfigEventSaveInputSource.asObservable();
+  bidEventSaveInput$ = this.bidEventSaveInputSource.asObservable();
 
   itemEventUpdateEmit$ = this.itemEventUpdateEmitSource.asObservable();
   itemEventDeleteEmit$ = this.itemEventDeleteEmitSource.asObservable();
   itemEventAddEmit$ = this.itemEventAddEmitSource.asObservable();
   autoBidConfigEventSaveEmit$ = this.autoBidConfigEventSaveEmitSource.asObservable();
+  bidEventSaveEmit$ = this.bidEventSaveEmitSource.asObservable();
 
   itemEventFailureEmit$ = this.itemEventFailureEmitSource.asObservable();
 
@@ -69,5 +74,13 @@ export class ItemEventListenerService {
 
   onSavedAutoBidConfig(autoBidConfig: AutoBidConfig): void {
     this.autoBidConfigEventSaveEmitSource.next(autoBidConfig);
+  }
+
+  onSaveBid(bid: Bid): void {
+    this.bidEventSaveInputSource.next(bid);
+  }
+
+  onSavedBid(bid: Bid): void {
+    this.bidEventSaveEmitSource.next(bid);
   }
 }

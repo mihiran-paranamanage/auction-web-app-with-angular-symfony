@@ -13,7 +13,7 @@ import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 })
 export class AutoBidConfigComponent implements AfterViewInit {
 
-  itemActionTitle = 'Auto Bid Configurations';
+  title = 'Auto Bid Configurations';
   submitButtonLabel = 'Save';
 
   private autoBidConfig: AutoBidConfig = {
@@ -33,9 +33,9 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   currencyInputValidators = [Validators.required, Validators.pattern(/^\d+(.\d{2})?$/)];
 
-  itemForm = this.formBuilder.group({
-    isAutoBidEnabled: [this.autoBidConfig.isAutoBidEnabled],
-    maxBidAmount: [this.autoBidConfig.maxBidAmount, this.currencyInputValidators],
+  autoBidConfigForm = this.formBuilder.group({
+    isAutoBidEnabled: [false],
+    maxBidAmount: [0, this.currencyInputValidators],
     accessToken: [localStorage.getItem('accessToken')]
   });
 
@@ -48,7 +48,16 @@ export class AutoBidConfigComponent implements AfterViewInit {
     this.itemService.getAutoBidConfig(url)
       .subscribe(autoBidConfig => {
         this.autoBidConfig = autoBidConfig;
+        this.updateAutoBidConfigForm();
       });
+  }
+
+  updateAutoBidConfigForm(): void {
+    this.autoBidConfigForm = this.formBuilder.group({
+      isAutoBidEnabled: [this.autoBidConfig.isAutoBidEnabled],
+      maxBidAmount: [this.autoBidConfig.maxBidAmount, this.currencyInputValidators],
+      accessToken: [localStorage.getItem('accessToken')]
+    });
   }
 
   subscribeForItemEvents(): void {
@@ -62,7 +71,7 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   onSave(): void {
     const url = localStorage.getItem('serverUrl') + '/autoBidConfig';
-    this.itemService.saveAutoBidConfig(url, this.itemForm.value)
+    this.itemService.saveAutoBidConfig(url, this.autoBidConfigForm.value)
       .subscribe();
   }
 

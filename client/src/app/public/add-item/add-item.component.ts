@@ -13,7 +13,7 @@ import {ItemEventListenerService} from '../../services/item-event-listener/item-
 })
 export class AddItemComponent implements OnInit {
 
-  itemActionTitle = 'Add Item';
+  title = 'Add Item';
   submitButtonLabel = 'Add';
 
   constructor(

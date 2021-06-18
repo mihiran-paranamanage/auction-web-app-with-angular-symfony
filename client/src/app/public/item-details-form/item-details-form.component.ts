@@ -15,7 +15,7 @@ export class ItemDetailsFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: {
       item: Item,
-      itemActionTitle: string,
+      title: string,
       submitButtonLabel: string
     }
   ) { }

@@ -7,6 +7,7 @@ import {Item} from '../../interfaces/item';
 import {ItemEventListenerService} from '../item-event-listener/item-event-listener.service';
 import {Permission} from '../../interfaces/permission';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
+import {Bid} from '../../interfaces/bid';
 
 @Injectable({
   providedIn: 'root'
@@ -81,6 +82,21 @@ export class ItemService {
     return this.http.put<AutoBidConfig>(url, autoBidConfig)
       .pipe(
         tap(response => this.itemEventListenerService.onSavedAutoBidConfig(autoBidConfig)),
+        catchError(error => this.handleError(error))
+      );
+  }
+
+  getBids(url: string): Observable<Bid[]> {
+    return this.http.get<Bid>(url)
+      .pipe(
+        catchError(error => this.handleError(error))
+      );
+  }
+
+  saveBid(url: string, bid: Bid): Observable<Bid> {
+    return this.http.post<Bid>(url, bid)
+      .pipe(
+        tap(response => this.itemEventListenerService.onSavedBid(bid)),
         catchError(error => this.handleError(error))
       );
   }

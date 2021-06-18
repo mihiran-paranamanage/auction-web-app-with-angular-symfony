@@ -36,7 +36,7 @@ export class ItemUpdateComponent implements OnInit {
     return this.matDialog.open(ItemDetailsFormComponent, {
       data: {
         item,
-        itemActionTitle: 'Update Item',
+        title: 'Update Item',
         submitButtonLabel: 'Update'
       }
     });
