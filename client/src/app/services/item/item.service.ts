@@ -6,6 +6,7 @@ import {catchError, map, tap} from 'rxjs/operators';
 import {Item} from '../../interfaces/item';
 import {ItemEventListenerService} from '../item-event-listener/item-event-listener.service';
 import {Permission} from '../../interfaces/permission';
+import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +66,21 @@ export class ItemService {
   getPermissions(url: string): Observable<Permission[]> {
     return this.http.get<Permission>(url)
       .pipe(
+        catchError(error => this.handleError(error))
+      );
+  }
+
+  getAutoBidConfig(url: string): Observable<AutoBidConfig> {
+    return this.http.get<AutoBidConfig>(url)
+      .pipe(
+        catchError(error => this.handleError(error))
+      );
+  }
+
+  saveAutoBidConfig(url: string, autoBidConfig: AutoBidConfig): Observable<AutoBidConfig> {
+    return this.http.put<AutoBidConfig>(url, autoBidConfig)
+      .pipe(
+        tap(response => this.itemEventListenerService.onSavedAutoBidConfig(autoBidConfig)),
         catchError(error => this.handleError(error))
       );
   }

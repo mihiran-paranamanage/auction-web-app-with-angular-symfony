@@ -19,6 +19,6 @@ export class ItemBidComponent implements OnInit {
   }
 
   onBid(): void {
-    this.router.navigate(['/items/add']);
+    this.router.navigate(['/items/bid']);
   }
 }

@@ -47,7 +47,7 @@ export class SidenavMenuItemsComponent implements OnInit {
     }
     // @ts-ignore
     if (this.permissions.configure_auto_bid && this.permissions.configure_auto_bid.canRead) {
-      this.menuItems.push({id: 4, name: 'Configurations', routerLink: ['/configurations'], matIcon: 'settings'});
+      this.menuItems.push({id: 4, name: 'Configurations', routerLink: ['/autoBidConfig'], matIcon: 'settings'});
     }
   }
 }

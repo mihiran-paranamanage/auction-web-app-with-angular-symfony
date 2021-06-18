@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Subject} from 'rxjs';
 
 import {Item} from '../../interfaces/item';
+import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 
 @Injectable({
   providedIn: 'root'
@@ -11,20 +12,24 @@ export class ItemEventListenerService {
   private itemEventUpdateInputSource = new Subject<Item>();
   private itemEventDeleteInputSource = new Subject<Item>();
   private itemEventAddInputSource = new Subject<Item>();
+  private autoBidConfigEventSaveInputSource = new Subject<Item>();
 
   private itemEventUpdateEmitSource = new Subject<Item>();
   private itemEventDeleteEmitSource = new Subject<any>();
   private itemEventAddEmitSource = new Subject<Item>();
+  private autoBidConfigEventSaveEmitSource = new Subject<Item>();
 
   private itemEventFailureEmitSource = new Subject<any>();
 
   itemEventUpdateInput$ = this.itemEventUpdateInputSource.asObservable();
   itemEventDeleteInput$ = this.itemEventDeleteInputSource.asObservable();
   itemEventAddInput$ = this.itemEventAddInputSource.asObservable();
+  autoBidConfigEventSaveInput$ = this.autoBidConfigEventSaveInputSource.asObservable();
 
   itemEventUpdateEmit$ = this.itemEventUpdateEmitSource.asObservable();
   itemEventDeleteEmit$ = this.itemEventDeleteEmitSource.asObservable();
   itemEventAddEmit$ = this.itemEventAddEmitSource.asObservable();
+  autoBidConfigEventSaveEmit$ = this.autoBidConfigEventSaveEmitSource.asObservable();
 
   itemEventFailureEmit$ = this.itemEventFailureEmitSource.asObservable();
 
@@ -56,5 +61,13 @@ export class ItemEventListenerService {
 
   onFailure(error: any): void {
     this.itemEventFailureEmitSource.next(error);
+  }
+
+  onSaveAutoBidConfig(autoBidConfig: AutoBidConfig): void {
+    this.autoBidConfigEventSaveInputSource.next(autoBidConfig);
+  }
+
+  onSavedAutoBidConfig(autoBidConfig: AutoBidConfig): void {
+    this.autoBidConfigEventSaveEmitSource.next(autoBidConfig);
   }
 }

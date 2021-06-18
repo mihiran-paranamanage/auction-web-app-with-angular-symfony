@@ -1,0 +1,35 @@
+<form [formGroup]="itemForm" (ngSubmit)="onSave()">
+
+  <mat-card-title>{{itemActionTitle}}</mat-card-title>
+
+  <mat-divider></mat-divider>
+
+  <br />
+
+  <br />
+
+  <div class="mat-action-row">
+    <mat-checkbox class="example-margin" formControlName="isAutoBidEnabled">Enable Auto Bid</mat-checkbox>
+  </div>
+
+  <br />
+
+  <div class="mat-action-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Maximum Bid Amount</mat-label>
+      <input matInput placeholder="Maximum Bid Amount" formControlName="maxBidAmount" required>
+    </mat-form-field>
+  </div>
+
+  <br />
+
+  <br />
+
+  <ng-container>
+    <button mat-stroked-button>Cancel</button>
+    <button
+      mat-raised-button color="primary"
+      [disabled]="!itemForm.valid">{{submitButtonLabel}}</button>
+  </ng-container>
+
+</form>

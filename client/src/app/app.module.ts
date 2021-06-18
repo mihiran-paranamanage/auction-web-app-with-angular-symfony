@@ -37,6 +37,9 @@ import { ItemActionDeleteConfirmationComponent } from './public/item-action-dele
 import { ItemDetailsFormComponent } from './public/item-details-form/item-details-form.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ItemBidComponent } from './public/item-bid/item-bid.component';
+import { AutoBidConfigComponent } from './public/auto-bid-config/auto-bid-config.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { ItemDetailsComponent } from './public/item-details/item-details.component';
 
 @NgModule({
   declarations: [
@@ -52,33 +55,36 @@ import { ItemBidComponent } from './public/item-bid/item-bid.component';
     ItemActionsComponent,
     ItemActionDeleteConfirmationComponent,
     ItemDetailsFormComponent,
-    ItemBidComponent
+    ItemBidComponent,
+    AutoBidConfigComponent,
+    ItemDetailsComponent
   ],
-    imports: [
-      BrowserModule,
-      AppRoutingModule,
-      BrowserAnimationsModule,
-      MatToolbarModule,
-      MatTableModule,
-      MatPaginatorModule,
-      MatSortModule,
-      MatFormFieldModule,
-      MatInputModule,
-      MatCardModule,
-      MatDividerModule,
-      MatGridListModule,
-      MatButtonModule,
-      MatSnackBarModule,
-      MatSidenavModule,
-      MatListModule,
-      MatIconModule,
-      ReactiveFormsModule,
-      HttpClientModule,
-      MatBottomSheetModule,
-      MatDialogModule,
-      NoopAnimationsModule,
-      MatDatepickerModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatDividerModule,
+    MatGridListModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    MatBottomSheetModule,
+    MatDialogModule,
+    NoopAnimationsModule,
+    MatDatepickerModule,
+    MatCheckboxModule
+  ],
   providers: [
     CurrencyPipe,
     MatDatepickerModule
