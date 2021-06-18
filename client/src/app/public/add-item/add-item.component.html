@@ -52,7 +52,7 @@
   <br />
 
   <ng-container>
-    <button mat-stroked-button>Cancel</button>
+    <button mat-stroked-button [routerLink]="['/home']">Cancel</button>
     <button
       mat-raised-button color="primary"
       [disabled]="!itemForm.valid">{{submitButtonLabel}}</button>

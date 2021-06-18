@@ -7,12 +7,17 @@ import {PageNotFoundComponent} from './shared/page-not-found/page-not-found.comp
 import {AutoBidConfigComponent} from './public/auto-bid-config/auto-bid-config.component';
 import {ItemDetailsComponent} from './public/item-details/item-details.component';
 import {BidHistoryComponent} from './public/bid-history/bid-history.component';
+import {HomePageComponent} from './public/home-page/home-page.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'items',
+    redirectTo: 'home',
     pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    component: HomePageComponent,
   },
   {
     path: 'items/add',
@@ -27,7 +32,7 @@ const routes: Routes = [
     component: AutoBidConfigComponent,
   },
   {
-    path: 'items/:id/bid',
+    path: 'items/:id/details',
     component: ItemDetailsComponent,
   },
   {

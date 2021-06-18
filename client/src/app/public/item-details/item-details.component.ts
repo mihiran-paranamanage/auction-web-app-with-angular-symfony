@@ -20,6 +20,7 @@ export class ItemDetailsComponent implements AfterViewInit {
   submitButtonLabel = 'Submit';
 
   itemId?: number;
+  remainingTime?: string;
   item$!: Observable<Item>;
 
   private item: Item = {
@@ -74,7 +75,12 @@ export class ItemDetailsComponent implements AfterViewInit {
       .subscribe(item => {
         this.item = item;
         this.fetchAutoBigConfig();
+        this.updateRemainingTime();
       });
+  }
+
+  updateRemainingTime(): void {
+    this.remainingTime = '10 days 10 hrs ';
   }
 
   fetchAutoBigConfig(): void {

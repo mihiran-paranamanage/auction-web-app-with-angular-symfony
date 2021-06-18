@@ -26,6 +26,10 @@
       </ng-container>
 
       <ng-container>
+        <h4>{{'Remaining Time: '}}{{ remainingTime }}</h4>
+      </ng-container>
+
+      <ng-container>
         <a mat-stroked-button color="primary" [routerLink]="['/items/', item.id, 'bidHistory']">View Bid History</a>
       </ng-container>
 
@@ -53,7 +57,7 @@
   <br />
 
   <ng-container>
-    <button mat-stroked-button>Cancel</button>
+    <button mat-stroked-button [routerLink]="['/home']">Cancel</button>
     <button
       mat-raised-button color="primary"
       [disabled]="!bidForm.valid">{{submitButtonLabel}}</button>
