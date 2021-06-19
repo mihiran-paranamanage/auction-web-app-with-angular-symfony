@@ -13,9 +13,11 @@ import {ItemService} from '../../services/item/item.service';
 })
 export class HomePageComponent implements AfterViewInit {
 
+  title = 'Home Page';
+
   private items: Item[] = [];
   dataSource = new MatTableDataSource<Item>(this.items);
-  displayedColumns: string[] = ['name', 'price', 'bid', 'closeDateTime', 'actions'];
+  displayedColumns: string[] = ['name', 'description', 'price', 'bid', 'closeDateTime', 'actions'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

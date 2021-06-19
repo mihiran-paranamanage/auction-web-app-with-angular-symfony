@@ -71,7 +71,7 @@ export class ItemDetailsComponent implements AfterViewInit {
         (params: Params) => {
           this.itemId = +params.id;
           this.fetchItemDetails();
-          this.fetchItemDetailsInterval = setInterval(this.fetchItemDetails.bind(this), 1000 * 10);
+          this.fetchItemDetailsInterval = setInterval(this.fetchItemDetails.bind(this), 1000 * 60);
           this.updateRemainingTimeInterval = setInterval(this.updateRemainingTime.bind(this), 1000);
         }
       );

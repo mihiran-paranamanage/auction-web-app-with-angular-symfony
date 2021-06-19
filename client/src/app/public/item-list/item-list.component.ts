@@ -15,9 +15,11 @@ import {ItemEventListenerService} from '../../services/item-event-listener/item-
 })
 export class ItemListComponent implements AfterViewInit {
 
+  title = 'Admin Dashboard';
+
   private items: Item[] = [];
   dataSource = new MatTableDataSource<Item>(this.items);
-  displayedColumns: string[] = ['name', 'price', 'bid', 'closeDateTime', 'actions'];
+  displayedColumns: string[] = ['name', 'description', 'price', 'bid', 'closeDateTime', 'actions'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

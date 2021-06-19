@@ -5,6 +5,8 @@ import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {ItemService} from '../../services/item/item.service';
 import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
+import {Observable} from 'rxjs';
+import {Item} from '../../interfaces/item';
 
 @Component({
   selector: 'app-auto-bid-config',
@@ -15,6 +17,8 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   title = 'Auto Bid Configurations';
   submitButtonLabel = 'Save';
+
+  autoBidConfig$!: Observable<AutoBidConfig>;
 
   private autoBidConfig: AutoBidConfig = {
     id: undefined,
@@ -49,6 +53,7 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   fetchAutoBigConfig(): void {
     const url = localStorage.getItem('serverUrl') + '/autoBidConfig?accessToken=' + localStorage.getItem('accessToken');
+    this.autoBidConfig$ = this.itemService.getItem(url);
     this.itemService.getAutoBidConfig(url)
       .subscribe(autoBidConfig => {
         this.autoBidConfig = autoBidConfig;
@@ -112,12 +117,21 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   onMaxBidAmountReached(): void {
     this.snackbarService.openSnackBarNotification(
-      'Maximum bid amount has been reached & auto-bidding process stopped. Please increase the maximum bid amount to continue.'
+      'Warning: Maximum bid amount has been reached & auto-bidding process stopped. Please increase the maximum bid amount to continue.'
     );
   }
 
   onMaxBidAmountPercentageReached(notifyPercentage: number): void {
-    const message = notifyPercentage + '% of the maximum bid amount is reserved!';
+    const message = 'Warning: ' + notifyPercentage + '% of the maximum bid amount is reserved!';
     this.snackbarService.openSnackBarNotification(message);
+  }
+
+  getBidUsagePercentage(autoBidConfig: AutoBidConfig): number|string {
+    if (autoBidConfig.currentBidAmount && autoBidConfig.maxBidAmount) {
+      const percentage = autoBidConfig.currentBidAmount * 100 / autoBidConfig.maxBidAmount;
+      return percentage.toFixed(2);
+    } else {
+      return 0;
+    }
   }
 }
