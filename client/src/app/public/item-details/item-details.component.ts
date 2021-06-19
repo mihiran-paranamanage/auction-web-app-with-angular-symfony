@@ -21,6 +21,7 @@ export class ItemDetailsComponent implements AfterViewInit {
 
   itemId?: number;
   remainingTime?: string;
+  showBidHistoryBtn = false;
   item$!: Observable<Item>;
 
   private item: Item = {
@@ -76,6 +77,7 @@ export class ItemDetailsComponent implements AfterViewInit {
         this.item = item;
         this.fetchAutoBigConfig();
         this.updateRemainingTime();
+        this.checkBidHistoryPermissions();
       });
   }
 
@@ -124,5 +126,9 @@ export class ItemDetailsComponent implements AfterViewInit {
 
   onFailure(error: any): void {
     this.snackbarService.openSnackBar('Request Failed!');
+  }
+
+  checkBidHistoryPermissions(): void {
+    this.showBidHistoryBtn = this.itemService.checkPermissions('bid_history', 'canRead');
   }
 }

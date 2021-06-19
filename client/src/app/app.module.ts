@@ -44,6 +44,7 @@ import { BidHistoryComponent } from './public/bid-history/bid-history.component'
 import { HomePageComponent } from './public/home-page/home-page.component';
 import { LoginPageComponent } from './public/login-page/login-page.component';
 import { MainComponent } from './main/main/main.component';
+import { ForbiddenComponent } from './shared/forbidden/forbidden.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { MainComponent } from './main/main/main.component';
     BidHistoryComponent,
     HomePageComponent,
     LoginPageComponent,
-    MainComponent
+    MainComponent,
+    ForbiddenComponent
   ],
   imports: [
     BrowserModule,

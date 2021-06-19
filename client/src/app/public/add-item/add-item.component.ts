@@ -5,6 +5,7 @@ import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
 import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-add-item',
@@ -20,7 +21,8 @@ export class AddItemComponent implements OnInit {
     private formBuilder: FormBuilder,
     private itemService: ItemService,
     private snackbarService: SnackbarService,
-    private itemEventListenerService: ItemEventListenerService
+    private itemEventListenerService: ItemEventListenerService,
+    private router: Router
   ) {
     this.subscribeForItemEvents();
   }
@@ -40,6 +42,7 @@ export class AddItemComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.checkPermissions();
   }
 
   subscribeForItemEvents(): void {
@@ -63,5 +66,12 @@ export class AddItemComponent implements OnInit {
 
   onFailure(error: any): void {
     this.snackbarService.openSnackBar('Request Failed!');
+  }
+
+  checkPermissions(): void {
+    const isPermitted = this.itemService.checkPermissions('item', 'canCreate');
+    if (!isPermitted) {
+      this.router.navigate(['/forbidden']);
+    }
   }
 }

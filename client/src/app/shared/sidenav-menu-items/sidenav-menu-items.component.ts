@@ -30,6 +30,7 @@ export class SidenavMenuItemsComponent implements OnInit {
     this.itemService.getPermissions(url)
       .subscribe(permissions => {
         this.permissions = permissions;
+        localStorage.setItem('permissions', JSON.stringify(this.permissions));
         this.updateMenuItems();
       });
   }

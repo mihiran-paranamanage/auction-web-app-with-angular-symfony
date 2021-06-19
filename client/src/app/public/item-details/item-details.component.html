@@ -30,7 +30,7 @@
       </ng-container>
 
       <ng-container>
-        <a mat-stroked-button color="primary" [routerLink]="['/items/', item.id, 'bidHistory']">View Bid History</a>
+        <a mat-stroked-button color="primary" *ngIf="showBidHistoryBtn" [routerLink]="['/items/', item.id, 'bidHistory']">View Bid History</a>
       </ng-container>
 
     </mat-card-content>

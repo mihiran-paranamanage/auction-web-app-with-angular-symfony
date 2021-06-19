@@ -9,6 +9,7 @@ import {ItemDetailsComponent} from './public/item-details/item-details.component
 import {BidHistoryComponent} from './public/bid-history/bid-history.component';
 import {HomePageComponent} from './public/home-page/home-page.component';
 import {LoginPageComponent} from './public/login-page/login-page.component';
+import {ForbiddenComponent} from './shared/forbidden/forbidden.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,10 @@ const routes: Routes = [
   {
     path: 'items/:id/bidHistory',
     component: BidHistoryComponent,
+  },
+  {
+    path: 'forbidden',
+    component: ForbiddenComponent
   },
   {
     path: '**',
