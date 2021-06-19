@@ -20,7 +20,7 @@ export class ItemDetailsComponent implements AfterViewInit {
   submitButtonLabel = 'Submit';
 
   itemId?: number;
-  remainingTime = '0 hour(s), 00 minute(s), 00 second(s)';
+  remainingTime = '0 day(s), 00 hr(s), 00 min(s), 00 sec(s)';
   allowSubmit = true;
   isItemBidChanged = false;
   fetchItemDetailsInterval?: any;
@@ -90,24 +90,31 @@ export class ItemDetailsComponent implements AfterViewInit {
   updateRemainingTime(): void {
     const closeDateTime = (this.item && this.item.closeDateTime) ? new Date(this.item.closeDateTime) : new Date();
 
+    let days: number|string = 0;
     let hours: number|string = 0;
+    let hoursLeft: number|string = 0;
     let minutes: number|string = 0;
+    let minutesLeft: number|string = 0;
     let seconds: number|string = 0;
 
     let diff = (closeDateTime.getTime() - Date.now()) / 1000;
 
-    hours = Math.round(diff / 3600);
-    minutes = Math.round(diff / 60);
-    seconds = Math.round(diff % 60);
+    days        = Math.floor(diff / 24 / 60 / 60);
+    hoursLeft   = Math.floor((diff) - (days * 86400));
+    hours       = Math.floor(hoursLeft / 3600);
+    minutesLeft = Math.floor((hoursLeft) - (hours * 3600));
+    minutes     = Math.floor(minutesLeft / 60);
+    seconds = Math.floor(diff % 60);
 
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
+    function pad(n: number|string): number|string {
+      return (n < 10 ? '0' + n : n);
+    }
 
-    this.remainingTime = hours + ' hour(s), ' + minutes + ' minute(s), ' + seconds + ' second(s)';
+    this.remainingTime = days + ' day(s), ' + pad(hours) + ' hr(s), ' + pad(minutes) + ' min(s), ' + pad(seconds) + ' sec(s)';
 
     if (--diff <= 0) {
       this.allowSubmit = false;
-      this.remainingTime = '0 hour(s), 00 minute(s), 00 second(s)';
+      this.remainingTime = '0 day(s), 00 hr(s), 00 min(s), 00 sec(s)';
       clearInterval(this.updateRemainingTimeInterval);
     }
   }
