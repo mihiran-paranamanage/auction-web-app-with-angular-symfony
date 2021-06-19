@@ -6,7 +6,7 @@ import {ItemBid} from '../../interfaces/item-bid';
 import {MatTableDataSource} from '@angular/material/table';
 import {Item} from '../../interfaces/item';
 import {MatPaginator} from '@angular/material/paginator';
-import {ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 
 @Component({
   selector: 'app-bid-history',
@@ -26,10 +26,12 @@ export class BidHistoryComponent implements AfterViewInit {
     private itemService: ItemService,
     private snackbarService: SnackbarService,
     private itemEventListenerService: ItemEventListenerService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngAfterViewInit(): void {
+    this.checkPermissions();
     this.route.params
       .subscribe(
         (params: Params) => {
@@ -52,5 +54,12 @@ export class BidHistoryComponent implements AfterViewInit {
   updateTableDataSource(): void {
     this.dataSource = new MatTableDataSource<Item>(this.bids);
     this.dataSource.paginator = this.paginator;
+  }
+
+  checkPermissions(): void {
+    const isPermitted = this.itemService.checkPermissions('bid_history', 'canRead');
+    if (!isPermitted) {
+      this.router.navigate(['/forbidden']);
+    }
   }
 }
