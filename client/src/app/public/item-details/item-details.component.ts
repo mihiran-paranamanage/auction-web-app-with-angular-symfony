@@ -41,7 +41,9 @@ export class ItemDetailsComponent implements AfterViewInit {
   private autoBidConfig: AutoBidConfig = {
     id: undefined,
     isAutoBidEnabled: false,
-    maxBidAmount: 0
+    maxBidAmount: 0,
+    currentBidAmount: 0,
+    notifyPercentage: 0
   };
 
   constructor(
@@ -155,6 +157,7 @@ export class ItemDetailsComponent implements AfterViewInit {
   }
 
   onSaved(bid: Bid): void {
+    this.fetchItemDetails();
     this.snackbarService.openSnackBar('Bid Saved Successfully!');
   }
 

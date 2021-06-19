@@ -66,7 +66,7 @@ final class Version0002 extends AbstractMigration
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_regular_id, @data_group_bid_id, 1, 1, 0, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
-                            VALUES (@user_role_regular_id, @data_group_bid_history_id, 1, 0, 0, 0);");
+                            VALUES (@user_role_regular_id, @data_group_bid_history_id, 0, 0, 0, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_regular_id, @data_group_configure_auto_bid_id, 1, 1, 1, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 

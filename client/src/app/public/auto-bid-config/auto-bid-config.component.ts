@@ -19,7 +19,9 @@ export class AutoBidConfigComponent implements AfterViewInit {
   private autoBidConfig: AutoBidConfig = {
     id: undefined,
     isAutoBidEnabled: false,
-    maxBidAmount: 0
+    maxBidAmount: 0,
+    currentBidAmount: 0,
+    notifyPercentage: 0
   };
 
   constructor(
@@ -32,10 +34,12 @@ export class AutoBidConfigComponent implements AfterViewInit {
   }
 
   currencyInputValidators = [Validators.required, Validators.pattern(/^\d+(.\d{2})?$/)];
+  percentageInputValidators = [Validators.required, Validators.pattern(/^([0-9]|([1-9][0-9])|100)$/)];
 
   autoBidConfigForm = this.formBuilder.group({
     isAutoBidEnabled: [false],
     maxBidAmount: [0, this.currencyInputValidators],
+    notifyPercentage: [100, this.percentageInputValidators],
     accessToken: [localStorage.getItem('accessToken')]
   });
 
@@ -49,6 +53,7 @@ export class AutoBidConfigComponent implements AfterViewInit {
       .subscribe(autoBidConfig => {
         this.autoBidConfig = autoBidConfig;
         this.updateAutoBidConfigForm();
+        this.checkForBidAlertNotifications();
       });
   }
 
@@ -56,8 +61,24 @@ export class AutoBidConfigComponent implements AfterViewInit {
     this.autoBidConfigForm = this.formBuilder.group({
       isAutoBidEnabled: [this.autoBidConfig.isAutoBidEnabled],
       maxBidAmount: [this.autoBidConfig.maxBidAmount, this.currencyInputValidators],
+      notifyPercentage: [this.autoBidConfig.notifyPercentage, this.percentageInputValidators],
       accessToken: [localStorage.getItem('accessToken')]
     });
+  }
+
+  checkForBidAlertNotifications(): void {
+    if (this.autoBidConfig.isAutoBidEnabled && this.autoBidConfig.maxBidAmount && this.autoBidConfig.currentBidAmount) {
+      if (this.autoBidConfig.maxBidAmount <= this.autoBidConfig.currentBidAmount) {
+        this.onMaxBidAmountReached();
+      } else {
+        if (
+          this.autoBidConfig.notifyPercentage &&
+          (this.autoBidConfig.maxBidAmount * this.autoBidConfig.notifyPercentage / 100) <= this.autoBidConfig.currentBidAmount
+        ) {
+          this.onMaxBidAmountPercentageReached(this.autoBidConfig.notifyPercentage);
+        }
+      }
+    }
   }
 
   subscribeForItemEvents(): void {
@@ -81,5 +102,16 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   onFailure(error: any): void {
     this.snackbarService.openSnackBar('Request Failed!');
+  }
+
+  onMaxBidAmountReached(): void {
+    this.snackbarService.openSnackBarNotification(
+      'Maximum bid amount has been reached & auto-bidding process stopped. Please increase the maximum bid amount to continue.'
+    );
+  }
+
+  onMaxBidAmountPercentageReached(notifyPercentage: number): void {
+    const message = notifyPercentage + '% of the maximum bid amount is reserved!';
+    this.snackbarService.openSnackBarNotification(message);
   }
 }

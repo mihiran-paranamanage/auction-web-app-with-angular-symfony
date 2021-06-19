@@ -81,6 +81,10 @@ class BidService extends BaseService
      */
     public function saveBid(array $params) : Bid {
         $item = $this->getItemService()->getItem($params['itemId']);
+        $currentDateTime = DateTime::createFromFormat('Y-m-d H:i', date("Y-m-d H:i"));
+        if ($item->getCloseDateTime() < $currentDateTime) {
+            throw new BadRequestHttpException('Bid is closed');
+        }
         if ($params['bid'] <= $item->getBid()) {
             throw new BadRequestHttpException('Bid should be higher than the item bid');
         }
@@ -90,7 +94,7 @@ class BidService extends BaseService
         $bid->setItem($item);
         $bid->setBid($params['bid']);
         $bid->setIsAutoBid(!!$params['isAutoBid']);
-        $bid->setDateTime(DateTime::createFromFormat('Y-m-d H:i', date("Y-m-d H:i")));
+        $bid->setDateTime($currentDateTime);
         return $this->bidRepository->saveBid($bid);
     }
 

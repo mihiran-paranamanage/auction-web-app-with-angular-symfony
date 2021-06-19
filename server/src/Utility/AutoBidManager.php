@@ -48,12 +48,14 @@ class AutoBidManager
             $userBidConfig = $user->getUserBidConfigs()->first();
             if ($userBidConfig instanceof UserBidConfig) {
                 $maxBidAmount = $userBidConfig->getMaxBidAmount();
+                $currentBidAmount = $userBidConfig->getCurrentBidAmount();
                 $isAutoBidEnabled = $userBidConfig->getIsAutoBidEnabled();
             } else {
                 $maxBidAmount = 0;
+                $currentBidAmount = 0;
                 $isAutoBidEnabled = false;
             }
-            if ($user->getId() != $bid->getUser()->getId() && $isAutoBidEnabled && 0 < $maxBidAmount) {
+            if ($user->getId() != $bid->getUser()->getId() && $isAutoBidEnabled && $currentBidAmount < $maxBidAmount) {
                 $autoBid = new Bid();
                 $autoBid->setUser($user);
                 $autoBid->setItem($bid->getItem());
@@ -85,10 +87,12 @@ class AutoBidManager
             if (!($userBidConfig instanceof UserBidConfig)) {
                 $userBidConfig = new UserBidConfig();
                 $userBidConfig->setUser($bid->getUser());
-                $userBidConfig->setMaxBidAmount($bid->getBid());
+                $userBidConfig->setMaxBidAmount(0);
+                $userBidConfig->setCurrentBidAmount(0);
+                $userBidConfig->setNotifyPercentage(100);
             }
-            $maxBidAmount = $userBidConfig->getMaxBidAmount();
-            $userBidConfig->setMaxBidAmount($maxBidAmount - 1);
+            $currentBidAmount = $userBidConfig->getCurrentBidAmount();
+            $userBidConfig->setCurrentBidAmount($currentBidAmount + 1);
             $userBidConfig->setIsAutoBidEnabled($bid->getIsAutoBid());
             $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
 

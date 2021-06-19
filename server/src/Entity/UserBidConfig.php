@@ -33,6 +33,16 @@ class UserBidConfig
      */
     private $isAutoBidEnabled;
 
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2, options={"default" = "0"})
+     */
+    private $currentBidAmount;
+
+    /**
+     * @ORM\Column(type="integer", options={"default" = "0"})
+     */
+    private $notifyPercentage;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -70,6 +80,30 @@ class UserBidConfig
     public function setIsAutoBidEnabled(bool $isAutoBidEnabled): self
     {
         $this->isAutoBidEnabled = $isAutoBidEnabled;
+
+        return $this;
+    }
+
+    public function getCurrentBidAmount(): ?string
+    {
+        return $this->currentBidAmount;
+    }
+
+    public function setCurrentBidAmount(string $currentBidAmount): self
+    {
+        $this->currentBidAmount = $currentBidAmount;
+
+        return $this;
+    }
+
+    public function getNotifyPercentage(): ?int
+    {
+        return $this->notifyPercentage;
+    }
+
+    public function setNotifyPercentage(int $notifyPercentage): self
+    {
+        $this->notifyPercentage = $notifyPercentage;
 
         return $this;
     }

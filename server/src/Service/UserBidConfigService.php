@@ -48,7 +48,13 @@ class UserBidConfigService extends BaseService
             if ($userBidConfig instanceof UserBidConfig) {
                 return $userBidConfig;
             } else {
-                throw new NotFoundHttpException(Response::$statusTexts[Response::HTTP_NOT_FOUND]);
+                $userBidConfig = new UserBidConfig();
+                $userBidConfig->setUser($user);
+                $userBidConfig->setMaxBidAmount(0);
+                $userBidConfig->setCurrentBidAmount(0);
+                $userBidConfig->setIsAutoBidEnabled(false);
+                $userBidConfig->setNotifyPercentage(100);
+                return $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
             }
         } else {
             throw new UnauthorizedHttpException(Response::$statusTexts[Response::HTTP_UNAUTHORIZED]);
@@ -65,6 +71,7 @@ class UserBidConfigService extends BaseService
             $userBidConfig = $this->userBidConfigRepository->findOneBy(array('user' => $user));
             if (!($userBidConfig instanceof UserBidConfig)) {
                 $userBidConfig = new UserBidConfig();
+                $userBidConfig->setCurrentBidAmount(0);
             }
         } else {
             throw new UnauthorizedHttpException(Response::$statusTexts[Response::HTTP_UNAUTHORIZED]);
@@ -72,6 +79,7 @@ class UserBidConfigService extends BaseService
         $userBidConfig->setUser($user);
         $userBidConfig->setMaxBidAmount($params['maxBidAmount']);
         $userBidConfig->setIsAutoBidEnabled(!!$params['isAutoBidEnabled']);
+        $userBidConfig->setNotifyPercentage($params['notifyPercentage']);
         return $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
     }
 
@@ -85,7 +93,9 @@ class UserBidConfigService extends BaseService
             'id' => $userBidConfig->getId(),
             'userId' => $userBidConfig->getUser()->getId(),
             'maxBidAmount' => $userBidConfig->getMaxBidAmount(),
-            'isAutoBidEnabled' => $userBidConfig->getIsAutoBidEnabled()
+            'currentBidAmount' => $userBidConfig->getCurrentBidAmount(),
+            'isAutoBidEnabled' => $userBidConfig->getIsAutoBidEnabled(),
+            'notifyPercentage' => $userBidConfig->getNotifyPercentage()
         );
     }
 }
