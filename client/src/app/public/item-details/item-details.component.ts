@@ -20,7 +20,11 @@ export class ItemDetailsComponent implements AfterViewInit {
   submitButtonLabel = 'Submit';
 
   itemId?: number;
-  remainingTime?: string;
+  remainingTime = '0 hour(s), 00 minute(s), 00 second(s)';
+  allowSubmit = true;
+  isItemBidChanged = false;
+  fetchItemDetailsInterval?: any;
+  updateRemainingTimeInterval?: any;
   showBidHistoryBtn = false;
   item$!: Observable<Item>;
 
@@ -65,6 +69,8 @@ export class ItemDetailsComponent implements AfterViewInit {
         (params: Params) => {
           this.itemId = +params.id;
           this.fetchItemDetails();
+          this.fetchItemDetailsInterval = setInterval(this.fetchItemDetails.bind(this), 1000 * 10);
+          this.updateRemainingTimeInterval = setInterval(this.updateRemainingTime.bind(this), 1000);
         }
       );
   }
@@ -74,15 +80,36 @@ export class ItemDetailsComponent implements AfterViewInit {
     this.item$ = this.itemService.getItem(url);
     this.itemService.getItem(url)
       .subscribe(item => {
+        this.isItemBidChanged = this.item.bid !== item.bid;
         this.item = item;
         this.fetchAutoBigConfig();
-        this.updateRemainingTime();
         this.checkBidHistoryPermissions();
       });
   }
 
   updateRemainingTime(): void {
-    this.remainingTime = '10 days 10 hrs ';
+    const closeDateTime = (this.item && this.item.closeDateTime) ? new Date(this.item.closeDateTime) : new Date();
+
+    let hours: number|string = 0;
+    let minutes: number|string = 0;
+    let seconds: number|string = 0;
+
+    let diff = (closeDateTime.getTime() - Date.now()) / 1000;
+
+    hours = Math.round(diff / 3600);
+    minutes = Math.round(diff / 60);
+    seconds = Math.round(diff % 60);
+
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+
+    this.remainingTime = hours + ' hour(s), ' + minutes + ' minute(s), ' + seconds + ' second(s)';
+
+    if (--diff <= 0) {
+      this.allowSubmit = false;
+      this.remainingTime = '0 hour(s), 00 minute(s), 00 second(s)';
+      clearInterval(this.updateRemainingTimeInterval);
+    }
   }
 
   fetchAutoBigConfig(): void {
@@ -95,14 +122,14 @@ export class ItemDetailsComponent implements AfterViewInit {
   }
 
   updateAutoBidConfigForm(): void {
-    console.log(this.item);
-    console.log(this.autoBidConfig);
-    this.bidForm = this.formBuilder.group({
-      itemId: [this.item.id],
-      bid: [this.item.bid ? (+this.item.bid + 1).toFixed(2) : 0, this.currencyInputValidators],
-      isAutoBid: [this.autoBidConfig.isAutoBidEnabled],
-      accessToken: [localStorage.getItem('accessToken')]
-    });
+    if (this.isItemBidChanged) {
+      this.bidForm = this.formBuilder.group({
+        itemId: [this.item.id],
+        bid: [this.item.bid ? (+this.item.bid + 1).toFixed(2) : 0, this.currencyInputValidators],
+        isAutoBid: [this.autoBidConfig.isAutoBidEnabled],
+        accessToken: [localStorage.getItem('accessToken')]
+      });
+    }
   }
 
   subscribeForItemEvents(): void {

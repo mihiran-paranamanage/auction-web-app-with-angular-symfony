@@ -22,7 +22,7 @@
       </ng-container>
 
       <ng-container>
-        <h4>{{'Closing Date: '}}{{ item.closeDateTime | date: 'MMM d, y, h:mm a' }}</h4>
+        <h4>{{'Closing Date & Time: '}}{{ item.closeDateTime | date: 'MMM d, y, h:mm a' }}</h4>
       </ng-container>
 
       <ng-container>
@@ -60,7 +60,7 @@
     <button mat-stroked-button [routerLink]="['/home']">Cancel</button>
     <button
       mat-raised-button color="primary"
-      [disabled]="!bidForm.valid">{{submitButtonLabel}}</button>
+      [disabled]="!bidForm.valid || !allowSubmit">{{submitButtonLabel}}</button>
   </ng-container>
 
 </form>
