@@ -67,15 +67,21 @@ export class AutoBidConfigComponent implements AfterViewInit {
   }
 
   checkForBidAlertNotifications(): void {
-    if (this.autoBidConfig.isAutoBidEnabled && this.autoBidConfig.maxBidAmount && this.autoBidConfig.currentBidAmount) {
-      if (this.autoBidConfig.maxBidAmount <= this.autoBidConfig.currentBidAmount) {
+    // @ts-ignore
+    const maxBidAmount = parseFloat(this.autoBidConfig.maxBidAmount);
+    // @ts-ignore
+    const currentBidAmount = parseFloat(this.autoBidConfig.currentBidAmount);
+    // @ts-ignore
+    const notifyPercentage = parseFloat(this.autoBidConfig.notifyPercentage);
+    if (this.autoBidConfig.isAutoBidEnabled && maxBidAmount && currentBidAmount) {
+      if (maxBidAmount <= currentBidAmount) {
         this.onMaxBidAmountReached();
       } else {
         if (
-          this.autoBidConfig.notifyPercentage &&
-          (this.autoBidConfig.maxBidAmount * this.autoBidConfig.notifyPercentage / 100) <= this.autoBidConfig.currentBidAmount
+          notifyPercentage &&
+          (maxBidAmount * notifyPercentage / 100) <= currentBidAmount
         ) {
-          this.onMaxBidAmountPercentageReached(this.autoBidConfig.notifyPercentage);
+          this.onMaxBidAmountPercentageReached(notifyPercentage);
         }
       }
     }
