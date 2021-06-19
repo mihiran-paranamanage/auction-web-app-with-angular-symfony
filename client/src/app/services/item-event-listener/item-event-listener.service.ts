@@ -23,6 +23,7 @@ export class ItemEventListenerService {
   private bidEventSaveEmitSource = new Subject<Item>();
 
   private itemEventFailureEmitSource = new Subject<any>();
+  private onChangeAuthenticationEventEmitSource = new Subject<any>();
 
   itemEventUpdateInput$ = this.itemEventUpdateInputSource.asObservable();
   itemEventDeleteInput$ = this.itemEventDeleteInputSource.asObservable();
@@ -37,6 +38,7 @@ export class ItemEventListenerService {
   bidEventSaveEmit$ = this.bidEventSaveEmitSource.asObservable();
 
   itemEventFailureEmit$ = this.itemEventFailureEmitSource.asObservable();
+  onChangeAuthenticationEventEmit$ = this.onChangeAuthenticationEventEmitSource.asObservable();
 
   constructor() { }
 
@@ -82,5 +84,9 @@ export class ItemEventListenerService {
 
   onSavedBid(bid: Bid): void {
     this.bidEventSaveEmitSource.next(bid);
+  }
+
+  onChangeAuthentication(): void {
+    this.onChangeAuthenticationEventEmitSource.next();
   }
 }

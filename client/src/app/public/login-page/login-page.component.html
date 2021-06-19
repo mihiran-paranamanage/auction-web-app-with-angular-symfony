@@ -1,0 +1,39 @@
+<div class="login-group">
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+
+    <mat-card-title>{{title}}</mat-card-title>
+
+    <mat-divider></mat-divider>
+
+    <br />
+
+    <div class="mat-action-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" required>
+      </mat-form-field>
+    </div>
+
+    <div class="mat-action-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" type="password" required>
+      </mat-form-field>
+    </div>
+
+    <div class="mat-action-row" *ngIf="showLoginError">
+      <span class="mat-error">{{loginErrorMessage}}</span>
+    </div>
+
+    <br />
+
+    <br />
+
+    <ng-container>
+      <button
+        mat-raised-button color="primary"
+        [disabled]="!loginForm.valid">{{submitButtonLabel}}</button>
+    </ng-container>
+
+  </form>
+</div>

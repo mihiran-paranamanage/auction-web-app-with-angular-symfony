@@ -42,6 +42,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ItemDetailsComponent } from './public/item-details/item-details.component';
 import { BidHistoryComponent } from './public/bid-history/bid-history.component';
 import { HomePageComponent } from './public/home-page/home-page.component';
+import { LoginPageComponent } from './public/login-page/login-page.component';
+import { MainComponent } from './main/main/main.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +63,9 @@ import { HomePageComponent } from './public/home-page/home-page.component';
     AutoBidConfigComponent,
     ItemDetailsComponent,
     BidHistoryComponent,
-    HomePageComponent
+    HomePageComponent,
+    LoginPageComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,

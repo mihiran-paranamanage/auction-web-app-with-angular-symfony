@@ -19,8 +19,6 @@ export class SidenavMenuItemsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    localStorage.setItem('accessToken', 'af874ho9s8dfush6');
-    localStorage.setItem('serverUrl', 'http://localhost:8001/api');
     this.fetchPermissions();
     this.menuItems = [
       {id: 1, name: 'Home', routerLink: ['/home'], matIcon: 'home'}

@@ -1,0 +1,15 @@
+<app-navbar></app-navbar>
+<br />
+<ng-container *ngIf="!authenticated">
+  <app-login-page></app-login-page>
+</ng-container>
+<mat-sidenav-container *ngIf="authenticated">
+  <mat-sidenav mode="side" opened>
+    <app-sidenav-menu-items></app-sidenav-menu-items>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <ng-container>
+      <router-outlet></router-outlet>
+    </ng-container>
+  </mat-sidenav-content>
+</mat-sidenav-container>

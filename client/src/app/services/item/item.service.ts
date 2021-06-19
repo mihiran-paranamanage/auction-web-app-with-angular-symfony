@@ -9,6 +9,7 @@ import {Permission} from '../../interfaces/permission';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 import {Bid} from '../../interfaces/bid';
 import {ItemBid} from '../../interfaces/item-bid';
+import {AccessToken} from '../../interfaces/access-token';
 
 @Injectable({
   providedIn: 'root'
@@ -98,6 +99,13 @@ export class ItemService {
     return this.http.post<Bid>(url, bid)
       .pipe(
         tap(response => this.itemEventListenerService.onSavedBid(bid)),
+        catchError(error => this.handleError(error))
+      );
+  }
+
+  getAccessToken(url: string): Observable<AccessToken> {
+    return this.http.get<AccessToken>(url)
+      .pipe(
         catchError(error => this.handleError(error))
       );
   }

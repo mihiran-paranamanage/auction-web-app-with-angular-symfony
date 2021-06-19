@@ -1,6 +1,16 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <mat-icon>{{navbarMatIcon}}</mat-icon>
-    <ng-container>{{navbarTitle}}</ng-container>
+    <div class="title-group">
+      <ng-container>
+        <mat-icon>{{navbarMatIcon}}</mat-icon>
+        <a>{{navbarTitle}}</a>
+      </ng-container>
+    </div>
+
+    <div class="logout-group">
+      <ng-container>
+        <button mat-stroked-button (click)="onLogout()"><mat-icon>{{logoutIcon}}</mat-icon>{{logoutTitle}}</button>
+      </ng-container>
+    </div>
   </mat-toolbar-row>
 </mat-toolbar>

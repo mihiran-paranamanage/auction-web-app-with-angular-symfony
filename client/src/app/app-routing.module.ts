@@ -8,12 +8,17 @@ import {AutoBidConfigComponent} from './public/auto-bid-config/auto-bid-config.c
 import {ItemDetailsComponent} from './public/item-details/item-details.component';
 import {BidHistoryComponent} from './public/bid-history/bid-history.component';
 import {HomePageComponent} from './public/home-page/home-page.component';
+import {LoginPageComponent} from './public/login-page/login-page.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    component: LoginPageComponent,
   },
   {
     path: 'home',
