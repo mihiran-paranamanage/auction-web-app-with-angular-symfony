@@ -8,7 +8,7 @@
     </div>
 
     <div class="logout-group">
-      <ng-container>
+      <ng-container *ngIf="showLogoutBtn">
         <button mat-stroked-button (click)="onLogout()"><mat-icon>{{logoutIcon}}</mat-icon>{{logoutTitle}}</button>
       </ng-container>
     </div>

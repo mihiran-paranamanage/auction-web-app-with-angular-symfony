@@ -13,6 +13,7 @@ export class NavbarComponent implements OnInit {
   navbarTitle = 'AUCTION APPLICATION';
   logoutIcon = 'logout';
   logoutTitle = 'Sign out';
+  showLogoutBtn = true;
 
   constructor(
     private router: Router,
@@ -20,12 +21,18 @@ export class NavbarComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.checkLoginStatus();
   }
 
   onLogout(): void {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('permissions');
+    this.checkLoginStatus();
     this.itemEventListenerService.onChangeAuthentication();
     this.router.navigate(['/login']);
+  }
+
+  checkLoginStatus(): void {
+    this.showLogoutBtn = !!localStorage.getItem('accessToken');
   }
 }
