@@ -293,7 +293,7 @@ define({ "api": [
   {
     "type": "post",
     "url": "http://localhost:8001/api/bids/:id",
-    "title": "Bids - Post",
+    "title": "Bid - Post",
     "description": "<p>Save Bid</p>",
     "name": "saveBid",
     "group": "BID",
@@ -349,7 +349,7 @@ define({ "api": [
             "group": "400",
             "optional": false,
             "field": "BadRequest",
-            "description": "<p>Bad Request</p>"
+            "description": "<p>Bid is closed / Bid should be higher than the item bid / Already have the highest bid for the item</p>"
           }
         ],
         "401": [

@@ -23,6 +23,8 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatDialogModule} from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatNativeDateModule } from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 import { AppComponent } from './app.component';
 import { ItemListComponent } from './public/item-list/item-list.component';
@@ -36,10 +38,8 @@ import { ItemDeleteComponent } from './public/item-delete/item-delete.component'
 import { ItemActionsComponent } from './public/item-actions/item-actions.component';
 import { ItemActionDeleteConfirmationComponent } from './public/item-action-delete-confirmation/item-action-delete-confirmation.component';
 import { ItemDetailsFormComponent } from './public/item-details-form/item-details-form.component';
-import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ItemBidComponent } from './public/item-bid/item-bid.component';
 import { AutoBidConfigComponent } from './public/auto-bid-config/auto-bid-config.component';
-import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ItemDetailsComponent } from './public/item-details/item-details.component';
 import { BidHistoryComponent } from './public/bid-history/bid-history.component';
 import { HomePageComponent } from './public/home-page/home-page.component';

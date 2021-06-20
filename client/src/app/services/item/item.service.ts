@@ -10,7 +10,6 @@ import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 import {Bid} from '../../interfaces/bid';
 import {ItemBid} from '../../interfaces/item-bid';
 import {AccessToken} from '../../interfaces/access-token';
-import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'

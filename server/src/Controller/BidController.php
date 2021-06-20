@@ -114,7 +114,7 @@ class BidController extends BaseController
     }
 
     /**
-     * @api {post} http://localhost:8001/api/bids/:id Bids - Post
+     * @api {post} http://localhost:8001/api/bids/:id Bid - Post
      * @apiDescription Save Bid
      * @apiName saveBid
      * @apiGroup BID

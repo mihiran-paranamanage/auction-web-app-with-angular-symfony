@@ -8,7 +8,6 @@ use App\Repository\BidRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use DateTime;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
