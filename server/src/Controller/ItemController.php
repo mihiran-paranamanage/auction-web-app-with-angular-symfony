@@ -69,6 +69,36 @@ class ItemController extends BaseController
     }
 
     /**
+     * @api {get} http://localhost:8001/api/items Items - Get
+     * @apiDescription Get Items
+     * @apiName getItems
+     * @apiGroup ITEM
+     * @apiSubGroup Item
+     * @apiParam {String} accessToken - Access Token
+     * @apiParam {String} [filter[name]] - Item Name
+     * @apiParam {String} [filter[description]] - Item Description
+     * @apiParam {Number} [limit] - Limit
+     * @apiParam {Number} [offset] - Offset
+     * @apiParam {String} [sortField] - Sort Field
+     * @apiParam {String} [sortOrder] - Sort Order
+     * @apiSampleRequest http://localhost:8001/api/items
+     * @apiSuccess {Json} Object Object containing items data
+     * @apiSuccessExample Success-Response:
+     *  [
+     *    {
+     *      "id":1,
+     *      "name":"Item 1",
+     *      "description":"Description 1",
+     *      "price":"1500.00",
+     *      "bid":"1800.00",
+     *      "closeDateTime":"2021-06-21 12:15",
+     *      "isAutoBidEnabled":false
+     *    }
+     *  ]
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     */
+    /**
      * @param Request $request
      * @return JsonResponse
      * @Route("/items", name="getItems", methods={"GET"})
@@ -90,6 +120,29 @@ class ItemController extends BaseController
     }
 
     /**
+     * @api {get} http://localhost:8001/api/items/:id Item - Get
+     * @apiDescription Get Item
+     * @apiName getItem
+     * @apiGroup ITEM
+     * @apiSubGroup Item
+     * @apiParam {String} accessToken - Access Token
+     * @apiSampleRequest http://localhost:8001/api/items/1
+     * @apiSuccess {Json} Object Object containing item data
+     * @apiSuccessExample Success-Response:
+     *  {
+     *    "id":1,
+     *    "name":"Item 1",
+     *    "description":"Description 1",
+     *    "price":"1500.00",
+     *    "bid":"1800.00",
+     *    "closeDateTime":"2021-06-21 12:15",
+     *    "isAutoBidEnabled":false
+     *  }
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     * @apiError (404) NotFound Not Found
+     */
+    /**
      * @param Request $request
      * @param int $id
      * @return JsonResponse
@@ -105,6 +158,38 @@ class ItemController extends BaseController
     }
 
     /**
+     * @api {post} http://localhost:8001/api/items Item - Post
+     * @apiDescription Save Item
+     * @apiName saveItem
+     * @apiGroup ITEM
+     * @apiSubGroup Item
+     * @apiParam {Json} Object Object containing item data with access token
+     * @apiSampleRequest http://localhost:8001/api/items
+     * @apiParamExample {Json} Parameter Object-Example:
+     *  {
+     *    "name":"Item 1",
+     *    "description":"Description 1",
+     *    "price":"1500",
+     *    "bid":"1800",
+     *    "closeDateTime":"2021-06-20 16:20",
+     *    "accessToken":"af874ho9s8dfush6"
+     *  }
+     * @apiSuccess {Json} Object Object containing item data
+     * @apiSuccessExample Success-Response:
+     *  {
+     *    "id":1,
+     *    "name":"Item 1",
+     *    "description":"Description 1",
+     *    "price":"1500",
+     *    "bid":"1800",
+     *    "closeDateTime":"2021-06-20 16:20",
+     *    "isAutoBidEnabled":false
+     *  }
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     * @apiError (404) NotFound Not Found
+     */
+    /**
      * @param Request $request
      * @return JsonResponse
      * @Route("/items", name="saveItem", methods={"POST"})
@@ -118,6 +203,38 @@ class ItemController extends BaseController
         return new JsonResponse($this->getItemService()->formatItemResponse($item, $params['accessToken']), Response::HTTP_CREATED);
     }
 
+    /**
+     * @api {put} http://localhost:8001/api/items/:id Item - Put
+     * @apiDescription Update Item
+     * @apiName updateItem
+     * @apiGroup ITEM
+     * @apiSubGroup Item
+     * @apiParam {Json} Object Object containing item data with access token
+     * @apiSampleRequest http://localhost:8001/api/items/1
+     * @apiParamExample {Json} Parameter Object-Example:
+     *  {
+     *    "name":"Item 1",
+     *    "description":"Description 1",
+     *    "price":"1500",
+     *    "bid":"1800",
+     *    "closeDateTime":"2021-06-20 16:20",
+     *    "accessToken":"af874ho9s8dfush6"
+     *  }
+     * @apiSuccess {Json} Object Object containing item data
+     * @apiSuccessExample Success-Response:
+     *  {
+     *    "id":1,
+     *    "name":"Item 1",
+     *    "description":"Description 1",
+     *    "price":"1500",
+     *    "bid":"1800",
+     *    "closeDateTime":"2021-06-20 16:20",
+     *    "isAutoBidEnabled":false
+     *  }
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     * @apiError (404) NotFound Not Found
+     */
     /**
      * @param Request $request
      * @param int $id
@@ -133,6 +250,19 @@ class ItemController extends BaseController
         return new JsonResponse($this->getItemService()->formatItemResponse($item, $params['accessToken']), Response::HTTP_OK);
     }
 
+    /**
+     * @api {delete} http://localhost:8001/api/items/:id Item - Delete
+     * @apiDescription Delete Item
+     * @apiName deleteItem
+     * @apiGroup ITEM
+     * @apiSubGroup Item
+     * @apiParam {String} accessToken - Access Token
+     * @apiSampleRequest http://localhost:8001/api/items/1
+     * @apiSuccess (204) NoContent
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     * @apiError (404) NotFound Not Found
+     */
     /**
      * @param Request $request
      * @param int $id

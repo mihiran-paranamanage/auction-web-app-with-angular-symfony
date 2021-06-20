@@ -63,6 +63,26 @@ class UserBidConfigController extends BaseController
     }
 
     /**
+     * @api {get} http://localhost:8001/api/autoBidConfig Auto Bid Config - Get
+     * @apiDescription Get Auto Bid Config
+     * @apiName getAutoBidConfig
+     * @apiGroup BID
+     * @apiSubGroup Auto Bid Config
+     * @apiParam {String} accessToken - Access Token
+     * @apiSampleRequest http://localhost:8001/api/autoBidConfig
+     * @apiSuccess {Json} Object Object containing auto bid config data
+     * @apiSuccessExample Success-Response:
+     *  {
+     *    "id":1,
+     *    "userId":1,
+     *    "maxBidAmount":"2500.00",
+     *    "currentBidAmount":"1250.00",
+     *    "notifyPercentage":90
+     *  }
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     */
+    /**
      * @param Request $request
      * @return JsonResponse
      * @Route("/autoBidConfig", name="getUserBidConfig", methods={"GET"})
@@ -76,6 +96,32 @@ class UserBidConfigController extends BaseController
         return new JsonResponse($this->getUserBidConfigService()->formatUserBidConfigResponse($userBidConfig), Response::HTTP_OK);
     }
 
+    /**
+     * @api {put} http://localhost:8001/api/autoBidConfig Auto Bid Config - Put
+     * @apiDescription Update Auto Bid Config
+     * @apiName updateAutoBidConfig
+     * @apiGroup BID
+     * @apiSubGroup Auto Bid Config
+     * @apiParam {Json} Object Object containing auto bid config data with access token
+     * @apiSampleRequest http://localhost:8001/api/autoBidConfig
+     * @apiParamExample {Json} Parameter Object-Example:
+     *  {
+     *    "maxBidAmount":"2500.00",
+     *    "notifyPercentage":"90",
+     *    "accessToken":"af874ho9s8dfush6"
+     *  }
+     * @apiSuccess {Json} Object Object containing auto bid config data
+     * @apiSuccessExample Success-Response:
+     *  {
+     *    "id":1,
+     *    "userId":1,
+     *    "maxBidAmount":"2500.00",
+     *    "currentBidAmount":"1250.00",
+     *    "notifyPercentage":90
+     *  }
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     */
     /**
      * @param Request $request
      * @return JsonResponse

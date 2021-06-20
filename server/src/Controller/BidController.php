@@ -69,6 +69,34 @@ class BidController extends BaseController
     }
 
     /**
+     * @api {get} http://localhost:8001/api/bids Bids - Get
+     * @apiDescription Get Bids
+     * @apiName getBids
+     * @apiGroup BID
+     * @apiSubGroup Bid
+     * @apiParam {String} accessToken - Access Token
+     * @apiParam {String} [filter[itemId]] - Item Id
+     * @apiSampleRequest http://localhost:8001/api/bids
+     * @apiSuccess {Json} Object Object containing bids data
+     * @apiSuccessExample Success-Response:
+     *  [
+     *    {
+     *      "id":1,
+     *      "userId":1,
+     *      "itemId":1,
+     *      "bid":"1500.00",
+     *      "isAutoBid":false,
+     *      "dateTime":"2021-06-20 22:50",
+     *      "user":{
+     *        "userId":1,
+     *        "username":"admin1"
+     *      }
+     *    }
+     *  ]
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     */
+    /**
      * @param Request $request
      * @return JsonResponse
      * @Route("/bids", name="getBids", methods={"GET"})
@@ -85,6 +113,41 @@ class BidController extends BaseController
         return new JsonResponse($this->getBidService()->formatBidsResponse($bids), Response::HTTP_OK);
     }
 
+    /**
+     * @api {post} http://localhost:8001/api/bids/:id Bids - Post
+     * @apiDescription Save Bid
+     * @apiName saveBid
+     * @apiGroup BID
+     * @apiSubGroup Bid
+     * @apiParam {Json} Object Object containing bid data with access token
+     * @apiSampleRequest http://localhost:8001/api/bids/1
+     * @apiParamExample {Json} Parameter Object-Example:
+     *  {
+     *    "itemId":1,
+     *    "bid":"1800.00",
+     *    "isAutoBid":true,
+     *    "accessToken":"df874ho9s8dfush9"
+     *  }
+     * @apiSuccess {Json} Object Object containing bid data
+     * @apiSuccessExample Success-Response:
+     *  [
+     *    {
+     *      "id":1,
+     *      "userId":3,
+     *      "itemId":1,
+     *      "bid":"1800.00",
+     *      "isAutoBid":true,
+     *      "dateTime":"2021-06-20 22:50",
+     *      "user":{
+     *        "userId":3,
+     *        "username":"user1"
+     *      }
+     *    }
+     *  ]
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     * @apiError (404) NotFound Not Found
+     */
     /**
      * @param Request $request
      * @return JsonResponse

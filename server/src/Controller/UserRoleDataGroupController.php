@@ -16,6 +16,51 @@ use Respect\Validation\Validator as v;
 class UserRoleDataGroupController extends BaseController
 {
     /**
+     * @api {get} http://localhost:8001/api/permissions Permissions - Get
+     * @apiDescription Get Permissions
+     * @apiName getPermissions
+     * @apiGroup AUTHORIZATION
+     * @apiSubGroup Permissions
+     * @apiParam {String} accessToken - Access Token
+     * @apiSampleRequest http://localhost:8001/api/permissions
+     * @apiSuccess {Json} Object Object containing permission data
+     * @apiSuccessExample Success-Response:
+     *  {
+     *    "item":{
+     *      "canRead":true,
+     *      "canCreate":true,
+     *      "canUpdate":true,
+     *      "canDelete":true
+     *    },
+     *    "bid":{
+     *      "canRead":true,
+     *      "canCreate":true,
+     *      "canUpdate":true,
+     *      "canDelete":true
+     *    },
+     *    "bid_history":{
+     *      "canRead":true,
+     *      "canCreate":true,
+     *      "canUpdate":true,
+     *      "canDelete":true
+     *    },
+     *    "configure_auto_bid":{
+     *      "canRead":true,
+     *      "canCreate":true,
+     *      "canUpdate":true,
+     *      "canDelete":true
+     *    },
+     *    "admin_dashboard":{
+     *      "canRead":true,
+     *      "canCreate":true,
+     *      "canUpdate":true,
+     *      "canDelete":true
+     *    }
+     *  }
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     */
+    /**
      * @param Request $request
      * @return JsonResponse
      * @Route("/permissions", name="getPermissions", methods={"GET"})

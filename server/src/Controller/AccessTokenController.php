@@ -63,6 +63,25 @@ class AccessTokenController extends BaseController
     }
 
     /**
+     * @api {get} http://localhost:8001/api/accessToken Access Token - Get
+     * @apiDescription Get Access Token
+     * @apiName getAccessToken
+     * @apiGroup AUTHENTICATION
+     * @apiSubGroup Access Token
+     * @apiParam {String} username - Username
+     * @apiSampleRequest http://localhost:8001/api/accessToken
+     * @apiSuccess {Json} Object Object containing access token data
+     * @apiSuccessExample Success-Response:
+     *  {
+     *    "id": 1,
+     *    "username": "admin1",
+     *    "token": "af874ho9s8dfush6"
+     *  }
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     * @apiError (404) NotFound Not Found
+     */
+    /**
      * @param Request $request
      * @return JsonResponse
      * @Route("/accessToken", name="getAccessToken", methods={"GET"})
