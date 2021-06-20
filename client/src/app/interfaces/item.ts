@@ -5,5 +5,6 @@ export interface Item {
   price?: number;
   bid?: number;
   closeDateTime?: string;
+  isAutoBidEnabled?: boolean;
   accessToken?: string;
 }

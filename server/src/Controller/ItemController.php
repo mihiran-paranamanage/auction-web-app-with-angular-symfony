@@ -86,7 +86,7 @@ class ItemController extends BaseController
             'sortOrder' => $request->get('sortOrder')
         );
         $items = $this->getItemService()->getItems($params);
-        return new JsonResponse($this->getItemService()->formatItemsResponse($items), Response::HTTP_OK);
+        return new JsonResponse($this->getItemService()->formatItemsResponse($items, $accessToken), Response::HTTP_OK);
     }
 
     /**
@@ -101,7 +101,7 @@ class ItemController extends BaseController
         $accessToken = $request->get('accessToken');
         $this->checkAuthorization($accessToken);
         $item = $this->getItemService()->getItem($id);
-        return new JsonResponse($this->getItemService()->formatItemResponse($item), Response::HTTP_OK);
+        return new JsonResponse($this->getItemService()->formatItemResponse($item, $accessToken), Response::HTTP_OK);
     }
 
     /**
@@ -115,7 +115,7 @@ class ItemController extends BaseController
         $params = json_decode($request->getContent(), true);
         $this->checkAuthorization($params['accessToken']);
         $item = $this->getItemService()->saveItem($params);
-        return new JsonResponse($this->getItemService()->formatItemResponse($item), Response::HTTP_CREATED);
+        return new JsonResponse($this->getItemService()->formatItemResponse($item, $params['accessToken']), Response::HTTP_CREATED);
     }
 
     /**
@@ -130,7 +130,7 @@ class ItemController extends BaseController
         $params = json_decode($request->getContent(), true);
         $this->checkAuthorization($params['accessToken']);
         $item = $this->getItemService()->updateItem($params, $id);
-        return new JsonResponse($this->getItemService()->formatItemResponse($item), Response::HTTP_OK);
+        return new JsonResponse($this->getItemService()->formatItemResponse($item, $params['accessToken']), Response::HTTP_OK);
     }
 
     /**

@@ -3,7 +3,9 @@
 namespace App\Utility;
 
 use App\Entity\Bid;
+use App\Entity\User;
 use App\Entity\UserBidConfig;
+use App\Repository\BidRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserBidConfigRepository;
 use App\Repository\UserRepository;
@@ -21,20 +23,28 @@ class AutoBidManager
     private $manager;
     private $userBidConfigRepository;
     private $itemRepository;
+    private $bidRepository;
 
     /**
      * AutoBidManager constructor.
+     * @param UserRepository $userRepository
+     * @param EntityManagerInterface $manager
+     * @param UserBidConfigRepository $userBidConfigRepository
+     * @param ItemRepository $itemRepository
+     * @param BidRepository $bidRepository
      */
     public function __construct(
         UserRepository $userRepository,
         EntityManagerInterface $manager,
         UserBidConfigRepository $userBidConfigRepository,
-        ItemRepository $itemRepository
+        ItemRepository $itemRepository,
+        BidRepository $bidRepository
     ) {
         $this->userRepository = $userRepository;
         $this->manager = $manager;
         $this->userBidConfigRepository = $userBidConfigRepository;
         $this->itemRepository = $itemRepository;
+        $this->bidRepository = $bidRepository;
     }
 
     /**
@@ -49,13 +59,11 @@ class AutoBidManager
             if ($userBidConfig instanceof UserBidConfig) {
                 $maxBidAmount = $userBidConfig->getMaxBidAmount();
                 $currentBidAmount = $userBidConfig->getCurrentBidAmount();
-                $isAutoBidEnabled = $userBidConfig->getIsAutoBidEnabled();
             } else {
                 $maxBidAmount = 0;
                 $currentBidAmount = 0;
-                $isAutoBidEnabled = false;
             }
-            if ($user->getId() != $bid->getUser()->getId() && $isAutoBidEnabled && $currentBidAmount < $maxBidAmount) {
+            if ($this->canPerformAutoBid($user, $bid, $currentBidAmount, $maxBidAmount)) {
                 $autoBid = new Bid();
                 $autoBid->setUser($user);
                 $autoBid->setItem($bid->getItem());
@@ -71,11 +79,24 @@ class AutoBidManager
     }
 
     /**
+     * @param User $user
+     * @param Bid $bid
+     * @param int $currentBidAmount
+     * @param int $maxBidAmount
+     * @return bool
+     */
+    protected function canPerformAutoBid(User $user, Bid $bid, int $currentBidAmount, int $maxBidAmount): bool {
+        $latestBid = $this->bidRepository->getLatestBidByUserAndItem($user, $bid->getItem());
+        $isAutoBidEnabled = $latestBid instanceof Bid && $latestBid->getIsAutoBid();
+        return ($user->getId() != $bid->getUser()->getId()) && $isAutoBidEnabled && ($currentBidAmount < $maxBidAmount);
+    }
+
+    /**
      * @param Bid $bid
      * @return Bid
      * @throws Exception
      */
-    public function saveBid(Bid $bid): Bid
+    protected function saveBid(Bid $bid): Bid
     {
 //        $this->manager->getConnection()->beginTransaction();
         try {
@@ -93,7 +114,6 @@ class AutoBidManager
             }
             $currentBidAmount = $userBidConfig->getCurrentBidAmount();
             $userBidConfig->setCurrentBidAmount($currentBidAmount + 1);
-            $userBidConfig->setIsAutoBidEnabled($bid->getIsAutoBid());
             $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
 
             $this->manager->persist($bid);

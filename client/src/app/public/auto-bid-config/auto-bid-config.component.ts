@@ -22,7 +22,6 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   private autoBidConfig: AutoBidConfig = {
     id: undefined,
-    isAutoBidEnabled: false,
     maxBidAmount: 0,
     currentBidAmount: 0,
     notifyPercentage: 0
@@ -41,7 +40,6 @@ export class AutoBidConfigComponent implements AfterViewInit {
   percentageInputValidators = [Validators.required, Validators.pattern(/^([0-9]|([1-9][0-9])|100)$/)];
 
   autoBidConfigForm = this.formBuilder.group({
-    isAutoBidEnabled: [false],
     maxBidAmount: [0, this.currencyInputValidators],
     notifyPercentage: [100, this.percentageInputValidators],
     accessToken: [localStorage.getItem('accessToken')]
@@ -64,7 +62,6 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   updateAutoBidConfigForm(): void {
     this.autoBidConfigForm = this.formBuilder.group({
-      isAutoBidEnabled: [this.autoBidConfig.isAutoBidEnabled],
       maxBidAmount: [this.autoBidConfig.maxBidAmount, this.currencyInputValidators],
       notifyPercentage: [this.autoBidConfig.notifyPercentage, this.percentageInputValidators],
       accessToken: [localStorage.getItem('accessToken')]
@@ -78,7 +75,7 @@ export class AutoBidConfigComponent implements AfterViewInit {
     const currentBidAmount = parseFloat(this.autoBidConfig.currentBidAmount);
     // @ts-ignore
     const notifyPercentage = parseFloat(this.autoBidConfig.notifyPercentage);
-    if (this.autoBidConfig.isAutoBidEnabled && maxBidAmount && currentBidAmount) {
+    if (maxBidAmount > 0 && currentBidAmount > 0) {
       if (maxBidAmount <= currentBidAmount) {
         this.onMaxBidAmountReached();
       } else {

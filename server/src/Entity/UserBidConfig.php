@@ -29,17 +29,12 @@ class UserBidConfig
     private $maxBidAmount;
 
     /**
-     * @ORM\Column(type="boolean", options={"default" = "0"})
-     */
-    private $isAutoBidEnabled;
-
-    /**
      * @ORM\Column(type="decimal", precision=10, scale=2, options={"default" = "0"})
      */
     private $currentBidAmount;
 
     /**
-     * @ORM\Column(type="integer", options={"default" = "0"})
+     * @ORM\Column(type="integer", options={"default" = "100"})
      */
     private $notifyPercentage;
 
@@ -68,18 +63,6 @@ class UserBidConfig
     public function setMaxBidAmount(string $maxBidAmount): self
     {
         $this->maxBidAmount = $maxBidAmount;
-
-        return $this;
-    }
-
-    public function getIsAutoBidEnabled(): ?bool
-    {
-        return $this->isAutoBidEnabled;
-    }
-
-    public function setIsAutoBidEnabled(bool $isAutoBidEnabled): self
-    {
-        $this->isAutoBidEnabled = $isAutoBidEnabled;
 
         return $this;
     }

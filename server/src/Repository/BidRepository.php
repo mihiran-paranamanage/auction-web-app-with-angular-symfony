@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Bid;
 use App\Entity\Item;
+use App\Entity\User;
 use App\Entity\UserBidConfig;
 use App\Utility\AutoBidManager;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -56,7 +57,8 @@ class BidRepository extends ServiceEntityRepository
                 $this->userRepository,
                 $this->manager,
                 $this->userBidConfigRepository,
-                $this->itemRepository
+                $this->itemRepository,
+                $this
             );
         }
         return $this->autoBidManager;
@@ -103,7 +105,6 @@ class BidRepository extends ServiceEntityRepository
                 $userBidConfig->setCurrentBidAmount(0);
                 $userBidConfig->setNotifyPercentage(100);
             }
-            $userBidConfig->setIsAutoBidEnabled($bid->getIsAutoBid());
             $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
 
             $this->manager->persist($bid);
@@ -141,6 +142,24 @@ class BidRepository extends ServiceEntityRepository
             ->andWhere('u.item = :item')
             ->setParameter('item', $item)
             ->orderBy('u.bid', 'DESC')
+            ->setMaxResults(1);
+        $result = $q->getQuery()->getResult();
+        return count($result) > 0 ? $result[0] : null;
+    }
+
+    /**
+     * @param User $user
+     * @param Item $item
+     * @return mixed|null
+     */
+    public function getLatestBidByUserAndItem(User $user, Item $item)
+    {
+        $q = $this->createQueryBuilder('u')
+            ->andWhere('u.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('u.item = :item')
+            ->setParameter('item', $item)
+            ->orderBy('u.dateTime', 'DESC')
             ->setMaxResults(1);
         $result = $q->getQuery()->getResult();
         return count($result) > 0 ? $result[0] : null;

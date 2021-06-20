@@ -52,7 +52,6 @@ class UserBidConfigService extends BaseService
                 $userBidConfig->setUser($user);
                 $userBidConfig->setMaxBidAmount(0);
                 $userBidConfig->setCurrentBidAmount(0);
-                $userBidConfig->setIsAutoBidEnabled(false);
                 $userBidConfig->setNotifyPercentage(100);
                 return $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
             }
@@ -78,7 +77,6 @@ class UserBidConfigService extends BaseService
         }
         $userBidConfig->setUser($user);
         $userBidConfig->setMaxBidAmount($params['maxBidAmount']);
-        $userBidConfig->setIsAutoBidEnabled(!!$params['isAutoBidEnabled']);
         $userBidConfig->setNotifyPercentage($params['notifyPercentage']);
         return $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
     }
@@ -94,7 +92,6 @@ class UserBidConfigService extends BaseService
             'userId' => $userBidConfig->getUser()->getId(),
             'maxBidAmount' => $userBidConfig->getMaxBidAmount(),
             'currentBidAmount' => $userBidConfig->getCurrentBidAmount(),
-            'isAutoBidEnabled' => $userBidConfig->getIsAutoBidEnabled(),
             'notifyPercentage' => $userBidConfig->getNotifyPercentage()
         );
     }

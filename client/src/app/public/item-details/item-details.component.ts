@@ -40,7 +40,6 @@ export class ItemDetailsComponent implements AfterViewInit {
 
   private autoBidConfig: AutoBidConfig = {
     id: undefined,
-    isAutoBidEnabled: false,
     maxBidAmount: 0,
     currentBidAmount: 0,
     notifyPercentage: 0
@@ -71,7 +70,7 @@ export class ItemDetailsComponent implements AfterViewInit {
         (params: Params) => {
           this.itemId = +params.id;
           this.fetchItemDetails();
-          this.fetchItemDetailsInterval = setInterval(this.fetchItemDetails.bind(this), 1000 * 60);
+          this.fetchItemDetailsInterval = setInterval(this.fetchItemDetails.bind(this), 1000 * 30);
           this.updateRemainingTimeInterval = setInterval(this.updateRemainingTime.bind(this), 1000);
         }
       );
@@ -136,7 +135,7 @@ export class ItemDetailsComponent implements AfterViewInit {
       this.bidForm = this.formBuilder.group({
         itemId: [this.item.id],
         bid: [this.item.bid ? (+this.item.bid + 1).toFixed(2) : 0, this.currencyInputValidators],
-        isAutoBid: [this.autoBidConfig.isAutoBidEnabled],
+        isAutoBid: [this.item.isAutoBidEnabled],
         accessToken: [localStorage.getItem('accessToken')]
       });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Bid;
 use App\Entity\Item;
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
@@ -112,14 +113,15 @@ class ItemService extends BaseService
 
     /**
      * @param array $items
+     * @param string $accessToken
      * @return array
      */
-    public function formatItemsResponse(array $items) : array
+    public function formatItemsResponse(array $items, string $accessToken) : array
     {
         $itemsArr = array();
         foreach ($items as $item) {
             if ($item instanceof Item) {
-                $itemsArr[] = $this->formatItemResponse($item);
+                $itemsArr[] = $this->formatItemResponse($item, $accessToken);
             }
         }
         return $itemsArr;
@@ -127,17 +129,20 @@ class ItemService extends BaseService
 
     /**
      * @param Item $item
+     * @param string $accessToken
      * @return array
      */
-    public function formatItemResponse(Item $item) : array
+    public function formatItemResponse(Item $item, string $accessToken) : array
     {
+        $latestBid = $this->bidRepository->getLatestBidByUserAndItem($this->getUser($accessToken), $item);
         return array(
             'id' => $item->getId(),
             'name' => $item->getName(),
             'description' => $item->getDescription(),
             'price' => $item->getPrice(),
             'bid' => $item->getBid(),
-            'closeDateTime' => $item->getCloseDateTime()->format('Y-m-d H:i')
+            'closeDateTime' => $item->getCloseDateTime()->format('Y-m-d H:i'),
+            'isAutoBidEnabled' => $latestBid instanceof Bid ? $latestBid->getIsAutoBid() : false
         );
     }
 }
