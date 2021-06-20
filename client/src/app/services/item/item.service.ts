@@ -62,7 +62,6 @@ export class ItemService {
   }
 
   handleError(error: any): ObservableInput<any> {
-    console.log(error);
     this.itemEventListenerService.onFailure(error);
     return of([]);
   }

@@ -53,4 +53,10 @@ export class HomePageComponent implements AfterViewInit {
       this.dataSource.paginator.firstPage();
     }
   }
+
+  isBidClosed(item: Item): boolean {
+    const closeDateTime = (item && item.closeDateTime) ? new Date(item.closeDateTime) : new Date();
+    const diff = (closeDateTime.getTime() - Date.now()) / 1000;
+    return diff > 0;
+  }
 }

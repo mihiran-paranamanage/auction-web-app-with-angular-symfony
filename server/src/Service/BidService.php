@@ -78,9 +78,12 @@ class BidService extends BaseService
      * @param array $params
      * @return Bid
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function saveBid(array $params) : Bid {
+        $user = $this->getUser($params['accessToken']);
         $item = $this->getItemService()->getItem($params['itemId']);
+        $highestBid = $this->bidRepository->getHighestBidOfItem($item);
         $currentDateTime = DateTime::createFromFormat('Y-m-d H:i', date("Y-m-d H:i"));
         if ($item->getCloseDateTime() < $currentDateTime) {
             throw new BadRequestHttpException('Bid is closed');
@@ -88,8 +91,10 @@ class BidService extends BaseService
         if ($params['bid'] <= $item->getBid()) {
             throw new BadRequestHttpException('Bid should be higher than the item bid');
         }
+        if ($highestBid instanceof Bid && $user->getId() == $highestBid->getUser()->getId()) {
+            throw new BadRequestHttpException('Already have the highest bid for the item');
+        }
         $bid = new Bid();
-        $user = $this->getUser($params['accessToken']);
         $bid->setUser($user);
         $bid->setItem($item);
         $bid->setBid($params['bid']);

@@ -89,6 +89,7 @@ class BidController extends BaseController
      * @param Request $request
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      * @Route("/bids", name="saveBid", methods={"POST"})
      */
     public function saveBid(Request $request): JsonResponse

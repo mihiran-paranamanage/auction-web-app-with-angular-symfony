@@ -40,7 +40,7 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> Actions </th>
       <td mat-cell *matCellDef="let item">
-        <app-item-bid [item]="item"></app-item-bid>
+        <app-item-bid *ngIf="isBidClosed(item)" [item]="item"></app-item-bid>
       </td>
     </ng-container>
 

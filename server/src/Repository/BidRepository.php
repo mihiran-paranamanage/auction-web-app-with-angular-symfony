@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Bid;
+use App\Entity\Item;
 use App\Entity\UserBidConfig;
 use App\Utility\AutoBidManager;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -128,5 +129,20 @@ class BidRepository extends ServiceEntityRepository
             ->where('u.item = :itemId')
             ->setParameter('itemId', $itemId);
         return $q->getQuery()->execute();
+    }
+
+    /**
+     * @param Item $item
+     * @return int|mixed|string
+     */
+    public function getHighestBidOfItem(Item $item)
+    {
+        $q = $this->createQueryBuilder('u')
+            ->andWhere('u.item = :item')
+            ->setParameter('item', $item)
+            ->orderBy('u.bid', 'DESC')
+            ->setMaxResults(1);
+        $result = $q->getQuery()->getResult();
+        return count($result) > 0 ? $result[0] : null;
     }
 }

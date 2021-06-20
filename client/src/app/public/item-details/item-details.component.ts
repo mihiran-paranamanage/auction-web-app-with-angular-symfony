@@ -116,6 +116,7 @@ export class ItemDetailsComponent implements AfterViewInit {
 
     if (--diff <= 0) {
       this.allowSubmit = false;
+      this.submitButtonLabel = 'Bid Closed';
       this.remainingTime = '0 day(s), 00 hr(s), 00 min(s), 00 sec(s)';
       clearInterval(this.updateRemainingTimeInterval);
     }
@@ -162,7 +163,23 @@ export class ItemDetailsComponent implements AfterViewInit {
   }
 
   onFailure(error: any): void {
-    this.snackbarService.openSnackBar('Request Failed!');
+    if (error.status === 400) {
+      this.showFailureNotification(error);
+    } else {
+      this.snackbarService.openSnackBar('Request Failed!');
+    }
+  }
+
+  showFailureNotification(error: any): void {
+    if (error.error.includes('Bid is closed')) {
+      this.snackbarService.openSnackBarNotification('Warning: Bid is closed!');
+    } else if (error.error.includes('Bid should be higher than the item bid')) {
+      this.snackbarService.openSnackBarNotification('Warning: Bid should be higher than the current bid of the item!');
+    } else if (error.error.includes('Already have the highest bid for the item')) {
+      this.snackbarService.openSnackBarNotification('Warning: You already have the highest bid for this item!');
+    } else {
+      this.snackbarService.openSnackBar('Request Failed!');
+    }
   }
 
   checkBidHistoryPermissions(): void {
