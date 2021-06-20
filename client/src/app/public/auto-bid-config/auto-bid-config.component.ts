@@ -108,6 +108,7 @@ export class AutoBidConfigComponent implements AfterViewInit {
   }
 
   onSaved(autoBidConfig: AutoBidConfig): void {
+    this.fetchAutoBigConfig();
     this.snackbarService.openSnackBar('Configuration Saved Successfully!');
   }
 
