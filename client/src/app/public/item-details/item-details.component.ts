@@ -17,7 +17,7 @@ import {ActivatedRoute, Params} from '@angular/router';
 export class ItemDetailsComponent implements AfterViewInit {
 
   title = 'Item Details';
-  submitButtonLabel = 'Submit';
+  submitButtonLabel = 'Submit Bid';
 
   itemId?: number;
   remainingTime = '0 day(s), 00 hr(s), 00 min(s), 00 sec(s)';

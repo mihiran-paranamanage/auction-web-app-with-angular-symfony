@@ -4,6 +4,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
 import {ItemDetailsFormComponent} from '../item-details-form/item-details-form.component';
+import {ItemForm} from '../../interfaces/item-form';
 
 @Component({
   selector: 'app-item-update',
@@ -42,7 +43,7 @@ export class ItemUpdateComponent implements OnInit {
     });
   }
 
-  private updateItem(result: Item): void {
+  private updateItem(result: ItemForm): void {
     const url = localStorage.getItem('serverUrl') + '/items/' + this.item.id;
     const item: Item = {
       id: undefined,
@@ -50,7 +51,7 @@ export class ItemUpdateComponent implements OnInit {
       description: result.description,
       price: result.price,
       bid: result.bid,
-      closeDateTime: result.closeDateTime,
+      closeDateTime: this.itemService.dateToYmd(result.closeDate) + ' ' + result.closeTime,
       accessToken: result.accessToken
     };
     this.itemService.updateItem(url, item)

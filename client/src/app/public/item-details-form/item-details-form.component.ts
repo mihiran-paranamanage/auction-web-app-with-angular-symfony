@@ -3,6 +3,7 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import {Item} from '../../interfaces/item';
+import {ItemService} from '../../services/item/item.service';
 
 @Component({
   selector: 'app-item-details-form',
@@ -11,8 +12,11 @@ import {Item} from '../../interfaces/item';
 })
 export class ItemDetailsFormComponent implements OnInit {
 
+  minCloseDate = new Date();
+
   constructor(
     private formBuilder: FormBuilder,
+    private itemService: ItemService,
     @Inject(MAT_DIALOG_DATA) public data: {
       item: Item,
       title: string,
@@ -24,13 +28,15 @@ export class ItemDetailsFormComponent implements OnInit {
   textLongInputValidators = [Validators.required, Validators.maxLength(2000)];
   currencyInputValidators = [Validators.required, Validators.pattern(/^\d+(.\d{2})?$/)];
   dateInputValidators = [Validators.required];
+  timeInputValidators = [Validators.required, Validators.pattern(/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/)];
 
   itemForm = this.formBuilder.group({
     name: [this.data.item.name, this.textInputValidators],
     description: [this.data.item.description, this.textLongInputValidators],
     price: [this.data.item.price, this.currencyInputValidators],
     bid: [this.data.item.bid, this.currencyInputValidators],
-    closeDateTime: [this.data.item.closeDateTime, this.dateInputValidators],
+    closeDate: [this.itemService.stringToDate(this.data.item.closeDateTime), this.dateInputValidators],
+    closeTime: [this.itemService.stringToHHMM(this.data.item.closeDateTime), this.timeInputValidators],
     accessToken: [localStorage.getItem('accessToken')]
   });
 

@@ -127,8 +127,12 @@ export class AutoBidConfigComponent implements AfterViewInit {
   }
 
   getBidUsagePercentage(autoBidConfig: AutoBidConfig): number|string {
-    if (autoBidConfig.currentBidAmount && autoBidConfig.maxBidAmount) {
-      const percentage = autoBidConfig.currentBidAmount * 100 / autoBidConfig.maxBidAmount;
+    // @ts-ignore
+    const maxBidAmount = parseFloat(autoBidConfig.maxBidAmount);
+    // @ts-ignore
+    const currentBidAmount = parseFloat(autoBidConfig.currentBidAmount);
+    if (currentBidAmount && maxBidAmount) {
+      const percentage = currentBidAmount * 100 / maxBidAmount;
       return percentage.toFixed(2);
     } else {
       return 0;

@@ -1,3 +1,9 @@
+<mat-card-title>{{title}}</mat-card-title>
+
+<mat-divider></mat-divider>
+
+<br />
+
 <div class="mat-elevation-z8">
   <table mat-table [dataSource]="dataSource">
 
@@ -26,3 +32,11 @@
 
   <mat-paginator [pageSizeOptions]="[10, 50, 100]"></mat-paginator>
 </div>
+
+<br />
+
+<br />
+
+<ng-container>
+  <button mat-stroked-button [routerLink]="['/items', itemId, 'details']">Back</button>
+</ng-container>

@@ -15,6 +15,8 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 })
 export class BidHistoryComponent implements AfterViewInit {
 
+  title = 'Bid History';
+
   itemId?: number;
   private bids: ItemBid[] = [];
   dataSource = new MatTableDataSource<Item>(this.bids);

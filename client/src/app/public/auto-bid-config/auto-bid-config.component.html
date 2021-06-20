@@ -9,14 +9,6 @@
   <br />
 
   <div class="mat-action-row">
-    <mat-checkbox class="example-margin" formControlName="isAutoBidEnabled">Activate Auto Bid</mat-checkbox>
-  </div>
-
-  <br />
-
-  <br />
-
-  <div class="mat-action-row">
     <ng-container *ngIf="autoBidConfig$ | async as autoBidConfig">
       <span class="mat-error">{{autoBidConfig.currentBidAmount}} ({{getBidUsagePercentage(autoBidConfig)}}%) amount is already reserved for bids.</span>
     </ng-container>
@@ -26,7 +18,7 @@
 
   <div class="mat-action-row">
     <mat-form-field appearance="outline">
-      <mat-label>Maximum Bid Amount</mat-label>
+      <mat-label>Maximum Bid Amount (USD)</mat-label>
       <input matInput placeholder="Maximum Bid Amount" formControlName="maxBidAmount" required>
     </mat-form-field>
   </div>

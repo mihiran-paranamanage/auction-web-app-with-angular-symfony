@@ -8,30 +8,51 @@
   <mat-card>
     <mat-card-content>
 
-      <ng-container>
-        <h2>{{ item.name }}</h2>
-        <h4><i>{{ item.description }}</i></h4>
-      </ng-container>
+      <mat-grid-list cols="4" rowHeight="3rem">
 
-      <ng-container>
-        <h4>{{'Price: '}}{{ item.price | currency:'USD' }}</h4>
-      </ng-container>
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <ng-container>
+            <h2>{{ item.name }}</h2>
+          </ng-container>
+        </mat-grid-tile>
 
-      <ng-container>
-        <h4>{{'Current Bid: '}}{{ item.bid | currency:'USD' }}</h4>
-      </ng-container>
+        <mat-grid-tile [colspan]="2" [rowspan]="1" [style.color]="'red'">
+          <ng-container>
+            <h4><b>{{ remainingTime }}</b></h4>
+          </ng-container>
+        </mat-grid-tile>
 
-      <ng-container>
-        <h4>{{'Closing Date & Time: '}}{{ item.closeDateTime | date: 'MMM d, y, h:mm a' }}</h4>
-      </ng-container>
+        <mat-grid-tile [colspan]="2" [rowspan]="2">
+          <ng-container>
+            <h4><i>{{ item.description }}</i></h4>
+          </ng-container>
+        </mat-grid-tile>
 
-      <ng-container>
-        <h4>{{'Remaining Time: '}}{{ remainingTime }}</h4>
-      </ng-container>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <ng-container>
+            <h4><i>{{'Item Price: '}}{{ item.price | currency:'USD' }}</i></h4>
+          </ng-container>
+        </mat-grid-tile>
 
-      <ng-container>
-        <a mat-stroked-button color="primary" *ngIf="showBidHistoryBtn" [routerLink]="['/items/', item.id, 'bidHistory']">View Bid History</a>
-      </ng-container>
+        <mat-grid-tile [colspan]="1" [rowspan]="1" [style.color]="'gray'">
+          <ng-container>
+            <h4>{{'Closes at: '}}{{ item.closeDateTime | date: 'MMM d, y, h:mm a' }}</h4>
+          </ng-container>
+        </mat-grid-tile>
+
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <ng-container>
+            <h4><i>{{'Current Bid: '}}{{ item.bid | currency:'USD' }}</i></h4>
+          </ng-container>
+        </mat-grid-tile>
+
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <ng-container>
+            <a mat-stroked-button color="primary" *ngIf="showBidHistoryBtn" [routerLink]="['/items/', item.id, 'bidHistory']">View Bid History</a>
+          </ng-container>
+        </mat-grid-tile>
+
+      </mat-grid-list>
 
     </mat-card-content>
   </mat-card>
@@ -45,7 +66,7 @@
 
   <div class="mat-action-row">
     <mat-form-field appearance="outline">
-      <mat-label>Maximum Bid Amount</mat-label>
+      <mat-label>Bid (USD)</mat-label>
       <input matInput placeholder="Maximum Bid Amount" formControlName="bid" required>
     </mat-form-field>
 

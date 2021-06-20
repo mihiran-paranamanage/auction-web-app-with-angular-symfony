@@ -11,18 +11,19 @@
       <mat-label>Name</mat-label>
       <input matInput placeholder="e.g. Antique Statue" formControlName="name" required>
     </mat-form-field>
+  </div>
 
-<!--    <mat-form-field appearance="outline">-->
-<!--      <mat-label>Closing Date of the Auction</mat-label>-->
-<!--      <input matInput [matDatepicker]="closeDateTime" required>-->
-<!--      <mat-datepicker-toggle matSuffix [for]="closeDateTime"></mat-datepicker-toggle>-->
-<!--      <mat-datepicker #closeDateTime></mat-datepicker>-->
-<!--    </mat-form-field>-->
+  <div class="mat-action-row">
+    <mat-form-field appearance="fill">
+      <mat-label>Closing Date</mat-label>
+      <input matInput [matDatepicker]="picker" [min]="minCloseDate" placeholder="Closing Date" formControlName="closeDate" required>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
 
-<!--    Todo Use angular material date picker-->
     <mat-form-field appearance="outline">
-      <mat-label>Closing Date & Time</mat-label>
-      <input matInput placeholder="Closing Date & Time" formControlName="closeDateTime" required>
+      <mat-label>Closing Time (HH:MM)</mat-label>
+      <input matInput placeholder="e.g. 16:20" formControlName="closeTime" required>
     </mat-form-field>
   </div>
 
@@ -37,12 +38,12 @@
 
   <div class="mat-action-row">
     <mat-form-field appearance="outline">
-      <mat-label>Price</mat-label>
+      <mat-label>Price (USD)</mat-label>
       <input matInput placeholder="Price" formControlName="price" required>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Starting Bid Amount</mat-label>
+      <mat-label>Starting Bid Amount (USD)</mat-label>
       <input matInput placeholder="Starting Bid Amount" formControlName="bid" required>
     </mat-form-field>
   </div>

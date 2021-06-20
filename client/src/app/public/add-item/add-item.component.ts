@@ -17,6 +17,8 @@ export class AddItemComponent implements OnInit {
   title = 'Add Item';
   submitButtonLabel = 'Add';
 
+  minCloseDate = new Date();
+
   constructor(
     private formBuilder: FormBuilder,
     private itemService: ItemService,
@@ -31,13 +33,15 @@ export class AddItemComponent implements OnInit {
   textLongInputValidators = [Validators.required, Validators.maxLength(2000)];
   currencyInputValidators = [Validators.required, Validators.pattern(/^\d+(.\d{2})?$/)];
   dateInputValidators = [Validators.required];
+  timeInputValidators = [Validators.required, Validators.pattern(/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/)];
 
   itemForm = this.formBuilder.group({
     name: ['', this.textInputValidators],
     description: ['', this.textLongInputValidators],
     price: ['', this.currencyInputValidators],
     bid: ['', this.currencyInputValidators],
-    closeDateTime: ['', this.dateInputValidators],
+    closeDate: ['', this.dateInputValidators],
+    closeTime: ['', this.timeInputValidators],
     accessToken: [localStorage.getItem('accessToken')]
   });
 
@@ -56,7 +60,15 @@ export class AddItemComponent implements OnInit {
 
   onAdd(): void {
     const url = localStorage.getItem('serverUrl') + '/items';
-    this.itemService.addItem(url, this.itemForm.value)
+    const item: Item = {
+      name: this.itemForm.value.name,
+      description: this.itemForm.value.description,
+      price: this.itemForm.value.price,
+      bid: this.itemForm.value.bid,
+      closeDateTime: this.itemService.dateToYmd(this.itemForm.value.closeDate) + ' ' + this.itemForm.value.closeTime,
+      accessToken: this.itemForm.value.accessToken,
+    };
+    this.itemService.addItem(url, item)
       .subscribe();
   }
 

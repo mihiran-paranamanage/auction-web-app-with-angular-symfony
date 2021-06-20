@@ -22,6 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatDialogModule} from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatNativeDateModule } from '@angular/material/core';
 
 import { AppComponent } from './app.component';
 import { ItemListComponent } from './public/item-list/item-list.component';
@@ -93,7 +94,8 @@ import { ForbiddenComponent } from './shared/forbidden/forbidden.component';
     MatDialogModule,
     NoopAnimationsModule,
     MatDatepickerModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatNativeDateModule
   ],
   providers: [
     CurrencyPipe,
