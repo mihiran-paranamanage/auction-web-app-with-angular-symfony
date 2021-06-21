@@ -42,6 +42,9 @@ export class LoginPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('permissions');
+    this.itemEventListenerService.onChangeAuthentication();
   }
 
   subscribeForItemEvents(): void {

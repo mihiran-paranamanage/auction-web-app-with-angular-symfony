@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -16,8 +15,7 @@ export class NavbarComponent implements OnInit {
   showLogoutBtn = true;
 
   constructor(
-    private router: Router,
-    private itemEventListenerService: ItemEventListenerService
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -25,10 +23,7 @@ export class NavbarComponent implements OnInit {
   }
 
   onLogout(): void {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('permissions');
     this.checkLoginStatus();
-    this.itemEventListenerService.onChangeAuthentication();
     this.router.navigate(['/login']);
   }
 
