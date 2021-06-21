@@ -63,7 +63,7 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 
 * Configurations
 1. Accessibility of the behaviours can be changed from the database level.
-As an example, If Regular users also needed to see the bid history, we can simply change it from the "user_role_data_group" table. Fist find the row where "user_role_id" equals "Regular" role id, and "data_group_id" equals "bid_history" data group id. (if you see the ER diagram, you will quickly get it!). Then change the "canRead" permission from 0 to 1. Now you can see "Regular" users also see the "Bid History" button in the Item Details page.
+As an example, If Regular users also needed to see the bid history, we can simply change it from the "user_role_data_group" table. Fist find the row where "user_role_id" equals "Regular" role id, and "data_group_id" equals "bid_history" data group id. (if you see the class diagram in the "images" folder, you will quickly get it!). Then change the "canRead" permission from 0 to 1. Now you can see "Regular" users also see the "Bid History" button in the Item Details page.
 
 * Security & Accessibility
 1. As mentioned in the Configurations section menu items and front end pages are configurable from the database.
@@ -71,6 +71,9 @@ As an example, If Regular users also needed to see the bid history, we can simpl
 3. All the authorizations which are defined in the database, are handled in both the front-end and API levels.
 4. All the APIs are authenticated by access tokens.
 5. User credentials are hardcoded in the front-end function, "isCredentialsValid()", in the "login-page.component.ts" (auction-web-app-with-angular-symfony/client/src/app/public/login-page/login-page.component.ts).
+
+* APIdoc
+1. Go to the apidoc folder and click on the index.html file and open it from your browser. Then you can see all the details of the APIs.
 
 * Credentials 
 1. By default, the system has 2 Admin users and 2 Regular users as [username: admin1, password: admin1], [username: admin2, password: admin2], [username: user1, password: user1], [username: user2, password: user2].
