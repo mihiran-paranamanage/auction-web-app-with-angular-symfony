@@ -6,6 +6,7 @@ use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRoleDataGroupRepository;
+use App\Service\BaseService;
 use App\Service\ItemService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -107,7 +108,7 @@ class ItemController extends BaseController
     {
         $this->validateGetRequest($request);
         $accessToken = $request->get('accessToken');
-        $this->checkAuthorization($accessToken);
+        $this->checkAuthorization($accessToken, BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_READ);
         $params = array(
             'filter' => $request->get('filter'),
             'limit' => $request->get('limit'),
@@ -152,7 +153,7 @@ class ItemController extends BaseController
     {
         $this->validateGetResourceRequest($request);
         $accessToken = $request->get('accessToken');
-        $this->checkAuthorization($accessToken);
+        $this->checkAuthorization($accessToken, BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_READ);
         $item = $this->getItemService()->getItem($id);
         return new JsonResponse($this->getItemService()->formatItemResponse($item, $accessToken), Response::HTTP_OK);
     }
@@ -198,7 +199,7 @@ class ItemController extends BaseController
     {
         $this->validatePostRequest($request);
         $params = json_decode($request->getContent(), true);
-        $this->checkAuthorization($params['accessToken']);
+        $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_CREATE);
         $item = $this->getItemService()->saveItem($params);
         return new JsonResponse($this->getItemService()->formatItemResponse($item, $params['accessToken']), Response::HTTP_CREATED);
     }
@@ -245,7 +246,7 @@ class ItemController extends BaseController
     {
         $this->validatePostRequest($request);
         $params = json_decode($request->getContent(), true);
-        $this->checkAuthorization($params['accessToken']);
+        $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_UPDATE);
         $item = $this->getItemService()->updateItem($params, $id);
         return new JsonResponse($this->getItemService()->formatItemResponse($item, $params['accessToken']), Response::HTTP_OK);
     }
@@ -274,7 +275,7 @@ class ItemController extends BaseController
     {
         $this->validateDeleteRequest($request);
         $accessToken = $request->get('accessToken');
-        $this->checkAuthorization($accessToken);
+        $this->checkAuthorization($accessToken, BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_DELETE);
         $this->getItemService()->deleteItem($id);
         return new JsonResponse('', Response::HTTP_NO_CONTENT);
     }

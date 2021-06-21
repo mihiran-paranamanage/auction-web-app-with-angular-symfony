@@ -49,15 +49,28 @@ class UserRoleManager
     public function getPermissions(string $accessToken) : array {
         $permissions = array();
         $user = $this->getUserByAccessToken($accessToken);
-        $userRoleDataGroups = $this->userRoleDataGroupRepository->findBy(array('userRole' => $user->getUserRole()));
-        foreach ($userRoleDataGroups as $userRoleDataGroup) {
-            $permission = array();
-            $permission['canRead'] = $userRoleDataGroup->getCanRead();
-            $permission['canCreate'] = $userRoleDataGroup->getCanCreate();
-            $permission['canUpdate'] = $userRoleDataGroup->getCanUpdate();
-            $permission['canDelete'] = $userRoleDataGroup->getCanDelete();
-            $permissions[$userRoleDataGroup->getDataGroup()->getName()] = $permission;
+        if ($user instanceof User) {
+            $userRoleDataGroups = $this->userRoleDataGroupRepository->findBy(array('userRole' => $user->getUserRole()));
+            foreach ($userRoleDataGroups as $userRoleDataGroup) {
+                $permission = array();
+                $permission['canRead'] = $userRoleDataGroup->getCanRead();
+                $permission['canCreate'] = $userRoleDataGroup->getCanCreate();
+                $permission['canUpdate'] = $userRoleDataGroup->getCanUpdate();
+                $permission['canDelete'] = $userRoleDataGroup->getCanDelete();
+                $permissions[$userRoleDataGroup->getDataGroup()->getName()] = $permission;
+            }
         }
         return $permissions;
+    }
+
+    /**
+     * @param string $accessToken
+     * @param string $dataGroup
+     * @param string $permissionType
+     * @return bool
+     */
+    public function isPermittedForDataGroup(string $accessToken, string $dataGroup, string $permissionType): bool {
+        $permissions = $this->getPermissions($accessToken);
+        return isset($permissions[$dataGroup][$permissionType]) && $permissions[$dataGroup][$permissionType] == true;
     }
 }

@@ -18,10 +18,17 @@ class BaseController extends BaseService
 {
     /**
      * @param string $accessToken
+     * @param string $dataGroup
+     * @param string $permissionType
      */
-    protected function checkAuthorization(string $accessToken) : void {
+    protected function checkAuthorization(string $accessToken, string $dataGroup, string $permissionType) : void {
         $user = $this->getUser($accessToken);
-        if (!($user instanceof User)) {
+        if ($user instanceof User) {
+            $isPermittedForDataGroup = $this->getUserRoleManager()->isPermittedForDataGroup($accessToken, $dataGroup, $permissionType);
+            if (!$isPermittedForDataGroup) {
+                throw new UnauthorizedHttpException(Response::$statusTexts[Response::HTTP_UNAUTHORIZED]);
+            }
+        } else {
             throw new UnauthorizedHttpException(Response::$statusTexts[Response::HTTP_UNAUTHORIZED]);
         }
     }

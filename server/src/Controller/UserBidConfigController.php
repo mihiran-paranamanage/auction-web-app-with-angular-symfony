@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\AccessTokenRepository;
 use App\Repository\UserBidConfigRepository;
 use App\Repository\UserRoleDataGroupRepository;
+use App\Service\BaseService;
 use App\Service\UserBidConfigService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -91,7 +92,7 @@ class UserBidConfigController extends BaseController
     {
         $this->validateGetRequest($request);
         $accessToken = $request->get('accessToken');
-        $this->checkAuthorization($accessToken);
+        $this->checkAuthorization($accessToken, BaseService::DATA_GROUP_CONFIGURE_AUTO_BID, BaseService::PERMISSION_TYPE_CAN_READ);
         $userBidConfig = $this->getUserBidConfigService()->getUserBidConfig($accessToken);
         return new JsonResponse($this->getUserBidConfigService()->formatUserBidConfigResponse($userBidConfig), Response::HTTP_OK);
     }
@@ -131,7 +132,7 @@ class UserBidConfigController extends BaseController
     {
         $this->validatePutRequest($request);
         $params = json_decode($request->getContent(), true);
-        $this->checkAuthorization($params['accessToken']);
+        $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_CONFIGURE_AUTO_BID, BaseService::PERMISSION_TYPE_CAN_UPDATE);
         $userBidConfig = $this->getUserBidConfigService()->saveUserBidConfig($params);
         return new JsonResponse($this->getUserBidConfigService()->formatUserBidConfigResponse($userBidConfig), Response::HTTP_OK);
     }

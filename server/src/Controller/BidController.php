@@ -6,6 +6,7 @@ use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRoleDataGroupRepository;
+use App\Service\BaseService;
 use App\Service\BidService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,7 +106,8 @@ class BidController extends BaseController
     {
         $this->validateGetRequest($request);
         $accessToken = $request->get('accessToken');
-        $this->checkAuthorization($accessToken);
+        $this->checkAuthorization($accessToken, BaseService::DATA_GROUP_BID, BaseService::PERMISSION_TYPE_CAN_READ);
+        $this->checkAuthorization($accessToken, BaseService::DATA_GROUP_BID_HISTORY, BaseService::PERMISSION_TYPE_CAN_READ);
         $params = array(
             'filter' => $request->get('filter')
         );
@@ -159,7 +161,7 @@ class BidController extends BaseController
     {
         $this->validatePostRequest($request);
         $params = json_decode($request->getContent(), true);
-        $this->checkAuthorization($params['accessToken']);
+        $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_BID, BaseService::PERMISSION_TYPE_CAN_CREATE);
         $bid = $this->getBidService()->saveBid($params);
         return new JsonResponse($this->getBidService()->formatBidResponse($bid), Response::HTTP_CREATED);
     }

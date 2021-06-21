@@ -13,6 +13,17 @@ use App\Utility\UserRoleManager;
  */
 class BaseService
 {
+    const DATA_GROUP_ADMIN_DASHBOARD = 'admin_dashboard';
+    const DATA_GROUP_BID = 'bid';
+    const DATA_GROUP_BID_HISTORY = 'bid_history';
+    const DATA_GROUP_CONFIGURE_AUTO_BID = 'configure_auto_bid';
+    const DATA_GROUP_ITEM = 'item';
+
+    const PERMISSION_TYPE_CAN_READ = 'canRead';
+    const PERMISSION_TYPE_CAN_CREATE = 'canCreate';
+    const PERMISSION_TYPE_CAN_UPDATE = 'canUpdate';
+    const PERMISSION_TYPE_CAN_DELETE = 'canDelete';
+
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userRoleManager;
