@@ -12,8 +12,6 @@ import {ItemService} from '../../services/item/item.service';
 })
 export class ItemDetailsFormComponent implements OnInit {
 
-  minCloseDate = new Date();
-
   constructor(
     private formBuilder: FormBuilder,
     private itemService: ItemService,

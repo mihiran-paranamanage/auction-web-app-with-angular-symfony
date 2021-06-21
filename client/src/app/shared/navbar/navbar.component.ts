@@ -24,7 +24,9 @@ export class NavbarComponent implements OnInit {
 
   onLogout(): void {
     this.checkLoginStatus();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login']).then(() => {
+      window.location.reload();
+    });
   }
 
   checkLoginStatus(): void {
