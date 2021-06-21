@@ -112,5 +112,5 @@ As an example, If Regular users also needed to see the bid history, we can simpl
 
 ### Contact Details
 
-Email: mihiran.hlrm@gmail.com
-SkypeId: live:mihiran.hlrm
+* Email: mihiran.hlrm@gmail.com
+* SkypeId: live:mihiran.hlrm
