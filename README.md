@@ -107,6 +107,8 @@ As an example, If Regular users also needed to see the bid history, we can simpl
 * You can re-install the system by running the ./installer.sh script again. Now it won't take more than 1 minute.
 * This system uses local ports 4200, 3306, 8001, 9000, 9001. So, after the installation some docker containers will not be up if you already used one of these ports.
 * As an example, if you use MySQL locally with 3306 port, MySQL container will not work. In that case, you may have to stop the local MySQL service by running, "sudo service mysql stop" and then run the ./installer.sh script again.
+* If you get any npm errors while installing, give full permission to the application root folder, delete client/package-lock.json file and run the ./installer.sh script again.
+* If you get any composer errors while installing, give full permission to the application root folder, delete server/composer-lock.json file and run the ./installer.sh script again.
 
 ### Install (on Windows or Mac)
 
