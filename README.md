@@ -99,7 +99,7 @@ As an example, If Regular users also needed to see the bid history, we can simpl
 2. Clone this repo ($ git clone https://github.com/mihiran-paranamana/auction-web-app-with-angular-symfony.git).
 3. Move into the "auction-web-app-with-angular-symfony" root folder ($ cd auction-web-app-with-angular-symfony).
 4. Run the installer script ($ ./installer.sh or $ sudo bash ./installer.sh).
-5. Check whether any error occurred in the terminal (like php Fatal errors). If there is any error shown at the end of the installation, please read the below instructions.
+5. Check whether any error occurred in the terminal (like "npm ERR!" or php "Fatal error:"). If there is any error shown, please read the below instructions.
 6. Browse http://localhost:4200/
 
 * With the 5th step, It wil run "sudo docker-compose build" and "sudo docker-compose up -d" docker commands to build and up the containers. At the first time, this will take around 20-30 minutes since it needs to pull all the related docker images.
