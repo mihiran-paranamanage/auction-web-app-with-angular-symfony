@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\EmailNotificationTemplateRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use App\Service\BaseService;
@@ -21,6 +22,7 @@ use Respect\Validation\Validator as v;
  */
 class ItemController extends BaseController
 {
+    private $emailNotificationTemplateRepository;
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $itemRepository;
@@ -33,18 +35,21 @@ class ItemController extends BaseController
      * @param ItemRepository $itemRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param BidRepository $bidRepository
+     * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         ItemRepository $itemRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        BidRepository $bidRepository
+        BidRepository $bidRepository,
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->itemRepository = $itemRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
         $this->bidRepository = $bidRepository;
+        $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
     }
 
     /**
@@ -56,7 +61,8 @@ class ItemController extends BaseController
                 $this->accessTokenRepository,
                 $this->itemRepository,
                 $this->userRoleDataGroupRepository,
-                $this->bidRepository
+                $this->bidRepository,
+                $this->emailNotificationTemplateRepository
             );
         }
         return $this->itemService;

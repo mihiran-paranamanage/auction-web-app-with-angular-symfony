@@ -5,10 +5,14 @@ namespace App\Utility;
 use App\Entity\Bid;
 use App\Entity\User;
 use App\Entity\UserBidConfig;
+use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\EmailNotificationTemplateRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserBidConfigRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserRoleDataGroupRepository;
+use App\Service\BidService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -22,8 +26,12 @@ class AutoBidManager
     private $userRepository;
     private $manager;
     private $userBidConfigRepository;
+    private $emailNotificationTemplateRepository;
+    private $userRoleDataGroupRepository;
+    private $accessTokenRepository;
     private $itemRepository;
     private $bidRepository;
+    private $bidService;
 
     /**
      * AutoBidManager constructor.
@@ -32,19 +40,52 @@ class AutoBidManager
      * @param UserBidConfigRepository $userBidConfigRepository
      * @param ItemRepository $itemRepository
      * @param BidRepository $bidRepository
+     * @param AccessTokenRepository $accessTokenRepository
+     * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
+     * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
      */
     public function __construct(
         UserRepository $userRepository,
         EntityManagerInterface $manager,
         UserBidConfigRepository $userBidConfigRepository,
         ItemRepository $itemRepository,
-        BidRepository $bidRepository
+        BidRepository $bidRepository,
+        AccessTokenRepository $accessTokenRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository,
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
     ) {
         $this->userRepository = $userRepository;
         $this->manager = $manager;
         $this->userBidConfigRepository = $userBidConfigRepository;
         $this->itemRepository = $itemRepository;
         $this->bidRepository = $bidRepository;
+        $this->accessTokenRepository = $accessTokenRepository;
+        $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
+        $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
+    }
+
+    /**
+     * @return BidService
+     */
+    public function getBidService() : BidService {
+        if (!($this->bidService instanceof BidService)) {
+            $this->bidService = new BidService(
+                $this->accessTokenRepository,
+                $this->bidRepository,
+                $this->itemRepository,
+                $this->userRepository,
+                $this->userRoleDataGroupRepository,
+                $this->emailNotificationTemplateRepository
+            );
+        }
+        return $this->bidService;
+    }
+
+    /**
+     * @param BidService $bidService
+     */
+    public function setBidService(BidService $bidService) {
+        $this->bidService = $bidService;
     }
 
     /**
@@ -53,7 +94,7 @@ class AutoBidManager
      */
     public function autoBid(Bid $bid) {
         $autoBid = null;
-        $users = $this->userRepository->findAll();
+        $users = $this->userRepository->findUsersByItem($bid->getItem());
         foreach ($users as $user) {
             $userBidConfig = $user->getUserBidConfigs()->first();
             if ($userBidConfig instanceof UserBidConfig) {
@@ -121,6 +162,8 @@ class AutoBidManager
 
             $this->manager->persist($bid);
             $this->manager->flush();
+
+            $this->getBidService()->sendEmailNotificationOnNewBid($bid, true);
 
             $this->autoBid($bid);
 //            $this->manager->getConnection()->commit();

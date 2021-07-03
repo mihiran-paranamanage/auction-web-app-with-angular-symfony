@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\EmailNotificationTemplateRepository;
 use App\Repository\ItemRepository;
+use App\Repository\UserRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use App\Service\BaseService;
 use App\Service\BidService;
@@ -21,10 +23,12 @@ use Respect\Validation\Validator as v;
  */
 class BidController extends BaseController
 {
+    private $emailNotificationTemplateRepository;
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $bidRepository;
     private $itemRepository;
+    private $userRepository;
     private $bidService;
 
     /**
@@ -32,19 +36,25 @@ class BidController extends BaseController
      * @param AccessTokenRepository $accessTokenRepository
      * @param BidRepository $bidRepository
      * @param ItemRepository $itemRepository
+     * @param UserRepository $userRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
+     * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         BidRepository $bidRepository,
         ItemRepository $itemRepository,
-        UserRoleDataGroupRepository $userRoleDataGroupRepository
+        UserRepository $userRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository,
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->bidRepository = $bidRepository;
         $this->itemRepository = $itemRepository;
+        $this->userRepository = $userRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
+        $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
     }
 
     /**
@@ -56,7 +66,9 @@ class BidController extends BaseController
                 $this->accessTokenRepository,
                 $this->bidRepository,
                 $this->itemRepository,
-                $this->userRoleDataGroupRepository
+                $this->userRepository,
+                $this->userRoleDataGroupRepository,
+                $this->emailNotificationTemplateRepository
             );
         }
         return $this->bidService;
@@ -155,6 +167,7 @@ class BidController extends BaseController
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      * @throws \WebSocket\BadOpcodeException
      * @Route("/bids", name="saveBid", methods={"POST"})
      */
@@ -165,6 +178,7 @@ class BidController extends BaseController
         $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_BID, BaseService::PERMISSION_TYPE_CAN_CREATE);
         $bid = $this->getBidService()->saveBid($params);
         $this->getEventPublisher()->publishToWS($params['itemId'], 'Bid Saved');
+        $this->getBidService()->sendEmailNotificationOnNewBid($bid, false);
         return new JsonResponse($this->getBidService()->formatBidResponse($bid), Response::HTTP_CREATED);
     }
 

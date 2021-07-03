@@ -22,7 +22,10 @@ class BidRepository extends ServiceEntityRepository
 {
     private $manager;
     private $itemRepository;
+    private $emailNotificationTemplateRepository;
+    private $userRoleDataGroupRepository;
     private $userBidConfigRepository;
+    private $accessTokenRepository;
     private $userRepository;
     private $autoBidManager;
 
@@ -33,19 +36,27 @@ class BidRepository extends ServiceEntityRepository
      * @param ItemRepository $itemRepository
      * @param UserBidConfigRepository $userBidConfigRepository
      * @param UserRepository $userRepository
+     * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
+     * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
      */
     public function __construct(
         ManagerRegistry $registry,
         EntityManagerInterface $manager,
         ItemRepository $itemRepository,
         UserBidConfigRepository $userBidConfigRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        AccessTokenRepository $accessTokenRepository,
+        UserRoleDataGroupRepository $userRoleDataGroupRepository,
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
     ) {
         parent::__construct($registry, Bid::class);
         $this->manager = $manager;
         $this->itemRepository = $itemRepository;
         $this->userBidConfigRepository = $userBidConfigRepository;
         $this->userRepository = $userRepository;
+        $this->accessTokenRepository = $accessTokenRepository;
+        $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
+        $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
     }
 
     /**
@@ -58,7 +69,10 @@ class BidRepository extends ServiceEntityRepository
                 $this->manager,
                 $this->userBidConfigRepository,
                 $this->itemRepository,
-                $this
+                $this,
+                $this->accessTokenRepository,
+                $this->userRoleDataGroupRepository,
+                $this->emailNotificationTemplateRepository
             );
         }
         return $this->autoBidManager;

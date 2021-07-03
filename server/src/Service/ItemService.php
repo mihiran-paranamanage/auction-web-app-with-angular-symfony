@@ -6,6 +6,7 @@ use App\Entity\Bid;
 use App\Entity\Item;
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\EmailNotificationTemplateRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use DateTime;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ItemService extends BaseService
 {
+    private $emailNotificationTemplateRepository;
     private $userRoleDataGroupRepository;
     private $itemRepository;
     private $bidRepository;
@@ -29,17 +31,20 @@ class ItemService extends BaseService
      * @param ItemRepository $itemRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param BidRepository $bidRepository
+     * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         ItemRepository $itemRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        BidRepository $bidRepository
+        BidRepository $bidRepository,
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
         $this->itemRepository = $itemRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
         $this->bidRepository = $bidRepository;
+        $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
     }
 
     /**

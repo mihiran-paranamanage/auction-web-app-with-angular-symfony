@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
+use App\Repository\EmailNotificationTemplateRepository;
 use App\Repository\UserBidConfigRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use App\Service\BaseService;
@@ -20,6 +21,7 @@ use Respect\Validation\Validator as v;
  */
 class UserBidConfigController extends BaseController
 {
+    private $emailNotificationTemplateRepository;
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userBidConfigRepository;
@@ -30,16 +32,19 @@ class UserBidConfigController extends BaseController
      * @param AccessTokenRepository $accessTokenRepository
      * @param UserBidConfigRepository $userBidConfigRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
+     * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         UserBidConfigRepository $userBidConfigRepository,
-        UserRoleDataGroupRepository $userRoleDataGroupRepository
+        UserRoleDataGroupRepository $userRoleDataGroupRepository,
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userBidConfigRepository = $userBidConfigRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
+        $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
     }
 
     /**
@@ -50,7 +55,8 @@ class UserBidConfigController extends BaseController
             $this->userBidConfigService = new UserBidConfigService(
                 $this->accessTokenRepository,
                 $this->userBidConfigRepository,
-                $this->userRoleDataGroupRepository
+                $this->userRoleDataGroupRepository,
+                $this->emailNotificationTemplateRepository
             );
         }
         return $this->userBidConfigService;

@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\AccessToken;
 use App\Entity\User;
 use App\Repository\AccessTokenRepository;
+use App\Repository\EmailNotificationTemplateRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
  */
 class AccessTokenService extends BaseService
 {
+    private $emailNotificationTemplateRepository;
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userRepository;
@@ -26,16 +28,19 @@ class AccessTokenService extends BaseService
      * @param AccessTokenRepository $accessTokenRepository
      * @param UserRepository $userRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
+     * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         UserRepository $userRepository,
-        UserRoleDataGroupRepository $userRoleDataGroupRepository
+        UserRoleDataGroupRepository $userRoleDataGroupRepository,
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userRepository = $userRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
+        $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
     }
 
     /**

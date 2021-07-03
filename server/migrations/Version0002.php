@@ -40,10 +40,10 @@ final class Version0002 extends AbstractMigration
         $this->addSql("SET @data_group_admin_dashboard_id := (SELECT `id` FROM `data_group` WHERE `name`='admin_dashboard');");
 
         // Users
-        $this->addSql("INSERT INTO `user` (`username`, `password`, `user_role_id`) VALUES ('admin1', 'admin1', @user_role_admin_id);");
-        $this->addSql("INSERT INTO `user` (`username`, `password`, `user_role_id`) VALUES ('admin2', 'admin2', @user_role_admin_id);");
-        $this->addSql("INSERT INTO `user` (`username`, `password`, `user_role_id`) VALUES ('user1', 'user1', @user_role_regular_id);");
-        $this->addSql("INSERT INTO `user` (`username`, `password`, `user_role_id`) VALUES ('user2', 'user2', @user_role_regular_id);");
+        $this->addSql("INSERT INTO `user` (`username`, `password`, `user_role_id`, `email`, `first_name`, `last_name`) VALUES ('admin1', 'admin1', @user_role_admin_id, 'admin1@gmail.com', 'John', 'Doe');");
+        $this->addSql("INSERT INTO `user` (`username`, `password`, `user_role_id`, `email`, `first_name`, `last_name`) VALUES ('admin2', 'admin2', @user_role_admin_id, 'admin2@gmail.com', 'Richard', 'Roe');");
+        $this->addSql("INSERT INTO `user` (`username`, `password`, `user_role_id`, `email`, `first_name`, `last_name`) VALUES ('user1', 'user1', @user_role_regular_id, 'user1@gmail.com', 'Mike', 'Smith');");
+        $this->addSql("INSERT INTO `user` (`username`, `password`, `user_role_id`, `email`, `first_name`, `last_name`) VALUES ('user2', 'user2', @user_role_regular_id, 'user2@gmail.com', 'Maria', 'Rodriguez');");
         $this->addSql("SET @user_admin1_id := (SELECT `id` FROM `user` WHERE `username`='admin1');");
         $this->addSql("SET @user_admin2_id := (SELECT `id` FROM `user` WHERE `username`='admin2');");
         $this->addSql("SET @user_user1_id := (SELECT `id` FROM `user` WHERE `username`='user1');");
@@ -77,6 +77,17 @@ final class Version0002 extends AbstractMigration
         $this->addSql("INSERT INTO `access_token` (`user_id`, `token`) VALUES (@user_admin2_id, 'bf874ho9s8dfush7');");
         $this->addSql("INSERT INTO `access_token` (`user_id`, `token`) VALUES (@user_user1_id, 'cf874ho9s8dfush8');");
         $this->addSql("INSERT INTO `access_token` (`user_id`, `token`) VALUES (@user_user2_id, 'df874ho9s8dfush9');");
+
+        // Email Notification Templates
+        $this->addSql("INSERT INTO `email_notification_template` (`name`, `subject`, `body`) VALUES ('New Bid Notification', 'New Bid Notification', '<p>Hi #recipientFirstName# #recipientLastName#,
+<br /><br />This is to notify you that there has been a new bid submitted on the item, #itemName#.</p>
+<p>Item Details:</p>
+<p>- Item: #itemName#</p>
+<p>- Bid Owner: #bidOwnerFirstName# #bidOwnerLastName#</p>
+<p>- Bid: $#bid#</p>
+<p>- Auto Bid: #isAutoBid#</p>
+<p>- Timestamp: #dateTime#</p>
+<p><br />Thank you.<br /><br />This is an automated notification.</p>');");
     }
 
     public function down(Schema $schema): void

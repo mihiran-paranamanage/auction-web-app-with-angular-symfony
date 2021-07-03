@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
+use App\Repository\EmailNotificationTemplateRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use App\Service\AccessTokenService;
@@ -19,6 +20,7 @@ use Respect\Validation\Validator as v;
  */
 class AccessTokenController extends BaseController
 {
+    private $emailNotificationTemplateRepository;
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userRepository;
@@ -29,16 +31,19 @@ class AccessTokenController extends BaseController
      * @param AccessTokenRepository $accessTokenRepository
      * @param UserRepository $userRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
+     * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         UserRepository $userRepository,
-        UserRoleDataGroupRepository $userRoleDataGroupRepository
+        UserRoleDataGroupRepository $userRoleDataGroupRepository,
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository);
+        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userRepository = $userRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
+        $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
     }
 
     /**
@@ -49,7 +54,8 @@ class AccessTokenController extends BaseController
             $this->accessToken = new AccessTokenService(
                 $this->accessTokenRepository,
                 $this->userRepository,
-                $this->userRoleDataGroupRepository
+                $this->userRoleDataGroupRepository,
+                $this->emailNotificationTemplateRepository
             );
         }
         return $this->accessToken;
