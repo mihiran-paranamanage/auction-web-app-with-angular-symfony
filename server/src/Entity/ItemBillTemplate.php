@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\ItemBillTemplateRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=EmailNotificationTemplateRepository::class)
+ * @ORM\Entity(repositoryClass=ItemBillTemplateRepository::class)
  */
-class EmailNotificationTemplate
+class ItemBillTemplate
 {
     /**
      * @ORM\Id
@@ -23,14 +23,9 @@ class EmailNotificationTemplate
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $subject;
-
-    /**
      * @ORM\Column(type="string", length=2000)
      */
-    private $body;
+    private $template;
 
     public function getId(): ?int
     {
@@ -49,26 +44,14 @@ class EmailNotificationTemplate
         return $this;
     }
 
-    public function getSubject(): ?string
+    public function getTemplate(): ?string
     {
-        return $this->subject;
+        return $this->template;
     }
 
-    public function setSubject(string $subject): self
+    public function setTemplate(string $template): self
     {
-        $this->subject = $subject;
-
-        return $this;
-    }
-
-    public function getBody(): ?string
-    {
-        return $this->body;
-    }
-
-    public function setBody(string $body): self
-    {
-        $this->body = $body;
+        $this->template = $template;
 
         return $this;
     }

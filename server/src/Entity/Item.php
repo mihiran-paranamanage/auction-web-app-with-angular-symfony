@@ -49,6 +49,16 @@ class Item
      */
     private $bids;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default" = "0"})
+     */
+    private $isClosed;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="items")
+     */
+    private $awardedUser;
+
     public function __construct()
     {
         $this->accessTokens = new ArrayCollection();
@@ -146,6 +156,30 @@ class Item
                 $bid->setItem(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsClosed(): ?bool
+    {
+        return $this->isClosed;
+    }
+
+    public function setIsClosed(bool $isClosed): self
+    {
+        $this->isClosed = $isClosed;
+
+        return $this;
+    }
+
+    public function getAwardedUser(): ?User
+    {
+        return $this->awardedUser;
+    }
+
+    public function setAwardedUser(?User $awardedUser): self
+    {
+        $this->awardedUser = $awardedUser;
 
         return $this;
     }

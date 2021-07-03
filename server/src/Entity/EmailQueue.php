@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=EmailNotificationTemplateRepository::class)
+ * @ORM\Entity(repositoryClass=EmailQueueRepository::class)
  */
-class EmailNotificationTemplate
+class EmailQueue
 {
     /**
      * @ORM\Id
@@ -20,7 +20,7 @@ class EmailNotificationTemplate
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -37,14 +37,14 @@ class EmailNotificationTemplate
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getEmail(): ?string
     {
-        return $this->name;
+        return $this->email;
     }
 
-    public function setName(string $name): self
+    public function setEmail(string $email): self
     {
-        $this->name = $name;
+        $this->email = $email;
 
         return $this;
     }
