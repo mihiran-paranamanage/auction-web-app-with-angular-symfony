@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ItemService} from '../../services/item/item.service';
 import {Router} from '@angular/router';
+import {UserService} from "../../services/user/user.service";
 
 @Component({
   selector: 'app-items',
@@ -11,6 +12,7 @@ export class ItemsComponent implements OnInit {
 
   constructor(
     private itemService: ItemService,
+    private userService: UserService,
     private router: Router
   ) { }
 
@@ -19,7 +21,7 @@ export class ItemsComponent implements OnInit {
   }
 
   checkPermissions(): void {
-    const isPermitted = this.itemService.checkPermissions('admin_dashboard', 'canRead');
+    const isPermitted = this.userService.checkPermissions('admin_dashboard', 'canRead');
     if (!isPermitted) {
       this.router.navigate(['/forbidden']);
     }

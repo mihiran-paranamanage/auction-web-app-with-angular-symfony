@@ -38,6 +38,11 @@ class UserBidConfig
      */
     private $notifyPercentage;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default" = "0"})
+     */
+    private $isAutoBidEnabled;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -87,6 +92,18 @@ class UserBidConfig
     public function setNotifyPercentage(int $notifyPercentage): self
     {
         $this->notifyPercentage = $notifyPercentage;
+
+        return $this;
+    }
+
+    public function getIsAutoBidEnabled(): ?bool
+    {
+        return $this->isAutoBidEnabled;
+    }
+
+    public function setIsAutoBidEnabled(bool $isAutoBidEnabled): self
+    {
+        $this->isAutoBidEnabled = $isAutoBidEnabled;
 
         return $this;
     }

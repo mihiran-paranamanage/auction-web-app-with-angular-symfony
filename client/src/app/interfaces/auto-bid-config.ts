@@ -3,4 +3,6 @@ export interface AutoBidConfig {
   maxBidAmount?: number;
   currentBidAmount?: number;
   notifyPercentage?: number;
+  isAutoBidEnabled?: boolean;
+  accessToken?: string;
 }

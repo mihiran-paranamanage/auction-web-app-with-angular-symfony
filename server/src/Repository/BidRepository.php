@@ -104,6 +104,7 @@ class BidRepository extends ServiceEntityRepository
                 $userBidConfig->setMaxBidAmount(0);
                 $userBidConfig->setCurrentBidAmount(0);
                 $userBidConfig->setNotifyPercentage(100);
+                $userBidConfig->setIsAutoBidEnabled(0);
             }
             $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
 

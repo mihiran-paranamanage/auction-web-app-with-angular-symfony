@@ -28,6 +28,17 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} >
     && printf '[PHP]\ndate.timezone = "%s"\n', ${TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini \
     && "date"
 
+# Module ZMQ
+RUN apt-get install -y libzmq3-dev
+RUN git clone https://github.com/mkoppanen/php-zmq /tmp/php-zmq \
+    && cd /tmp/php-zmq \
+    && phpize  \
+    && ./configure  \
+    && make  \
+    && make install \
+    && make test \
+    && docker-php-ext-enable zmq
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN curl -sS https://get.symfony.com/cli/installer | bash && mv /root/.symfony/bin/symfony /usr/local/bin/symfony
 WORKDIR /var/www/symfony

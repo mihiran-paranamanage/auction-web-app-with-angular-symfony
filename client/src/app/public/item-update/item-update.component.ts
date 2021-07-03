@@ -5,6 +5,7 @@ import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
 import {ItemDetailsFormComponent} from '../item-details-form/item-details-form.component';
 import {ItemForm} from '../../interfaces/item-form';
+import {CommonService} from "../../services/common/common.service";
 
 @Component({
   selector: 'app-item-update',
@@ -17,7 +18,8 @@ export class ItemUpdateComponent implements OnInit {
 
   constructor(
     private matDialog: MatDialog,
-    private itemService: ItemService
+    private itemService: ItemService,
+    private commonService: CommonService
   ) { }
 
   ngOnInit(): void {
@@ -51,7 +53,7 @@ export class ItemUpdateComponent implements OnInit {
       description: result.description,
       price: result.price,
       bid: result.bid,
-      closeDateTime: this.itemService.dateToYmd(result.closeDate) + ' ' + result.closeTime,
+      closeDateTime: this.commonService.dateToYmd(result.closeDate) + ' ' + result.closeTime,
       accessToken: result.accessToken
     };
     this.itemService.updateItem(url, item)

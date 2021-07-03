@@ -4,6 +4,7 @@ import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
+import {CommonService} from "../../services/common/common.service";
 
 @Component({
   selector: 'app-item-details-form',
@@ -15,6 +16,7 @@ export class ItemDetailsFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private itemService: ItemService,
+    private commonService: CommonService,
     @Inject(MAT_DIALOG_DATA) public data: {
       item: Item,
       title: string,
@@ -33,8 +35,8 @@ export class ItemDetailsFormComponent implements OnInit {
     description: [this.data.item.description, this.textLongInputValidators],
     price: [this.data.item.price, this.currencyInputValidators],
     bid: [this.data.item.bid, this.currencyInputValidators],
-    closeDate: [this.itemService.stringToDate(this.data.item.closeDateTime), this.dateInputValidators],
-    closeTime: [this.itemService.stringToHHMM(this.data.item.closeDateTime), this.timeInputValidators],
+    closeDate: [this.commonService.stringToDate(this.data.item.closeDateTime), this.dateInputValidators],
+    closeTime: [this.commonService.stringToHHMM(this.data.item.closeDateTime), this.timeInputValidators],
     accessToken: [localStorage.getItem('accessToken')]
   });
 

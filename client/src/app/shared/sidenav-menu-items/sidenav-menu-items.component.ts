@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import {MenuItem} from '../../interfaces/menu-item';
 import {ItemService} from '../../services/item/item.service';
 import {Permission} from '../../interfaces/permission';
+import {UserService} from "../../services/user/user.service";
 
 @Component({
   selector: 'app-sidenav-menu-items',
@@ -16,6 +17,7 @@ export class SidenavMenuItemsComponent implements OnInit {
 
   constructor(
     private itemService: ItemService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -27,7 +29,7 @@ export class SidenavMenuItemsComponent implements OnInit {
 
   fetchPermissions(): void {
     const url = localStorage.getItem('serverUrl') + '/permissions?accessToken=' + localStorage.getItem('accessToken');
-    this.itemService.getPermissions(url)
+    this.userService.getPermissions(url)
       .subscribe(permissions => {
         this.permissions = permissions;
         localStorage.setItem('permissions', JSON.stringify(this.permissions));

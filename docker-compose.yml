@@ -9,11 +9,12 @@ services:
       - 4200:4200
     volumes:
       - ./client:/client
-      - /client/node_modules
+      - /client/node_modules/
     restart: always
     container_name: auction_client
     networks:
-      - auction-network
+      auction-network:
+        ipv4_address: 172.16.238.11
 
   php:
     build:
@@ -28,7 +29,8 @@ services:
     restart: always
     container_name: auction_php
     networks:
-      - auction-network
+      auction-network:
+        ipv4_address: 172.16.238.12
     depends_on:
       - mysql
 
@@ -43,7 +45,28 @@ services:
     restart: always
     container_name: auction_nginx
     networks:
-      - auction-network
+      auction-network:
+        ipv4_address: 172.16.238.13
+    depends_on:
+      - mysql
+
+  websocket:
+    build:
+      context: ./websocket
+      dockerfile: Dockerfile
+      args:
+        TIMEZONE: ${TIMEZONE}
+    ports:
+      - 5000:5000
+      - 5001:5001
+    volumes:
+      - ./websocket/:/var/www/websocket/
+      - /var/www/websocket/vendor/
+    restart: always
+    container_name: auction_websocket
+    networks:
+      auction-network:
+        ipv4_address: 172.16.238.14
     depends_on:
       - mysql
 
@@ -56,7 +79,8 @@ services:
     restart: always
     container_name: auction_mysql
     networks:
-      - auction-network
+      auction-network:
+        ipv4_address: 172.16.238.15
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: auction_mysql
@@ -68,10 +92,16 @@ services:
     restart: always
     container_name: auction_adminer
     networks:
-      - auction-network
+      auction-network:
+        ipv4_address: 172.16.238.16
 
 volumes:
   auction-mysql:
 
 networks:
   auction-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24
+          gateway: 172.16.238.1

@@ -5,6 +5,7 @@ import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {Router} from '@angular/router';
 import {AccessToken} from '../../interfaces/access-token';
 import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
+import {UserService} from "../../services/user/user.service";
 
 @Component({
   selector: 'app-login-page',
@@ -28,6 +29,7 @@ export class LoginPageComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private itemService: ItemService,
+    private userService: UserService,
     private snackbarService: SnackbarService,
     private itemEventListenerService: ItemEventListenerService
   ) {
@@ -57,7 +59,7 @@ export class LoginPageComponent implements OnInit {
     if (this.isCredentialsValid()) {
       this.showLoginError = false;
       const url = localStorage.getItem('serverUrl') + '/accessToken?username=' + this.loginForm.value.username;
-      this.itemService.getAccessToken(url)
+      this.userService.getAccessToken(url)
         .subscribe(accessToken => {
           this.accessToken = accessToken;
           this.postLoginAction();

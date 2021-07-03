@@ -155,6 +155,7 @@ class BidController extends BaseController
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \WebSocket\BadOpcodeException
      * @Route("/bids", name="saveBid", methods={"POST"})
      */
     public function saveBid(Request $request): JsonResponse
@@ -163,6 +164,7 @@ class BidController extends BaseController
         $params = json_decode($request->getContent(), true);
         $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_BID, BaseService::PERMISSION_TYPE_CAN_CREATE);
         $bid = $this->getBidService()->saveBid($params);
+        $this->getEventPublisher()->publishToWS($params['itemId'], 'Bid Saved');
         return new JsonResponse($this->getBidService()->formatBidResponse($bid), Response::HTTP_CREATED);
     }
 

@@ -240,6 +240,7 @@ class ItemController extends BaseController
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \WebSocket\BadOpcodeException
      * @Route("/items/{id}", name="updateItem", methods={"PUT"})
      */
     public function updateItem(Request $request, int $id): JsonResponse
@@ -248,6 +249,7 @@ class ItemController extends BaseController
         $params = json_decode($request->getContent(), true);
         $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_UPDATE);
         $item = $this->getItemService()->updateItem($params, $id);
+        $this->getEventPublisher()->publishToWS($id, "Item {$id} Updated");
         return new JsonResponse($this->getItemService()->formatItemResponse($item, $params['accessToken']), Response::HTTP_OK);
     }
 

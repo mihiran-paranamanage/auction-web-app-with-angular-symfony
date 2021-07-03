@@ -6,6 +6,8 @@ import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
 import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
 import {Router} from '@angular/router';
+import {CommonService} from "../../services/common/common.service";
+import {UserService} from "../../services/user/user.service";
 
 @Component({
   selector: 'app-add-item',
@@ -22,6 +24,8 @@ export class AddItemComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private itemService: ItemService,
+    private commonService: CommonService,
+    private userService: UserService,
     private snackbarService: SnackbarService,
     private itemEventListenerService: ItemEventListenerService,
     private router: Router
@@ -65,7 +69,7 @@ export class AddItemComponent implements OnInit {
       description: this.itemForm.value.description,
       price: this.itemForm.value.price,
       bid: this.itemForm.value.bid,
-      closeDateTime: this.itemService.dateToYmd(this.itemForm.value.closeDate) + ' ' + this.itemForm.value.closeTime,
+      closeDateTime: this.commonService.dateToYmd(this.itemForm.value.closeDate) + ' ' + this.itemForm.value.closeTime,
       accessToken: this.itemForm.value.accessToken,
     };
     this.itemService.addItem(url, item)
@@ -81,7 +85,7 @@ export class AddItemComponent implements OnInit {
   }
 
   checkPermissions(): void {
-    const isPermitted = this.itemService.checkPermissions('item', 'canCreate');
+    const isPermitted = this.userService.checkPermissions('item', 'canCreate');
     if (!isPermitted) {
       this.router.navigate(['/forbidden']);
     }

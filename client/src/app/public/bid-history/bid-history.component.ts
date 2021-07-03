@@ -7,6 +7,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {Item} from '../../interfaces/item';
 import {MatPaginator} from '@angular/material/paginator';
 import {ActivatedRoute, Params, Router} from '@angular/router';
+import {UserService} from "../../services/user/user.service";
 
 @Component({
   selector: 'app-bid-history',
@@ -26,6 +27,7 @@ export class BidHistoryComponent implements AfterViewInit {
 
   constructor(
     private itemService: ItemService,
+    private userService: UserService,
     private snackbarService: SnackbarService,
     private itemEventListenerService: ItemEventListenerService,
     private route: ActivatedRoute,
@@ -59,7 +61,7 @@ export class BidHistoryComponent implements AfterViewInit {
   }
 
   checkPermissions(): void {
-    const isPermitted = this.itemService.checkPermissions('bid_history', 'canRead');
+    const isPermitted = this.userService.checkPermissions('bid_history', 'canRead');
     if (!isPermitted) {
       this.router.navigate(['/forbidden']);
     }

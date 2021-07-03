@@ -7,6 +7,7 @@ import {ItemEventListenerService} from '../../services/item-event-listener/item-
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 import {Observable} from 'rxjs';
 import {Item} from '../../interfaces/item';
+import {ConfigService} from "../../services/config/config.service";
 
 @Component({
   selector: 'app-auto-bid-config',
@@ -30,6 +31,7 @@ export class AutoBidConfigComponent implements AfterViewInit {
   constructor(
     private formBuilder: FormBuilder,
     private itemService: ItemService,
+    private configService: ConfigService,
     private snackbarService: SnackbarService,
     private itemEventListenerService: ItemEventListenerService
   ) {
@@ -42,6 +44,7 @@ export class AutoBidConfigComponent implements AfterViewInit {
   autoBidConfigForm = this.formBuilder.group({
     maxBidAmount: [0, this.currencyInputValidators],
     notifyPercentage: [100, this.percentageInputValidators],
+    isAutoBidEnabled: [false],
     accessToken: [localStorage.getItem('accessToken')]
   });
 
@@ -52,7 +55,7 @@ export class AutoBidConfigComponent implements AfterViewInit {
   fetchAutoBigConfig(): void {
     const url = localStorage.getItem('serverUrl') + '/autoBidConfig?accessToken=' + localStorage.getItem('accessToken');
     this.autoBidConfig$ = this.itemService.getItem(url);
-    this.itemService.getAutoBidConfig(url)
+    this.configService.getAutoBidConfig(url)
       .subscribe(autoBidConfig => {
         this.autoBidConfig = autoBidConfig;
         this.updateAutoBidConfigForm();
@@ -64,6 +67,7 @@ export class AutoBidConfigComponent implements AfterViewInit {
     this.autoBidConfigForm = this.formBuilder.group({
       maxBidAmount: [this.autoBidConfig.maxBidAmount, this.currencyInputValidators],
       notifyPercentage: [this.autoBidConfig.notifyPercentage, this.percentageInputValidators],
+      isAutoBidEnabled: [this.autoBidConfig.isAutoBidEnabled],
       accessToken: [localStorage.getItem('accessToken')]
     });
   }
@@ -100,7 +104,7 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   onSave(): void {
     const url = localStorage.getItem('serverUrl') + '/autoBidConfig';
-    this.itemService.saveAutoBidConfig(url, this.autoBidConfigForm.value)
+    this.configService.saveAutoBidConfig(url, this.autoBidConfigForm.value)
       .subscribe();
   }
 

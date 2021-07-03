@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Repository\AccessTokenRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use App\Utility\UserRoleManager;
+use App\Utility\EventPublisher;
 
 /**
  * Class BaseService
@@ -27,6 +28,7 @@ class BaseService
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userRoleManager;
+    private $eventPublisher;
     private $user;
 
     /**
@@ -44,6 +46,23 @@ class BaseService
      */
     public function setUserRoleManager(UserRoleManager $userRoleManager) {
         $this->userRoleManager = $userRoleManager;
+    }
+
+    /**
+     * @return EventPublisher
+     */
+    public function getEventPublisher() : EventPublisher {
+        if (!($this->eventPublisher instanceof EventPublisher)) {
+            $this->eventPublisher = new EventPublisher();
+        }
+        return $this->eventPublisher;
+    }
+
+    /**
+     * @param EventPublisher $eventPublisher
+     */
+    public function setEventPublisher(EventPublisher $eventPublisher) {
+        $this->eventPublisher = $eventPublisher;
     }
 
     /**

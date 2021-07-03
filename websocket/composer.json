@@ -1,0 +1,19 @@
+{
+    "type": "project",
+    "license": "proprietary",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "cboden/ratchet": "^0.4",
+        "react/zmq": "0.2.*|0.3.*"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "WebSocket\\": ""
+        }
+    }
+}

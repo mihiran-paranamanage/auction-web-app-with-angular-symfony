@@ -87,8 +87,10 @@ class AutoBidManager
      */
     protected function canPerformAutoBid(User $user, Bid $bid, int $currentBidAmount, int $maxBidAmount): bool {
         $latestBid = $this->bidRepository->getLatestBidByUserAndItem($user, $bid->getItem());
-        $isAutoBidEnabled = $latestBid instanceof Bid && $latestBid->getIsAutoBid();
-        return ($user->getId() != $bid->getUser()->getId()) && $isAutoBidEnabled && ($currentBidAmount < $maxBidAmount);
+        $isAutoBid = $latestBid instanceof Bid && $latestBid->getIsAutoBid();
+        $userBidConfig = $user->getUserBidConfigs()->first();
+        $isAutoBidEnabled = $userBidConfig instanceof UserBidConfig && $userBidConfig->getIsAutoBidEnabled();
+        return ($user->getId() != $bid->getUser()->getId()) && $isAutoBid && $isAutoBidEnabled && ($currentBidAmount < $maxBidAmount);
     }
 
     /**
@@ -111,6 +113,7 @@ class AutoBidManager
                 $userBidConfig->setMaxBidAmount(0);
                 $userBidConfig->setCurrentBidAmount(0);
                 $userBidConfig->setNotifyPercentage(100);
+                $userBidConfig->setIsAutoBidEnabled(0);
             }
             $currentBidAmount = $userBidConfig->getCurrentBidAmount();
             $userBidConfig->setCurrentBidAmount($currentBidAmount + 1);

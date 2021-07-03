@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {ItemService} from '../../services/item/item.service';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
@@ -8,22 +8,25 @@ import {Bid} from '../../interfaces/bid';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 import {Observable} from 'rxjs';
 import {ActivatedRoute, Params} from '@angular/router';
+import {UserService} from "../../services/user/user.service";
+import {ConfigService} from "../../services/config/config.service";
 
 @Component({
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.sass']
 })
-export class ItemDetailsComponent implements AfterViewInit {
+export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
 
   title = 'Item Details';
   submitButtonLabel = 'Submit Bid';
+  isAutoBidEnabled = false;
+  socket: any = undefined;
 
   itemId?: number;
   remainingTime = '0 day(s), 00 hr(s), 00 min(s), 00 sec(s)';
   allowSubmit = true;
-  isItemBidChanged = false;
-  fetchItemDetailsInterval?: any;
+  changeItemBid = true;
   updateRemainingTimeInterval?: any;
   showBidHistoryBtn = false;
   item$!: Observable<Item>;
@@ -42,12 +45,15 @@ export class ItemDetailsComponent implements AfterViewInit {
     id: undefined,
     maxBidAmount: 0,
     currentBidAmount: 0,
-    notifyPercentage: 0
+    notifyPercentage: 0,
+    isAutoBidEnabled: false
   };
 
   constructor(
     private formBuilder: FormBuilder,
     private itemService: ItemService,
+    private userService: UserService,
+    private configService: ConfigService,
     private snackbarService: SnackbarService,
     private itemEventListenerService: ItemEventListenerService,
     private route: ActivatedRoute
@@ -70,10 +76,15 @@ export class ItemDetailsComponent implements AfterViewInit {
         (params: Params) => {
           this.itemId = +params.id;
           this.fetchItemDetails();
-          this.fetchItemDetailsInterval = setInterval(this.fetchItemDetails.bind(this), 1000 * 30);
           this.updateRemainingTimeInterval = setInterval(this.updateRemainingTime.bind(this), 1000);
         }
       );
+  }
+
+  ngOnDestroy(): void {
+    if (this.socket) {
+      this.socket.close();
+    }
   }
 
   fetchItemDetails(): void {
@@ -81,10 +92,11 @@ export class ItemDetailsComponent implements AfterViewInit {
     this.item$ = this.itemService.getItem(url);
     this.itemService.getItem(url)
       .subscribe(item => {
-        this.isItemBidChanged = this.item.bid !== item.bid;
+        this.changeItemBid = !this.item.bid || !item.bid || this.bidForm.value.bid < (+item.bid + 1);
         this.item = item;
         this.fetchAutoBigConfig();
         this.checkBidHistoryPermissions();
+        this.subscribeForItemDetailsChangeEvent();
       });
   }
 
@@ -123,15 +135,16 @@ export class ItemDetailsComponent implements AfterViewInit {
 
   fetchAutoBigConfig(): void {
     const url = localStorage.getItem('serverUrl') + '/autoBidConfig?accessToken=' + localStorage.getItem('accessToken');
-    this.itemService.getAutoBidConfig(url)
+    this.configService.getAutoBidConfig(url)
       .subscribe(autoBidConfig => {
         this.autoBidConfig = autoBidConfig;
+        this.isAutoBidEnabled = !!autoBidConfig.isAutoBidEnabled;
         this.updateAutoBidConfigForm();
       });
   }
 
   updateAutoBidConfigForm(): void {
-    if (this.isItemBidChanged) {
+    if (this.changeItemBid) {
       this.bidForm = this.formBuilder.group({
         itemId: [this.item.id],
         bid: [this.item.bid ? (+this.item.bid + 1).toFixed(2) : 0, this.currencyInputValidators],
@@ -150,6 +163,16 @@ export class ItemDetailsComponent implements AfterViewInit {
     });
   }
 
+  subscribeForItemDetailsChangeEvent(): void {
+    if (!this.socket) {
+      this.socket = new WebSocket('ws://localhost:5001/' + this.item.id);
+    }
+    const that = this;
+    this.socket.onmessage = function(msg: string) {
+      that.fetchItemDetails();
+    };
+  }
+
   onSave(): void {
     const url = localStorage.getItem('serverUrl') + '/bids';
     this.itemService.saveBid(url, this.bidForm.value)
@@ -157,7 +180,6 @@ export class ItemDetailsComponent implements AfterViewInit {
   }
 
   onSaved(bid: Bid): void {
-    this.fetchItemDetails();
     this.snackbarService.openSnackBar('Bid Saved Successfully!');
   }
 
@@ -182,6 +204,6 @@ export class ItemDetailsComponent implements AfterViewInit {
   }
 
   checkBidHistoryPermissions(): void {
-    this.showBidHistoryBtn = this.itemService.checkPermissions('bid_history', 'canRead');
+    this.showBidHistoryBtn = this.userService.checkPermissions('bid_history', 'canRead');
   }
 }
