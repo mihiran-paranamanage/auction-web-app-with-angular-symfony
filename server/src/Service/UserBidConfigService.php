@@ -126,7 +126,7 @@ class UserBidConfigService extends BaseService
     {
         $maxBidAmount = $userBidConfig->getMaxBidAmount();
         $currentBidAmount = $userBidConfig->getCurrentBidAmount();
-        if ($maxBidAmount <= $currentBidAmount) {
+        if ($maxBidAmount > 0 && $maxBidAmount <= $currentBidAmount) {
             if ($userBidConfig->getIsAutoBidEnabled() && !$userBidConfig->getIsMaxBidExceedNotified()) {
                 $userBidConfig->setIsMaxBidExceedNotified(true);
                 $this->pushMaxAutoBidExceededNotificationToEmailQueue($userBidConfig);
