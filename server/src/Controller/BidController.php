@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserRoleDataGroupRepository;
@@ -29,6 +31,8 @@ class BidController extends BaseController
     private $bidRepository;
     private $itemRepository;
     private $userRepository;
+    private $emailQueueRepository;
+    private $configRepository;
     private $bidService;
 
     /**
@@ -39,6 +43,8 @@ class BidController extends BaseController
      * @param UserRepository $userRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
@@ -46,9 +52,17 @@ class BidController extends BaseController
         ItemRepository $itemRepository,
         UserRepository $userRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
+        parent::__construct(
+            $accessTokenRepository,
+            $userRoleDataGroupRepository,
+            $emailNotificationTemplateRepository,
+            $this->emailQueueRepository = $emailQueueRepository,
+            $this->configRepository = $configRepository
+        );
         $this->accessTokenRepository = $accessTokenRepository;
         $this->bidRepository = $bidRepository;
         $this->itemRepository = $itemRepository;
@@ -68,7 +82,9 @@ class BidController extends BaseController
                 $this->itemRepository,
                 $this->userRepository,
                 $this->userRoleDataGroupRepository,
-                $this->emailNotificationTemplateRepository
+                $this->emailNotificationTemplateRepository,
+                $this->emailQueueRepository,
+                $this->configRepository
             );
         }
         return $this->bidService;
@@ -178,7 +194,7 @@ class BidController extends BaseController
         $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_BID, BaseService::PERMISSION_TYPE_CAN_CREATE);
         $bid = $this->getBidService()->saveBid($params);
         $this->getEventPublisher()->publishToWS($params['itemId'], 'Bid Saved');
-        $this->getBidService()->sendEmailNotificationOnNewBid($bid, false);
+        $this->getBidService()->pushNewBidNotificationToEmailQueue($bid, false);
         return new JsonResponse($this->getBidService()->formatBidResponse($bid), Response::HTTP_CREATED);
     }
 

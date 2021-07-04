@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\EmailQueue;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,37 +15,38 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EmailQueueRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    private $manager;
+
+    /**
+     * EmailQueueRepository constructor.
+     * @param ManagerRegistry $registry
+     * @param EntityManagerInterface $manager
+     */
+    public function __construct(
+        ManagerRegistry $registry,
+        EntityManagerInterface $manager
+    ) {
         parent::__construct($registry, EmailQueue::class);
+        $this->manager = $manager;
     }
 
-    // /**
-    //  * @return EmailQueue[] Returns an array of EmailQueue objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param EmailQueue $emailQueue
+     * @return EmailQueue
+     */
+    public function pushEmailToQueue(EmailQueue $emailQueue): EmailQueue
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $this->manager->persist($emailQueue);
+        $this->manager->flush();
+        return $emailQueue;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?EmailQueue
+    /**
+     * @param EmailQueue $emailQueue
+     */
+    public function removeEmailFromQueue(EmailQueue $emailQueue) : void
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $this->manager->remove($emailQueue);
+        $this->manager->flush();
     }
-    */
 }

@@ -6,7 +6,9 @@ use App\Entity\Bid;
 use App\Entity\User;
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserRoleDataGroupRepository;
@@ -25,6 +27,8 @@ class BidService extends BaseService
     private $bidRepository;
     private $itemRepository;
     private $userRepository;
+    private $emailQueueRepository;
+    private $configRepository;
     private $itemService;
 
     /**
@@ -37,7 +41,10 @@ class BidService extends BaseService
                 $this->itemRepository,
                 $this->userRoleDataGroupRepository,
                 $this->bidRepository,
-                $this->emailNotificationTemplateRepository
+                $this->userRepository,
+                $this->emailNotificationTemplateRepository,
+                $this->emailQueueRepository,
+                $this->configRepository
             );
         }
         return $this->itemService;
@@ -58,6 +65,8 @@ class BidService extends BaseService
      * @param UserRepository $userRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
@@ -65,9 +74,17 @@ class BidService extends BaseService
         ItemRepository $itemRepository,
         UserRepository $userRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
+        parent::__construct(
+            $accessTokenRepository,
+            $userRoleDataGroupRepository,
+            $emailNotificationTemplateRepository,
+            $this->emailQueueRepository = $emailQueueRepository,
+            $this->configRepository = $configRepository
+        );
         $this->accessTokenRepository = $accessTokenRepository;
         $this->bidRepository = $bidRepository;
         $this->itemRepository = $itemRepository;
@@ -152,16 +169,16 @@ class BidService extends BaseService
     /**
      * @param Bid $bid
      * @param bool $isAutoBid
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function sendEmailNotificationOnNewBid(Bid $bid, bool $isAutoBid) : void {
+    public function pushNewBidNotificationToEmailQueue(Bid $bid, bool $isAutoBid) : void
+    {
         $itemName = $bid->getItem()->getName();
         $bidOwnerFirstName = $bid->getUser()->getFirstName();
         $bidOwnerLastName = $bid->getUser()->getLastName();
         $users = $this->userRepository->findUsersByItem($bid->getItem());
         foreach ($users as $user) {
             if ($user instanceof User && ($user->getId() != $bid->getUser()->getId())) {
-                $bodyParams = array(
+                $params = array(
                     '#recipientFirstName#' => $user->getFirstName(),
                     '#recipientLastName#' => $user->getLastName(),
                     '#itemName#' => $itemName,
@@ -171,7 +188,7 @@ class BidService extends BaseService
                     '#isAutoBid#' => $isAutoBid ? 'Yes' : 'No',
                     '#dateTime#' => $bid->getDateTime()->format('Y-m-d H:i')
                 );
-                $this->sendEmailNotification($user, BaseService::EMAIL_NOTIFICATION_ON_NEW_BID, $bodyParams);
+                $this->pushNotificationToEmailQueue($user, BaseService::EMAIL_NOTIFICATION_ON_NEW_BID, $params);
             }
         }
     }

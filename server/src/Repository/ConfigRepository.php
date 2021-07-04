@@ -14,37 +14,26 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ConfigRepository extends ServiceEntityRepository
 {
+    /**
+     * ConfigRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Config::class);
     }
 
-    // /**
-    //  * @return Config[] Returns an array of Config objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param string $property
+     * @return string|null
+     */
+    public function getConfigValue(string $property) :? string
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $config = $this->findOneBy(array('property' => $property));
+        if ($config instanceof Config) {
+            return $config->getValue();
+        } else {
+            return null;
+        }
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Config
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

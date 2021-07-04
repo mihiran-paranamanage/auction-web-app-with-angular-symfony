@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\UserBidConfigRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use App\Service\BaseService;
@@ -25,6 +27,8 @@ class UserBidConfigController extends BaseController
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userBidConfigRepository;
+    private $emailQueueRepository;
+    private $configRepository;
     private $userBidConfigService;
 
     /**
@@ -33,14 +37,24 @@ class UserBidConfigController extends BaseController
      * @param UserBidConfigRepository $userBidConfigRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         UserBidConfigRepository $userBidConfigRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
+        parent::__construct(
+            $accessTokenRepository,
+            $userRoleDataGroupRepository,
+            $emailNotificationTemplateRepository,
+            $this->emailQueueRepository = $emailQueueRepository,
+            $this->configRepository = $configRepository
+        );
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userBidConfigRepository = $userBidConfigRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
@@ -56,7 +70,9 @@ class UserBidConfigController extends BaseController
                 $this->accessTokenRepository,
                 $this->userBidConfigRepository,
                 $this->userRoleDataGroupRepository,
-                $this->emailNotificationTemplateRepository
+                $this->emailNotificationTemplateRepository,
+                $this->emailQueueRepository,
+                $this->configRepository
             );
         }
         return $this->userBidConfigService;
@@ -100,6 +116,7 @@ class UserBidConfigController extends BaseController
         $accessToken = $request->get('accessToken');
         $this->checkAuthorization($accessToken, BaseService::DATA_GROUP_CONFIGURE_AUTO_BID, BaseService::PERMISSION_TYPE_CAN_READ);
         $userBidConfig = $this->getUserBidConfigService()->getUserBidConfig($accessToken);
+        $this->getUserBidConfigService()->checkMaxAutoBidAmountStatus($userBidConfig);
         return new JsonResponse($this->getUserBidConfigService()->formatUserBidConfigResponse($userBidConfig), Response::HTTP_OK);
     }
 
@@ -140,6 +157,7 @@ class UserBidConfigController extends BaseController
         $params = json_decode($request->getContent(), true);
         $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_CONFIGURE_AUTO_BID, BaseService::PERMISSION_TYPE_CAN_UPDATE);
         $userBidConfig = $this->getUserBidConfigService()->saveUserBidConfig($params);
+        $this->getUserBidConfigService()->checkMaxAutoBidAmountStatus($userBidConfig);
         return new JsonResponse($this->getUserBidConfigService()->formatUserBidConfigResponse($userBidConfig), Response::HTTP_OK);
     }
 

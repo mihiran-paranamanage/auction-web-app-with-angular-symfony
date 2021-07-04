@@ -7,7 +7,9 @@ use App\Entity\Bid;
 use App\Entity\User;
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserRoleDataGroupRepository;
@@ -24,6 +26,8 @@ class UserService extends BaseService
     private $itemRepository;
     private $bidRepository;
     private $userRepository;
+    private $emailQueueRepository;
+    private $configRepository;
     private $itemService;
 
     /**
@@ -34,6 +38,8 @@ class UserService extends BaseService
      * @param BidRepository $bidRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
      * @param UserRepository $userRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
@@ -41,9 +47,17 @@ class UserService extends BaseService
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
         BidRepository $bidRepository,
         EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
+        parent::__construct(
+            $accessTokenRepository,
+            $userRoleDataGroupRepository,
+            $emailNotificationTemplateRepository,
+            $this->emailQueueRepository = $emailQueueRepository,
+            $this->configRepository = $configRepository
+        );
         $this->accessTokenRepository = $accessTokenRepository;
         $this->itemRepository = $itemRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
@@ -62,7 +76,10 @@ class UserService extends BaseService
                 $this->itemRepository,
                 $this->userRoleDataGroupRepository,
                 $this->bidRepository,
-                $this->emailNotificationTemplateRepository
+                $this->userRepository,
+                $this->emailNotificationTemplateRepository,
+                $this->emailQueueRepository,
+                $this->configRepository
             );
         }
         return $this->itemService;

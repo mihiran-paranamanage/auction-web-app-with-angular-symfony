@@ -95,8 +95,17 @@ final class Version0002 extends AbstractMigration
 <p>- Timestamp: #dateTime#</p>
 <p><br />Thank you.<br /><br />This is an automated notification.</p>');");
 
-        $this->addSql("INSERT INTO `email_notification_template` (`name`, `subject`, `body`) VALUES ('Bid Closed And Awarded Notification', 'Bid Closed And Awarded!', '<p>Hi #recipientFirstName# #recipientLastName#,
+        $this->addSql("INSERT INTO `email_notification_template` (`name`, `subject`, `body`) VALUES ('Bid Closed And Awarded Notification', 'Bid Closed And Awarded! - Item: #itemName#', '<p>Hi #recipientFirstName# #recipientLastName#,
 <br /><br />This is to notify you that the bidding time of the item, #itemName# has finished and the item was awarded.</p>
+<p>Item Details:</p>
+<p>- Item: #itemName#</p>
+<p>- Awarded To: #awardedUserFirstName# #awardedUserLastName#</p>
+<p>- Winning Bid: $#winningBid#</p>
+<p>- Timestamp: #dateTime#</p>
+<p><br />Thank you.<br /><br />This is an automated notification.</p>');");
+
+        $this->addSql("INSERT INTO `email_notification_template` (`name`, `subject`, `body`) VALUES ('Bid Closed And Awarded Notification - Winner', 'Congratulations! You Won the Item: #itemName#', '<p>Hi #recipientFirstName# #recipientLastName#,
+<br /><br />This is to notify you that you are awarded the item, #itemName#.</p>
 <p>Item Details:</p>
 <p>- Item: #itemName#</p>
 <p>- Awarded To: #awardedUserFirstName# #awardedUserLastName#</p>

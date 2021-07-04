@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserRoleDataGroupRepository;
@@ -32,16 +34,20 @@ class UserController extends BaseController
     private $bidRepository;
     private $itemRepository;
     private $userRepository;
+    private $emailQueueRepository;
+    private $configRepository;
     private $userService;
 
     /**
-     * BidController constructor.
+     * UserController constructor.
      * @param AccessTokenRepository $accessTokenRepository
      * @param BidRepository $bidRepository
      * @param ItemRepository $itemRepository
      * @param UserRepository $userRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
@@ -49,9 +55,17 @@ class UserController extends BaseController
         ItemRepository $itemRepository,
         UserRepository $userRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
+        parent::__construct(
+            $accessTokenRepository,
+            $userRoleDataGroupRepository,
+            $emailNotificationTemplateRepository,
+            $this->emailQueueRepository = $emailQueueRepository,
+            $this->configRepository = $configRepository
+        );
         $this->accessTokenRepository = $accessTokenRepository;
         $this->bidRepository = $bidRepository;
         $this->itemRepository = $itemRepository;
@@ -71,7 +85,9 @@ class UserController extends BaseController
                 $this->userRoleDataGroupRepository,
                 $this->bidRepository,
                 $this->emailNotificationTemplateRepository,
-                $this->userRepository
+                $this->userRepository,
+                $this->emailQueueRepository,
+                $this->configRepository
             );
         }
         return $this->userService;

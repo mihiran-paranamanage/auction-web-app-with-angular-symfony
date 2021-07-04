@@ -5,7 +5,9 @@ namespace App\Service;
 use App\Entity\AccessToken;
 use App\Entity\User;
 use App\Repository\AccessTokenRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +24,8 @@ class AccessTokenService extends BaseService
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
     private $userRepository;
+    private $emailQueueRepository;
+    private $configRepository;
 
     /**
      * AccessTokenService constructor.
@@ -29,14 +33,24 @@ class AccessTokenService extends BaseService
      * @param UserRepository $userRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         UserRepository $userRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
+        parent::__construct(
+            $accessTokenRepository,
+            $userRoleDataGroupRepository,
+            $emailNotificationTemplateRepository,
+            $this->emailQueueRepository = $emailQueueRepository,
+            $this->configRepository = $configRepository
+        );
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userRepository = $userRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;

@@ -5,7 +5,9 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\UserBidConfig;
 use App\Repository\AccessTokenRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\UserBidConfigRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +22,8 @@ class UserBidConfigService extends BaseService
     private $emailNotificationTemplateRepository;
     private $userRoleDataGroupRepository;
     private $userBidConfigRepository;
+    private $emailQueueRepository;
+    private $configRepository;
 
     /**
      * UserBidConfigService constructor.
@@ -27,14 +31,24 @@ class UserBidConfigService extends BaseService
      * @param UserBidConfigRepository $userBidConfigRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         UserBidConfigRepository $userBidConfigRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
+        parent::__construct(
+            $accessTokenRepository,
+            $userRoleDataGroupRepository,
+            $emailNotificationTemplateRepository,
+            $this->emailQueueRepository = $emailQueueRepository,
+            $this->configRepository = $configRepository
+        );
         $this->userBidConfigRepository = $userBidConfigRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
         $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
@@ -103,5 +117,41 @@ class UserBidConfigService extends BaseService
             'notifyPercentage' => $userBidConfig->getNotifyPercentage(),
             'isAutoBidEnabled' => $userBidConfig->getIsAutoBidEnabled()
         );
+    }
+
+    /**
+     * @param UserBidConfig $userBidConfig
+     */
+    public function checkMaxAutoBidAmountStatus(UserBidConfig $userBidConfig) : void
+    {
+        $maxBidAmount = $userBidConfig->getMaxBidAmount();
+        $currentBidAmount = $userBidConfig->getCurrentBidAmount();
+        if ($maxBidAmount <= $currentBidAmount) {
+            if ($userBidConfig->getIsAutoBidEnabled() && !$userBidConfig->getIsMaxBidExceedNotified()) {
+                $userBidConfig->setIsMaxBidExceedNotified(true);
+                $this->pushMaxAutoBidExceededNotificationToEmailQueue($userBidConfig);
+                $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
+            }
+        } else {
+            if ($userBidConfig->getIsMaxBidExceedNotified()) {
+                $userBidConfig->setIsMaxBidExceedNotified(false);
+                $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
+            }
+        }
+    }
+
+    /**
+     * @param UserBidConfig $userBidConfig
+     */
+    public function pushMaxAutoBidExceededNotificationToEmailQueue(UserBidConfig $userBidConfig) : void
+    {
+        $user = $userBidConfig->getUser();
+        $params = array(
+            '#recipientFirstName#' => $user->getFirstName(),
+            '#recipientLastName#' => $user->getLastName(),
+            '#maxBidAmount#' => $userBidConfig->getMaxBidAmount(),
+            '#currentBidAmount#' => $userBidConfig->getCurrentBidAmount()
+        );
+        $this->pushNotificationToEmailQueue($user, BaseService::EMAIL_NOTIFICATION_MAX_AUTO_BID_EXCEEDED, $params);
     }
 }

@@ -7,8 +7,11 @@ use App\Entity\Item;
 use App\Entity\User;
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\ItemRepository;
+use App\Repository\UserRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use DateTime;
 use Exception;
@@ -29,6 +32,9 @@ class ItemService extends BaseService
     private $userRoleDataGroupRepository;
     private $itemRepository;
     private $bidRepository;
+    private $userRepository;
+    private $emailQueueRepository;
+    private $configRepository;
 
     /**
      * ItemService constructor.
@@ -36,19 +42,32 @@ class ItemService extends BaseService
      * @param ItemRepository $itemRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param BidRepository $bidRepository
+     * @param UserRepository $userRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         ItemRepository $itemRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
         BidRepository $bidRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        UserRepository $userRepository,
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
+        parent::__construct(
+            $accessTokenRepository,
+            $userRoleDataGroupRepository,
+            $emailNotificationTemplateRepository,
+            $this->emailQueueRepository = $emailQueueRepository,
+            $this->configRepository = $configRepository
+        );
         $this->itemRepository = $itemRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
         $this->bidRepository = $bidRepository;
+        $this->userRepository = $userRepository;
         $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
     }
 
@@ -174,35 +193,58 @@ class ItemService extends BaseService
     }
 
     /**
-     * Awarding task for all the items
+     * @param Item $item
      */
-    public function awardItemsIfClosed() : void
+    public function checkStatusAndAwardItem(Item $item) : void
     {
-        $items = $this->itemRepository->findAll();
-        foreach ($items as $item) {
-            $this->awardItemIfClosed($item);
+        $currentDateTime = DateTime::createFromFormat('Y-m-d H:i', date("Y-m-d H:i"));
+        if ($item->getCloseDateTime() < $currentDateTime) {
+            if (!$item->getIsClosed()) {
+                $item->setIsClosed(true);
+                $highestBid = $this->bidRepository->getHighestBidOfItem($item);
+                if ($highestBid instanceof Bid) {
+                    if (!$item->getIsAwardNotified()) {
+                        $item->setAwardedUser($highestBid->getUser());
+                        $item->setIsAwardNotified(true);
+                        $this->pushItemAwardedNotificationToEmailQueue($highestBid);
+                    }
+                }
+                $this->itemRepository->saveItem($item);
+            }
+        } else {
+            if ($item->getIsClosed()) {
+                $item->setIsClosed(false);
+                $this->itemRepository->saveItem($item);
+            }
         }
     }
 
     /**
-     * Awarding task for the items
-     * @param Item $item
+     * @param Bid $bid
      */
-    public function awardItemIfClosed(Item $item) : void
+    public function pushItemAwardedNotificationToEmailQueue(Bid $bid) : void
     {
-        $currentDateTime = DateTime::createFromFormat('Y-m-d H:i', date("Y-m-d H:i"));
-        if (!$item->getIsClosed() && $item->getCloseDateTime() < $currentDateTime) {
-            $item->setIsClosed(true);
-            $highestBid = $this->bidRepository->getHighestBidOfItem($item);
-            if ($highestBid instanceof Bid) {
-                $item->setAwardedUser($highestBid->getUser());
-                $item->setIsAwardNotified(true);
-                // Todo notify
-            } else {
-                $item->setAwardedUser(null);
-                $item->setIsAwardNotified(false);
+        $itemName = $bid->getItem()->getName();
+        $awardedUserFirstName = $bid->getUser()->getFirstName();
+        $awardedUserLastName = $bid->getUser()->getLastName();
+        $users = $this->userRepository->findUsersByItem($bid->getItem());
+        foreach ($users as $user) {
+            if ($user instanceof User) {
+                $params = array(
+                    '#recipientFirstName#' => $user->getFirstName(),
+                    '#recipientLastName#' => $user->getLastName(),
+                    '#itemName#' => $itemName,
+                    '#awardedUserFirstName#' => $awardedUserFirstName,
+                    '#awardedUserLastName#' => $awardedUserLastName,
+                    '#winningBid#' => $bid->getBid(),
+                    '#dateTime#' => $bid->getDateTime()->format('Y-m-d H:i')
+                );
+                if ($user->getId() != $bid->getUser()->getId()) {
+                    $this->pushNotificationToEmailQueue($user, BaseService::EMAIL_NOTIFICATION_BID_CLOSED_AND_AWARDED, $params);
+                } else {
+                    $this->pushNotificationToEmailQueue($user, BaseService::EMAIL_NOTIFICATION_BID_CLOSED_AND_AWARDED_WINNER, $params);
+                }
             }
-            $this->itemRepository->saveItem($item);
         }
     }
 }

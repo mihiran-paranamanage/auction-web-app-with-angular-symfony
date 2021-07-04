@@ -7,7 +7,9 @@ use App\Entity\User;
 use App\Entity\UserBidConfig;
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserBidConfigRepository;
 use App\Repository\UserRepository;
@@ -31,6 +33,8 @@ class AutoBidManager
     private $accessTokenRepository;
     private $itemRepository;
     private $bidRepository;
+    private $emailQueueRepository;
+    private $configRepository;
     private $bidService;
 
     /**
@@ -43,6 +47,8 @@ class AutoBidManager
      * @param AccessTokenRepository $accessTokenRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         UserRepository $userRepository,
@@ -52,7 +58,9 @@ class AutoBidManager
         BidRepository $bidRepository,
         AccessTokenRepository $accessTokenRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
         $this->userRepository = $userRepository;
         $this->manager = $manager;
@@ -62,6 +70,8 @@ class AutoBidManager
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
         $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
+        $this->emailQueueRepository = $emailQueueRepository;
+        $this->configRepository = $configRepository;
     }
 
     /**
@@ -75,7 +85,9 @@ class AutoBidManager
                 $this->itemRepository,
                 $this->userRepository,
                 $this->userRoleDataGroupRepository,
-                $this->emailNotificationTemplateRepository
+                $this->emailNotificationTemplateRepository,
+                $this->emailQueueRepository,
+                $this->configRepository
             );
         }
         return $this->bidService;
@@ -164,7 +176,7 @@ class AutoBidManager
             $this->manager->persist($bid);
             $this->manager->flush();
 
-            $this->getBidService()->sendEmailNotificationOnNewBid($bid, true);
+            $this->getBidService()->pushNewBidNotificationToEmailQueue($bid, true);
 
             $this->autoBid($bid);
 //            $this->manager->getConnection()->commit();

@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\ItemRepository;
+use App\Repository\UserRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use App\Service\BaseService;
 use App\Service\ItemService;
@@ -27,6 +30,9 @@ class ItemController extends BaseController
     private $accessTokenRepository;
     private $itemRepository;
     private $bidRepository;
+    private $userRepository;
+    private $emailQueueRepository;
+    private $configRepository;
     private $itemService;
 
     /**
@@ -35,20 +41,33 @@ class ItemController extends BaseController
      * @param ItemRepository $itemRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param BidRepository $bidRepository
+     * @param UserRepository $userRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         ItemRepository $itemRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
         BidRepository $bidRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        UserRepository $userRepository,
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
-        parent::__construct($accessTokenRepository, $userRoleDataGroupRepository, $emailNotificationTemplateRepository);
+        parent::__construct(
+            $accessTokenRepository,
+            $userRoleDataGroupRepository,
+            $emailNotificationTemplateRepository,
+            $this->emailQueueRepository = $emailQueueRepository,
+            $this->configRepository = $configRepository
+        );
         $this->accessTokenRepository = $accessTokenRepository;
         $this->itemRepository = $itemRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
         $this->bidRepository = $bidRepository;
+        $this->userRepository = $userRepository;
         $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
     }
 
@@ -62,7 +81,10 @@ class ItemController extends BaseController
                 $this->itemRepository,
                 $this->userRoleDataGroupRepository,
                 $this->bidRepository,
-                $this->emailNotificationTemplateRepository
+                $this->userRepository,
+                $this->emailNotificationTemplateRepository,
+                $this->emailQueueRepository,
+                $this->configRepository
             );
         }
         return $this->itemService;
@@ -161,7 +183,7 @@ class ItemController extends BaseController
         $accessToken = $request->get('accessToken');
         $this->checkAuthorization($accessToken, BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_READ);
         $item = $this->getItemService()->getItem($id);
-        $this->getItemService()->awardItemIfClosed($item);
+        $this->getItemService()->checkStatusAndAwardItem($item);
         return new JsonResponse($this->getItemService()->formatItemResponse($item, $accessToken), Response::HTTP_OK);
     }
 
@@ -257,6 +279,7 @@ class ItemController extends BaseController
         $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_UPDATE);
         $item = $this->getItemService()->updateItem($params, $id);
         $this->getEventPublisher()->publishToWS($id, "Item {$id} Updated");
+        $this->getItemService()->checkStatusAndAwardItem($item);
         return new JsonResponse($this->getItemService()->formatItemResponse($item, $params['accessToken']), Response::HTTP_OK);
     }
 

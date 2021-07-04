@@ -27,6 +27,8 @@ class BidRepository extends ServiceEntityRepository
     private $userBidConfigRepository;
     private $accessTokenRepository;
     private $userRepository;
+    private $emailQueueRepository;
+    private $configRepository;
     private $autoBidManager;
 
     /**
@@ -36,8 +38,11 @@ class BidRepository extends ServiceEntityRepository
      * @param ItemRepository $itemRepository
      * @param UserBidConfigRepository $userBidConfigRepository
      * @param UserRepository $userRepository
+     * @param AccessTokenRepository $accessTokenRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         ManagerRegistry $registry,
@@ -47,7 +52,9 @@ class BidRepository extends ServiceEntityRepository
         UserRepository $userRepository,
         AccessTokenRepository $accessTokenRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
         parent::__construct($registry, Bid::class);
         $this->manager = $manager;
@@ -57,6 +64,8 @@ class BidRepository extends ServiceEntityRepository
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
         $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
+        $this->emailQueueRepository = $emailQueueRepository;
+        $this->configRepository = $configRepository;
     }
 
     /**
@@ -72,7 +81,9 @@ class BidRepository extends ServiceEntityRepository
                 $this,
                 $this->accessTokenRepository,
                 $this->userRoleDataGroupRepository,
-                $this->emailNotificationTemplateRepository
+                $this->emailNotificationTemplateRepository,
+                $this->emailQueueRepository,
+                $this->configRepository
             );
         }
         return $this->autoBidManager;

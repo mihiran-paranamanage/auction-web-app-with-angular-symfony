@@ -5,7 +5,7 @@ import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {Router} from '@angular/router';
 import {AccessToken} from '../../interfaces/access-token';
 import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
-import {UserService} from "../../services/user/user.service";
+import {UserService} from '../../services/user/user.service';
 
 @Component({
   selector: 'app-login-page',
@@ -56,41 +56,31 @@ export class LoginPageComponent implements OnInit {
   }
 
   onLogin(): void {
-    if (this.isCredentialsValid()) {
-      this.showLoginError = false;
-      const url = localStorage.getItem('serverUrl') + '/accessToken?username=' + this.loginForm.value.username;
-      this.userService.getAccessToken(url)
-        .subscribe(accessToken => {
-          this.accessToken = accessToken;
-          this.postLoginAction();
-        });
-    } else {
-      this.showLoginError = true;
-    }
+    this.showLoginError = false;
+    const urlQuery = '?username=' + this.loginForm.value.username + '&password=' + this.loginForm.value.password;
+    const url = localStorage.getItem('serverUrl') + '/accessToken' + urlQuery;
+    this.userService.getAccessToken(url)
+      .subscribe(accessToken => {
+        this.accessToken = accessToken;
+        this.postLoginAction();
+      });
   }
 
   onFailure(error: any): void {
-    this.snackbarService.openSnackBar('Request Failed!');
+    if (error.status === 401 || error.status === 404) {
+      this.showLoginError = true;
+    } else {
+      this.snackbarService.openSnackBar('Request Failed!');
+    }
   }
 
   postLoginAction(): void {
-    localStorage.setItem('accessToken', this.accessToken.token ? this.accessToken.token : '');
-    this.itemEventListenerService.onChangeAuthentication();
-    this.router.navigate(['/home']).then(() => {
-      window.location.reload();
-    });
-  }
-
-  isCredentialsValid(): boolean {
-    const credentials = {
-      admin1: 'admin1',
-      admin2: 'admin2',
-      user1: 'user1',
-      user2: 'user2'
-    };
-    const username = this.loginForm.value.username;
-    const password = this.loginForm.value.password;
-    // @ts-ignore
-    return (username in credentials) && (credentials[username] === password);
+    if (this.accessToken.token) {
+      localStorage.setItem('accessToken', this.accessToken.token);
+      this.itemEventListenerService.onChangeAuthentication();
+      this.router.navigate(['/home']).then(() => {
+        window.location.reload();
+      });
+    }
   }
 }

@@ -5,7 +5,9 @@ namespace App\Service;
 use App\Entity\EmailNotificationTemplate;
 use App\Entity\User;
 use App\Repository\AccessTokenRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\EmailNotificationTemplateRepository;
+use App\Repository\EmailQueueRepository;
 use App\Repository\UserRoleDataGroupRepository;
 use App\Utility\UserRoleManager;
 use App\Utility\EventPublisher;
@@ -29,10 +31,15 @@ class BaseService
     const PERMISSION_TYPE_CAN_DELETE = 'canDelete';
 
     const EMAIL_NOTIFICATION_ON_NEW_BID = 'New Bid Notification';
+    const EMAIL_NOTIFICATION_BID_CLOSED_AND_AWARDED = 'Bid Closed And Awarded Notification';
+    const EMAIL_NOTIFICATION_BID_CLOSED_AND_AWARDED_WINNER = 'Bid Closed And Awarded Notification - Winner';
+    const EMAIL_NOTIFICATION_MAX_AUTO_BID_EXCEEDED = 'Maximum Auto Bid Exceeded Notification';
 
     private $emailNotificationTemplateRepository;
     private $userRoleDataGroupRepository;
     private $accessTokenRepository;
+    private $emailQueueRepository;
+    private $configRepository;
     private $userRoleManager;
     private $eventPublisher;
     private $user;
@@ -59,7 +66,7 @@ class BaseService
      */
     public function getEventPublisher() : EventPublisher {
         if (!($this->eventPublisher instanceof EventPublisher)) {
-            $this->eventPublisher = new EventPublisher();
+            $this->eventPublisher = new EventPublisher($this->emailQueueRepository, $this->configRepository);
         }
         return $this->eventPublisher;
     }
@@ -94,43 +101,51 @@ class BaseService
      * @param AccessTokenRepository $accessTokenRepository
      * @param UserRoleDataGroupRepository $userRoleDataGroupRepository
      * @param EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+     * @param EmailQueueRepository $emailQueueRepository
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         AccessTokenRepository $accessTokenRepository,
         UserRoleDataGroupRepository $userRoleDataGroupRepository,
-        EmailNotificationTemplateRepository $emailNotificationTemplateRepository
+        EmailNotificationTemplateRepository $emailNotificationTemplateRepository,
+        EmailQueueRepository $emailQueueRepository,
+        ConfigRepository $configRepository
     ) {
         $this->accessTokenRepository = $accessTokenRepository;
         $this->userRoleDataGroupRepository = $userRoleDataGroupRepository;
         $this->emailNotificationTemplateRepository = $emailNotificationTemplateRepository;
+        $this->emailQueueRepository = $emailQueueRepository;
+        $this->configRepository = $configRepository;
     }
 
     /**
      * @param User $user
      * @param string $notificationName
-     * @param array $bodyParams
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @param array $params
      */
-    public function sendEmailNotification(User $user, string $notificationName, array $bodyParams = array()) : void {
+    public function pushNotificationToEmailQueue(User $user, string $notificationName, array $params = array()) : void
+    {
         $email = $user->getEmail();
         $emailNotificationTemplate = $this->emailNotificationTemplateRepository->findOneBy(array('name' => $notificationName));
         if ($emailNotificationTemplate instanceof EmailNotificationTemplate) {
-            $subject = $emailNotificationTemplate->getSubject();
-            $body = $emailNotificationTemplate->getBody();
-            $body = $this->replaceBodyWithBodyParams($body, $bodyParams);
-            $this->getEventPublisher()->sendEmail($email, $subject, $body);
+            $subject = $this->replaceStringWithParams($emailNotificationTemplate->getSubject(), $params);
+            $body = $this->replaceStringWithParams($emailNotificationTemplate->getBody(), $params);
+            $this->getEventPublisher()->pushEmailToQueue($email, $subject, $body);
         }
     }
 
     /**
-     * @param string $body
-     * @param array $bodyParams
+     * @param string $string
+     * @param array $params
      * @return string
      */
-    protected function replaceBodyWithBodyParams(string $body, array $bodyParams = array()) : string {
-        foreach ($bodyParams as $key => $value) {
-            $body = str_replace($key, $value, $body);
+    protected function replaceStringWithParams(string $string, array $params = array()) : string
+    {
+        foreach ($params as $key => $value) {
+            if (strpos($string, $key) !== false) {
+                $string = str_replace($key, $value, $string);
+            }
         }
-        return $body;
+        return $string;
     }
 }
