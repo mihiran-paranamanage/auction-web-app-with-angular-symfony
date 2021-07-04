@@ -155,6 +155,7 @@ class AutoBidManager
                 $userBidConfig->setCurrentBidAmount(0);
                 $userBidConfig->setNotifyPercentage(100);
                 $userBidConfig->setIsAutoBidEnabled(0);
+                $userBidConfig->setIsMaxBidExceedNotified(0);
             }
             $currentBidAmount = $userBidConfig->getCurrentBidAmount();
             $userBidConfig->setCurrentBidAmount($currentBidAmount + 1);

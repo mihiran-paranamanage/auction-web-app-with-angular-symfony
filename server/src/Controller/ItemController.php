@@ -161,6 +161,7 @@ class ItemController extends BaseController
         $accessToken = $request->get('accessToken');
         $this->checkAuthorization($accessToken, BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_READ);
         $item = $this->getItemService()->getItem($id);
+        $this->getItemService()->awardItemIfClosed($item);
         return new JsonResponse($this->getItemService()->formatItemResponse($item, $accessToken), Response::HTTP_OK);
     }
 

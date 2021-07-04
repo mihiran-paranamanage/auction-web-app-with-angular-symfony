@@ -96,7 +96,7 @@ class BidService extends BaseService
         $item = $this->getItemService()->getItem($params['itemId']);
         $highestBid = $this->bidRepository->getHighestBidOfItem($item);
         $currentDateTime = DateTime::createFromFormat('Y-m-d H:i', date("Y-m-d H:i"));
-        if ($item->getCloseDateTime() < $currentDateTime) {
+        if ($item->getIsClosed() || $item->getCloseDateTime() < $currentDateTime) {
             throw new BadRequestHttpException('Bid is closed');
         }
         if ($params['bid'] <= $item->getBid()) {

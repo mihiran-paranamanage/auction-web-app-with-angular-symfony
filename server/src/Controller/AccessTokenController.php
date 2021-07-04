@@ -96,7 +96,8 @@ class AccessTokenController extends BaseController
     {
         $this->validateGetRequest($request);
         $username = $request->get('username');
-        $accessToken = $this->getAccessTokenService()->getAccessToken($username);
+        $password = $request->get('password');
+        $accessToken = $this->getAccessTokenService()->getAccessToken($username, $password);
         return new JsonResponse($this->getAccessTokenService()->formatAccessTokenResponse($accessToken), Response::HTTP_OK);
     }
 
@@ -105,7 +106,10 @@ class AccessTokenController extends BaseController
      */
     protected function validateGetRequest(Request $request) : void
     {
-        $validator = v::key('username', v::stringVal()->notEmpty(), true);
+        $validator = v::keySet(
+            v::key('username', v::stringVal()->notEmpty(), true),
+            v::key('password', v::stringVal()->notEmpty(), true)
+        );
         $this->validate($validator, $request->query->all());
     }
 }

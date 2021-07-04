@@ -45,14 +45,15 @@ class AccessTokenService extends BaseService
 
     /**
      * @param string $username
+     * @param string $password
      * @return AccessToken
      */
-    public function getAccessToken(string $username) : AccessToken
+    public function getAccessToken(string $username, string $password) : AccessToken
     {
         $user = $this->userRepository->findOneBy(array('username' => $username));
         if ($user instanceof User) {
             $accessToken = $this->accessTokenRepository->findOneBy(array('user' => $user));
-            if ($accessToken instanceof AccessToken) {
+            if ($this->isPasswordValid($user, $password) && $accessToken instanceof AccessToken) {
                 return $accessToken;
             } else {
                 throw new UnauthorizedHttpException(Response::$statusTexts[Response::HTTP_UNAUTHORIZED]);
@@ -60,6 +61,16 @@ class AccessTokenService extends BaseService
         } else {
             throw new NotFoundHttpException(Response::$statusTexts[Response::HTTP_NOT_FOUND]);
         }
+    }
+
+    /**
+     * @param User $user
+     * @param string $password
+     * @return bool
+     */
+    protected function isPasswordValid(User $user, string $password) : bool
+    {
+        return $user->getPassword() == md5($password);
     }
 
     /**

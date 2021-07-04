@@ -58,6 +58,7 @@ class UserBidConfigService extends BaseService
                 $userBidConfig->setCurrentBidAmount(0);
                 $userBidConfig->setNotifyPercentage(100);
                 $userBidConfig->setIsAutoBidEnabled(0);
+                $userBidConfig->setIsMaxBidExceedNotified(0);
                 return $this->userBidConfigRepository->saveUserBidConfig($userBidConfig);
             }
         } else {
@@ -76,6 +77,7 @@ class UserBidConfigService extends BaseService
             if (!($userBidConfig instanceof UserBidConfig)) {
                 $userBidConfig = new UserBidConfig();
                 $userBidConfig->setCurrentBidAmount(0);
+                $userBidConfig->setIsMaxBidExceedNotified(0);
             }
         } else {
             throw new UnauthorizedHttpException(Response::$statusTexts[Response::HTTP_UNAUTHORIZED]);

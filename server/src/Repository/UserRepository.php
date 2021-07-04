@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Item;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,13 +16,20 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRepository extends ServiceEntityRepository
 {
+    private $manager;
+
     /**
      * UserRepository constructor.
      * @param ManagerRegistry $registry
+     * @param EntityManagerInterface $manager
      */
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        EntityManagerInterface $manager
+    )
     {
         parent::__construct($registry, User::class);
+        $this->manager = $manager;
     }
 
     /**
@@ -36,5 +44,16 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere('b.item = :item')
             ->setParameter('item', $item);
         return $q->getQuery()->getResult();
+    }
+
+    /**
+     * @param User $user
+     * @return User
+     */
+    public function saveUser(User $user): User
+    {
+        $this->manager->persist($user);
+        $this->manager->flush();
+        return $user;
     }
 }

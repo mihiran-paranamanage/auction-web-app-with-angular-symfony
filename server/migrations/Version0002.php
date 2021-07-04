@@ -33,11 +33,13 @@ final class Version0002 extends AbstractMigration
         $this->addSql("INSERT INTO `data_group` (`name`) VALUES ('bid_history');");
         $this->addSql("INSERT INTO `data_group` (`name`) VALUES ('configure_auto_bid');");
         $this->addSql("INSERT INTO `data_group` (`name`) VALUES ('admin_dashboard');");
+        $this->addSql("INSERT INTO `data_group` (`name`) VALUES ('user_details');");
         $this->addSql("SET @data_group_item_id := (SELECT `id` FROM `data_group` WHERE `name`='item');");
         $this->addSql("SET @data_group_bid_id := (SELECT `id` FROM `data_group` WHERE `name`='bid');");
         $this->addSql("SET @data_group_bid_history_id := (SELECT `id` FROM `data_group` WHERE `name`='bid_history');");
         $this->addSql("SET @data_group_configure_auto_bid_id := (SELECT `id` FROM `data_group` WHERE `name`='configure_auto_bid');");
         $this->addSql("SET @data_group_admin_dashboard_id := (SELECT `id` FROM `data_group` WHERE `name`='admin_dashboard');");
+        $this->addSql("SET @data_group_user_details := (SELECT `id` FROM `data_group` WHERE `name`='user_details');");
 
         // Users
         $this->addSql("INSERT INTO `user` (`username`, `password`, `user_role_id`, `email`, `first_name`, `last_name`) VALUES ('admin1', 'e00cf25ad42683b3df678c61f42c6bda', @user_role_admin_id, 'admin1@gmail.com', 'John', 'Doe');");
@@ -60,6 +62,8 @@ final class Version0002 extends AbstractMigration
                             VALUES (@user_role_admin_id, @data_group_configure_auto_bid_id, 1, 1, 1, 1);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_admin_id, @data_group_admin_dashboard_id, 1, 1, 1, 1);");
+        $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
+                            VALUES (@user_role_admin_id, @data_group_user_details, 1, 0, 1, 0);");
 
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_regular_id, @data_group_item_id, 1, 0, 0, 0);");
@@ -71,6 +75,8 @@ final class Version0002 extends AbstractMigration
                             VALUES (@user_role_regular_id, @data_group_configure_auto_bid_id, 1, 1, 1, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_regular_id, @data_group_admin_dashboard_id, 0, 0, 0, 0);");
+        $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
+                            VALUES (@user_role_regular_id, @data_group_user_details, 1, 0, 1, 0);");
 
         // Access tokens
         $this->addSql("INSERT INTO `access_token` (`user_id`, `token`) VALUES (@user_admin1_id, 'af874ho9s8dfush6');");

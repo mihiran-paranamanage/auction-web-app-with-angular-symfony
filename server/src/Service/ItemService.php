@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Bid;
 use App\Entity\Item;
+use App\Entity\User;
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
 use App\Repository\EmailNotificationTemplateRepository;
@@ -20,6 +21,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ItemService extends BaseService
 {
+    const ITEM_STATUS_IN_PROGRESS = 'In progress';
+    const ITEM_STATUS_WON = 'Won';
+    const ITEM_STATUS_LOST = 'Lost';
+
     private $emailNotificationTemplateRepository;
     private $userRoleDataGroupRepository;
     private $itemRepository;
@@ -81,6 +86,9 @@ class ItemService extends BaseService
         $item->setPrice($params['price']);
         $item->setBid($params['bid']);
         $item->setCloseDateTime(DateTime::createFromFormat('Y-m-d H:i', $params['closeDateTime']));
+        $item->setIsClosed(0);
+        $item->setAwardedUser(null);
+        $item->setIsAwardNotified(0);
         return $this->itemRepository->saveItem($item);
     }
 
@@ -149,5 +157,52 @@ class ItemService extends BaseService
             'closeDateTime' => $item->getCloseDateTime()->format('Y-m-d H:i'),
             'isAutoBidEnabled' => $latestBid instanceof Bid ? $latestBid->getIsAutoBid() : false
         );
+    }
+
+    /**
+     * @param Item $item
+     * @param User $user
+     * @return string
+     */
+    public function getItemStatus(Item $item, User $user) : string
+    {
+        if ($item->getIsClosed()) {
+            return ($item->getAwardedUser()->getId() == $user->getId()) ? self::ITEM_STATUS_WON : self::ITEM_STATUS_LOST;
+        } else {
+            return self::ITEM_STATUS_IN_PROGRESS;
+        }
+    }
+
+    /**
+     * Awarding task for all the items
+     */
+    public function awardItemsIfClosed() : void
+    {
+        $items = $this->itemRepository->findAll();
+        foreach ($items as $item) {
+            $this->awardItemIfClosed($item);
+        }
+    }
+
+    /**
+     * Awarding task for the items
+     * @param Item $item
+     */
+    public function awardItemIfClosed(Item $item) : void
+    {
+        $currentDateTime = DateTime::createFromFormat('Y-m-d H:i', date("Y-m-d H:i"));
+        if (!$item->getIsClosed() && $item->getCloseDateTime() < $currentDateTime) {
+            $item->setIsClosed(true);
+            $highestBid = $this->bidRepository->getHighestBidOfItem($item);
+            if ($highestBid instanceof Bid) {
+                $item->setAwardedUser($highestBid->getUser());
+                $item->setIsAwardNotified(true);
+                // Todo notify
+            } else {
+                $item->setAwardedUser(null);
+                $item->setIsAwardNotified(false);
+            }
+            $this->itemRepository->saveItem($item);
+        }
     }
 }
