@@ -43,6 +43,11 @@ class UserBidConfig
      */
     private $isAutoBidEnabled;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default" = "0"})
+     */
+    private $isMaxBidExceedNotified;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +109,18 @@ class UserBidConfig
     public function setIsAutoBidEnabled(bool $isAutoBidEnabled): self
     {
         $this->isAutoBidEnabled = $isAutoBidEnabled;
+
+        return $this;
+    }
+
+    public function getIsMaxBidExceedNotified(): ?bool
+    {
+        return $this->isMaxBidExceedNotified;
+    }
+
+    public function setIsMaxBidExceedNotified(bool $isMaxBidExceedNotified): self
+    {
+        $this->isMaxBidExceedNotified = $isMaxBidExceedNotified;
 
         return $this;
     }

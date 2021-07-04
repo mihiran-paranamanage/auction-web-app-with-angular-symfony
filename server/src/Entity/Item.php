@@ -59,6 +59,11 @@ class Item
      */
     private $awardedUser;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default" = "0"})
+     */
+    private $isAwardNotified;
+
     public function __construct()
     {
         $this->accessTokens = new ArrayCollection();
@@ -180,6 +185,18 @@ class Item
     public function setAwardedUser(?User $awardedUser): self
     {
         $this->awardedUser = $awardedUser;
+
+        return $this;
+    }
+
+    public function getIsAwardNotified(): ?bool
+    {
+        return $this->isAwardNotified;
+    }
+
+    public function setIsAwardNotified(bool $isAwardNotified): self
+    {
+        $this->isAwardNotified = $isAwardNotified;
 
         return $this;
     }
