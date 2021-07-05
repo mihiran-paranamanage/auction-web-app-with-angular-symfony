@@ -10,6 +10,7 @@ import {BidHistoryComponent} from './public/bid-history/bid-history.component';
 import {HomePageComponent} from './public/home-page/home-page.component';
 import {LoginPageComponent} from './public/login-page/login-page.component';
 import {ForbiddenComponent} from './shared/forbidden/forbidden.component';
+import {ProfileComponent} from './public/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
   {
     path: 'autoBidConfig',
     component: AutoBidConfigComponent,
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
   },
   {
     path: 'items/:id/details',

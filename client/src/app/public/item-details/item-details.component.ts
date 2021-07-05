@@ -8,8 +8,8 @@ import {Bid} from '../../interfaces/bid';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 import {Observable} from 'rxjs';
 import {ActivatedRoute, Params} from '@angular/router';
-import {UserService} from "../../services/user/user.service";
-import {ConfigService} from "../../services/config/config.service";
+import {UserService} from '../../services/user/user.service';
+import {ConfigService} from '../../services/config/config.service';
 
 @Component({
   selector: 'app-item-details',

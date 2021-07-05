@@ -1,0 +1,33 @@
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="item">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Item Name </th>
+      <td mat-cell *matCellDef="let awardedItem"> {{awardedItem.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="bid">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Winning Bid </th>
+      <td mat-cell *matCellDef="let awardedItem"> {{ awardedItem.winningBid.bid | currency:'USD' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="isAutoBid">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Auto Bid </th>
+      <td mat-cell *matCellDef="let awardedItem"> {{ awardedItem.winningBid.isAutoBid ? 'Yes' : 'No' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="dateTime">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Awarded Date & Time </th>
+      <td mat-cell *matCellDef="let awardedItem"> {{ awardedItem.winningBid.dateTime | date: 'MMM d, y, h:mm a' }} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let bid; columns: displayedColumns;"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No records found!</td>
+    </tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[10, 50, 100]"></mat-paginator>
+</div>

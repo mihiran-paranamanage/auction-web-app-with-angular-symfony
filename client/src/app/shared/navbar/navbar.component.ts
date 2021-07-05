@@ -10,8 +10,11 @@ export class NavbarComponent implements OnInit {
 
   navbarMatIcon = 'phonelink';
   navbarTitle = 'AUCTION APPLICATION';
+  profileIcon = 'person';
   logoutIcon = 'logout';
+  profileTitle = 'My profile';
   logoutTitle = 'Sign out';
+  showProfileBtn = true;
   showLogoutBtn = true;
 
   constructor(
@@ -20,6 +23,10 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkLoginStatus();
+  }
+
+  onProfile(): void {
+    this.router.navigate(['/profile']);
   }
 
   onLogout(): void {
@@ -31,5 +38,6 @@ export class NavbarComponent implements OnInit {
 
   checkLoginStatus(): void {
     this.showLogoutBtn = !!localStorage.getItem('accessToken');
+    this.showProfileBtn = this.showLogoutBtn;
   }
 }

@@ -158,14 +158,13 @@ class UserService extends BaseService
             $awardedItem['closeDateTime'] = $item->getCloseDateTime()->format('Y-m-d H:i');
             $highestBid = $this->bidRepository->getHighestBidOfItem($item);
             if ($highestBid instanceof Bid) {
-                $awardedItem['bid'] = array(
+                $awardedItem['winningBid'] = array(
                     'id' => $highestBid->getId(),
                     'bid' => $highestBid->getBid(),
                     'isAutoBid' => $highestBid->getIsAutoBid(),
                     'dateTime' => $highestBid->getDateTime()->format('Y-m-d H:i')
                 );
             }
-
             $awardedItems[] = $awardedItem;
         }
         return $awardedItems;

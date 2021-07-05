@@ -46,6 +46,10 @@ import { HomePageComponent } from './public/home-page/home-page.component';
 import { LoginPageComponent } from './public/login-page/login-page.component';
 import { MainComponent } from './main/main/main.component';
 import { ForbiddenComponent } from './shared/forbidden/forbidden.component';
+import { ProfileComponent } from './public/profile/profile.component';
+import {MatTabsModule} from "@angular/material/tabs";
+import { UserBidHistoryComponent } from './public/user-bid-history/user-bid-history.component';
+import { UserAwardedItemHistoryComponent } from './public/user-awarded-item-history/user-awarded-item-history.component';
 
 @NgModule({
   declarations: [
@@ -68,35 +72,39 @@ import { ForbiddenComponent } from './shared/forbidden/forbidden.component';
     HomePageComponent,
     LoginPageComponent,
     MainComponent,
-    ForbiddenComponent
+    ForbiddenComponent,
+    ProfileComponent,
+    UserBidHistoryComponent,
+    UserAwardedItemHistoryComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatToolbarModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatDividerModule,
-    MatGridListModule,
-    MatButtonModule,
-    MatSnackBarModule,
-    MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    MatBottomSheetModule,
-    MatDialogModule,
-    NoopAnimationsModule,
-    MatDatepickerModule,
-    MatCheckboxModule,
-    MatNativeDateModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatCardModule,
+        MatDividerModule,
+        MatGridListModule,
+        MatButtonModule,
+        MatSnackBarModule,
+        MatSidenavModule,
+        MatListModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        MatBottomSheetModule,
+        MatDialogModule,
+        NoopAnimationsModule,
+        MatDatepickerModule,
+        MatCheckboxModule,
+        MatNativeDateModule,
+        MatTabsModule
+    ],
   providers: [
     CurrencyPipe,
     MatDatepickerModule

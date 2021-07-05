@@ -1,0 +1,72 @@
+<mat-card-title>{{title}}</mat-card-title>
+
+<mat-divider></mat-divider>
+
+<br />
+
+<ng-container *ngIf="userDetails$ | async as userDetails">
+  <mat-card>
+    <mat-card-content>
+
+      <mat-grid-list cols="4" rowHeight="3rem">
+
+        <mat-grid-tile [colspan]="2" [rowspan]="6">
+          <mat-card class="user-profile-card">
+            <mat-card-header>
+              <div mat-card-avatar class="user-profile-image"></div>
+              <mat-card-title>{{ userDetails.firstName }} {{ userDetails.lastName }}</mat-card-title>
+              <mat-card-subtitle>{{ userDetails.userRoleName }}</mat-card-subtitle>
+            </mat-card-header>
+            <img mat-card-image src="/assets/dp.png" alt="User Profile Picture">
+          </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <ng-container>
+            <h3 class="mat-grid-tile-left">{{'Username: '}}{{ userDetails.username }}</h3>
+          </ng-container>
+        </mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <ng-container>
+            <h3 class="mat-grid-tile-left">{{'Role: '}}{{ userDetails.userRoleName }}</h3>
+          </ng-container>
+        </mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <ng-container>
+            <h3 class="mat-grid-tile-left">{{'Email: '}}{{ userDetails.email }}</h3>
+          </ng-container>
+        </mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <div class="mat-action-row mat-grid-tile-left">
+            <ng-container>
+              <button mat-stroked-button [routerLink]="['/home']">Return to Home</button>
+            </ng-container>
+            <ng-container>
+              <a mat-stroked-button color="primary">Edit Profile</a>
+            </ng-container>
+          </div>
+        </mat-grid-tile>
+
+      </mat-grid-list>
+
+    </mat-card-content>
+  </mat-card>
+</ng-container>
+
+<br />
+
+<br />
+
+<ng-container *ngIf="userDetails$ | async as userDetails">
+  <mat-tab-group dynamicHeight>
+    <mat-tab label="Bid History">
+      <app-user-bid-history [bids]="userDetails.bids"></app-user-bid-history>
+    </mat-tab>
+    <mat-tab label="Awarded Item History">
+      <app-user-awarded-item-history [awardedItems]="userDetails.awardedItems"></app-user-awarded-item-history>
+    </mat-tab>
+  </mat-tab-group>
+</ng-container>

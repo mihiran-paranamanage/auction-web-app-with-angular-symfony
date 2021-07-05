@@ -1,13 +1,17 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <div class="title-group">
+    <div class="left-navbar-group">
       <ng-container>
         <mat-icon>{{navbarMatIcon}}</mat-icon>
         <a>{{navbarTitle}}</a>
       </ng-container>
     </div>
 
-    <div class="logout-group">
+    <div class="right-navbar-group">
+      <ng-container *ngIf="showProfileBtn">
+        <button mat-stroked-button (click)="onProfile()"><mat-icon>{{profileIcon}}</mat-icon>{{profileTitle}}</button>
+      </ng-container>
+
       <ng-container *ngIf="showLogoutBtn">
         <button mat-stroked-button (click)="onLogout()"><mat-icon>{{logoutIcon}}</mat-icon>{{logoutTitle}}</button>
       </ng-container>
