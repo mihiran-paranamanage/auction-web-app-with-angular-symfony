@@ -53,4 +53,12 @@ export class UserService {
         catchError(error => this.handleError(error))
       );
   }
+
+  updateUserDetails(url: string, userDetails: UserDetails): Observable<UserDetails> {
+    return this.http.put<UserDetails>(url, userDetails)
+      .pipe(
+        tap(response => this.itemEventListenerService.onUpdatedUserDetails(response)),
+        catchError(error => this.handleError(error))
+      );
+  }
 }

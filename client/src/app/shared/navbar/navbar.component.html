@@ -1,13 +1,18 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <div class="left-navbar-group">
+    <div class="navbar-group-left">
       <ng-container>
-        <mat-icon>{{navbarMatIcon}}</mat-icon>
-        <a>{{navbarTitle}}</a>
+        <button class="navbar-title" mat-button><mat-icon>{{navbarMatIcon}}</mat-icon>{{navbarTitle}}</button>
       </ng-container>
     </div>
 
-    <div class="right-navbar-group">
+    <div class="navbar-group-right">
+      <ng-container *ngIf="showUserDetails">
+        <ng-container *ngIf="userDetails$ | async as userDetails">
+          <button class="user-details" mat-button>{{ userDetails.firstName }} {{ userDetails.lastName }}</button>
+        </ng-container>
+      </ng-container>
+
       <ng-container *ngIf="showProfileBtn">
         <button mat-stroked-button (click)="onProfile()"><mat-icon>{{profileIcon}}</mat-icon>{{profileTitle}}</button>
       </ng-container>

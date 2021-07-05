@@ -158,7 +158,7 @@ class UserController extends BaseController
             v::key('firstName', v::stringVal()->notEmpty(), true),
             v::key('lastName', v::stringVal()->notEmpty(), true),
             v::key('email', v::stringVal()->notEmpty()->email(), true),
-            v::key('password', v::stringVal()->notEmpty(), true)
+            v::key('password', v::stringVal()->notEmpty(), false)
         );
         $this->validate($validator, json_decode($request->getContent(), true));
     }

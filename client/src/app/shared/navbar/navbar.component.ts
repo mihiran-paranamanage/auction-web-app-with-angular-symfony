@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
+import {Observable} from "rxjs";
+import {UserDetails} from "../../interfaces/user-details";
+import {UserService} from "../../services/user/user.service";
 
 @Component({
   selector: 'app-navbar',
@@ -16,13 +19,17 @@ export class NavbarComponent implements OnInit {
   logoutTitle = 'Sign out';
   showProfileBtn = true;
   showLogoutBtn = true;
+  showUserDetails = true;
+  userDetails$!: Observable<UserDetails>;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
     this.checkLoginStatus();
+    this.fetchUserDetails();
   }
 
   onProfile(): void {
@@ -39,5 +46,12 @@ export class NavbarComponent implements OnInit {
   checkLoginStatus(): void {
     this.showLogoutBtn = !!localStorage.getItem('accessToken');
     this.showProfileBtn = this.showLogoutBtn;
+    this.showUserDetails = this.showLogoutBtn;
+  }
+
+  fetchUserDetails(): void {
+    const urlQuery = '?accessToken=' + localStorage.getItem('accessToken');
+    const url = localStorage.getItem('serverUrl') + '/users/userDetails' + urlQuery;
+    this.userDetails$ = this.userService.getUserDetails(url);
   }
 }

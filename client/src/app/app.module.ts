@@ -50,6 +50,7 @@ import { ProfileComponent } from './public/profile/profile.component';
 import {MatTabsModule} from "@angular/material/tabs";
 import { UserBidHistoryComponent } from './public/user-bid-history/user-bid-history.component';
 import { UserAwardedItemHistoryComponent } from './public/user-awarded-item-history/user-awarded-item-history.component';
+import { UserDetailsFormComponent } from './public/user-details-form/user-details-form.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { UserAwardedItemHistoryComponent } from './public/user-awarded-item-hist
     ForbiddenComponent,
     ProfileComponent,
     UserBidHistoryComponent,
-    UserAwardedItemHistoryComponent
+    UserAwardedItemHistoryComponent,
+    UserDetailsFormComponent
   ],
     imports: [
         BrowserModule,

@@ -179,7 +179,9 @@ class UserService extends BaseService
         $user->setFirstName($params['firstName']);
         $user->setLastName($params['lastName']);
         $user->setEmail($params['email']);
-        $user->setPassword(md5($params['password']));
+        if (isset($params['password'])) {
+            $user->setPassword(md5($params['password']));
+        }
         return $this->userRepository->saveUser($user);
     }
 }

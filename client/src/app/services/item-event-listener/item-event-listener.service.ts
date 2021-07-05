@@ -4,6 +4,7 @@ import {Subject} from 'rxjs';
 import {Item} from '../../interfaces/item';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 import {Bid} from '../../interfaces/bid';
+import {UserDetails} from "../../interfaces/user-details";
 
 @Injectable({
   providedIn: 'root'
@@ -88,5 +89,9 @@ export class ItemEventListenerService {
 
   onChangeAuthentication(): void {
     this.onChangeAuthenticationEventEmitSource.next();
+  }
+
+  onUpdatedUserDetails(userDetails: UserDetails): void {
+    this.itemEventUpdateEmitSource.next(userDetails);
   }
 }
