@@ -95,18 +95,18 @@ class BidService extends BaseService
 
     /**
      * @param array $params
+     * @param User $user
      * @return array
      */
-    public function getBids(array $params) : array
+    public function getBids(array $params, User $user) : array
     {
-        return $this->bidRepository->findByParams($params);
+        return $this->bidRepository->findByParams($params, $user);
     }
 
     /**
      * @param array $params
      * @return Bid
      * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function saveBid(array $params) : Bid {
         $user = $this->getUser($params['accessToken']);
@@ -155,14 +155,12 @@ class BidService extends BaseService
         return array(
             'id' => $bid->getId(),
             'userId' => $bid->getUser()->getId(),
+            'username' => $bid->getUser()->getUsername(),
             'itemId' => $bid->getItem()->getId(),
+            'itemName' => $bid->getItem()->getName(),
             'bid' => $bid->getBid(),
             'isAutoBid' => $bid->getIsAutoBid(),
-            'dateTime' => $bid->getDateTime()->format('Y-m-d H:i'),
-            'user' => array(
-                'userId' => $bid->getUser()->getId(),
-                'username' => $bid->getUser()->getUsername(),
-            )
+            'dateTime' => $bid->getDateTime()->format('Y-m-d H:i')
         );
     }
 

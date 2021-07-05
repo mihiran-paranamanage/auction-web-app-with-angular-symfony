@@ -98,13 +98,17 @@ class BidRepository extends ServiceEntityRepository
 
     /**
      * @param array $params
-     * @return mixed
+     * @param User $user
+     * @return int|mixed|string
      */
-    public function findByParams(array $params)
+    public function findByParams(array $params, User $user)
     {
-        $q = $this->createQueryBuilder('u');
+        $q = $this->createQueryBuilder('u')
+            ->andWhere('u.user = :user')
+            ->setParameter('user', $user);
         if (isset($params['filter']['itemId'])) {
-            $q->andWhere('u.item = :itemId')->setParameter('itemId', $params['filter']['itemId']);
+            $q->andWhere('u.item = :itemId')
+                ->setParameter('itemId', $params['filter']['itemId']);
         }
         return $q->getQuery()->getResult();
     }

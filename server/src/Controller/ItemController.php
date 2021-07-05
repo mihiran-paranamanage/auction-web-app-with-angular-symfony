@@ -175,6 +175,7 @@ class ItemController extends BaseController
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      * @Route("/items/{id}", name="getItem", methods={"GET"})
      */
     public function getItem(Request $request, int $id): JsonResponse
@@ -184,6 +185,7 @@ class ItemController extends BaseController
         $this->checkAuthorization($accessToken, BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_READ);
         $item = $this->getItemService()->getItem($id);
         $this->getItemService()->checkStatusAndAwardItem($item);
+        $this->getEventPublisher()->sendEmails();
         return new JsonResponse($this->getItemService()->formatItemResponse($item, $accessToken), Response::HTTP_OK);
     }
 
@@ -269,6 +271,7 @@ class ItemController extends BaseController
      * @param Request $request
      * @param int $id
      * @return JsonResponse
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      * @throws \WebSocket\BadOpcodeException
      * @Route("/items/{id}", name="updateItem", methods={"PUT"})
      */
@@ -278,9 +281,11 @@ class ItemController extends BaseController
         $params = json_decode($request->getContent(), true);
         $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_ITEM, BaseService::PERMISSION_TYPE_CAN_UPDATE);
         $item = $this->getItemService()->updateItem($params, $id);
-        $this->getEventPublisher()->publishToWS($id, "Item {$id} Updated");
+        $itemResponse = $this->getItemService()->formatItemResponse($item, $params['accessToken']);
+        $this->getEventPublisher()->publishToWS($id, json_encode($itemResponse));
         $this->getItemService()->checkStatusAndAwardItem($item);
-        return new JsonResponse($this->getItemService()->formatItemResponse($item, $params['accessToken']), Response::HTTP_OK);
+        $this->getEventPublisher()->sendEmails();
+        return new JsonResponse($itemResponse, Response::HTTP_OK);
     }
 
     /**

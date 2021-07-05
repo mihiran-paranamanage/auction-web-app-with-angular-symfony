@@ -139,7 +139,8 @@ class BidController extends BaseController
         $params = array(
             'filter' => $request->get('filter')
         );
-        $bids = $this->getBidService()->getBids($params);
+        $user = $this->getUser($accessToken);
+        $bids = $this->getBidService()->getBids($params, $user);
         return new JsonResponse($this->getBidService()->formatBidsResponse($bids), Response::HTTP_OK);
     }
 
@@ -182,7 +183,6 @@ class BidController extends BaseController
      * @param Request $request
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      * @throws \WebSocket\BadOpcodeException
      * @Route("/bids", name="saveBid", methods={"POST"})
@@ -193,9 +193,11 @@ class BidController extends BaseController
         $params = json_decode($request->getContent(), true);
         $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_BID, BaseService::PERMISSION_TYPE_CAN_CREATE);
         $bid = $this->getBidService()->saveBid($params);
-        $this->getEventPublisher()->publishToWS($params['itemId'], 'Bid Saved');
+        $bidResponse = $this->getBidService()->formatBidResponse($bid);
+        $this->getEventPublisher()->publishToWS($params['itemId'], json_encode($bidResponse));
         $this->getBidService()->pushNewBidNotificationToEmailQueue($bid, false);
-        return new JsonResponse($this->getBidService()->formatBidResponse($bid), Response::HTTP_CREATED);
+        $this->getEventPublisher()->sendEmails();
+        return new JsonResponse($bidResponse, Response::HTTP_CREATED);
     }
 
     /**

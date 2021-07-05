@@ -128,15 +128,15 @@ class UserService extends BaseService
         foreach ($bids as $bid) {
             $userBid = array();
             $userBid['id'] = $bid->getId();
+            $userBid['userId'] = $bid->getUser()->getId();
+            $userBid['username'] = $bid->getUser()->getUsername();
+            $userBid['itemId'] =$bid->getItem()->getId();
+            $userBid['itemName'] = $bid->getItem()->getName();
+            $userBid['itemStatus'] = $this->getItemService()->getItemStatus($bid->getItem(), $user);
+            $userBid['itemCloseDateTime'] = $bid->getItem()->getCloseDateTime()->format('Y-m-d H:i');
             $userBid['bid'] = $bid->getBid();
             $userBid['isAutoBid'] = $bid->getIsAutoBid();
             $userBid['dateTime'] = $bid->getDateTime()->format('Y-m-d H:i');
-            $userBid['item'] = array(
-                'id' => $bid->getItem()->getId(),
-                'name' => $bid->getItem()->getName(),
-                'status' => $this->getItemService()->getItemStatus($bid->getItem(), $user),
-                'closeDateTime' => $bid->getItem()->getCloseDateTime()->format('Y-m-d H:i')
-            );
             $userBids[] = $userBid;
         }
         return $userBids;
@@ -154,16 +154,18 @@ class UserService extends BaseService
             $awardedItem = array();
             $awardedItem['id'] = $item->getId();
             $awardedItem['name'] = $item->getName();
+            $awardedItem['description'] = $item->getDescription();
+            $awardedItem['price'] = $item->getPrice();
             $awardedItem['bid'] = $item->getBid();
             $awardedItem['closeDateTime'] = $item->getCloseDateTime()->format('Y-m-d H:i');
+            $awardedItem['isClosed'] = $item->getIsClosed();
+            $awardedItem['isAwardNotified'] = $item->getIsAwardNotified();
             $highestBid = $this->bidRepository->getHighestBidOfItem($item);
             if ($highestBid instanceof Bid) {
-                $awardedItem['winningBid'] = array(
-                    'id' => $highestBid->getId(),
-                    'bid' => $highestBid->getBid(),
-                    'isAutoBid' => $highestBid->getIsAutoBid(),
-                    'dateTime' => $highestBid->getDateTime()->format('Y-m-d H:i')
-                );
+                $awardedItem['winningBidId'] = $highestBid->getId();
+                $awardedItem['winningBid'] = $highestBid->getBid();
+                $awardedItem['winningBidIsAutoBid'] = $highestBid->getIsAutoBid();
+                $awardedItem['winningBidDateTime'] = $highestBid->getDateTime()->format('Y-m-d H:i');
             }
             $awardedItems[] = $awardedItem;
         }

@@ -167,15 +167,36 @@ class ItemService extends BaseService
     public function formatItemResponse(Item $item, string $accessToken) : array
     {
         $latestBid = $this->bidRepository->getLatestBidByUserAndItem($this->getUser($accessToken), $item);
-        return array(
+        $awardedUser = $item->getAwardedUser();
+        $itemResponse = array(
             'id' => $item->getId(),
             'name' => $item->getName(),
             'description' => $item->getDescription(),
             'price' => $item->getPrice(),
             'bid' => $item->getBid(),
             'closeDateTime' => $item->getCloseDateTime()->format('Y-m-d H:i'),
-            'isAutoBidEnabled' => $latestBid instanceof Bid ? $latestBid->getIsAutoBid() : false
+            'isAutoBidEnabled' => $latestBid instanceof Bid ? $latestBid->getIsAutoBid() : false,
+            'isClosed' => $item->getIsClosed(),
+            'isAwardNotified' => $item->getIsAwardNotified()
         );
+        if ($awardedUser instanceof User) {
+            $itemResponse['awardedUserId'] = $awardedUser->getId();
+            $itemResponse['awardedUsername'] = $awardedUser->getUsername();
+            $itemResponse['awardedUserRoleId'] = $awardedUser->getUserRole()->getId();
+            $itemResponse['awardedUserRoleName'] = $awardedUser->getUserRole()->getName();
+            $itemResponse['awardedUserEmail'] = $awardedUser->getEmail();
+            $itemResponse['awardedUserFirstName'] = $awardedUser->getFirstName();
+            $itemResponse['awardedUserLastName'] = $awardedUser->getLastName();
+        } else {
+            $itemResponse['awardedUserId'] = null;
+            $itemResponse['awardedUsername'] = null;
+            $itemResponse['awardedUserRoleId'] = null;
+            $itemResponse['awardedUserRoleName'] = null;
+            $itemResponse['awardedUserEmail'] = null;
+            $itemResponse['awardedUserFirstName'] = null;
+            $itemResponse['awardedUserLastName'] = null;
+        }
+        return $itemResponse;
     }
 
     /**

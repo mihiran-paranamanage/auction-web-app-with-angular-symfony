@@ -14,37 +14,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ItemBillTemplateRepository extends ServiceEntityRepository
 {
+    /**
+     * ItemBillTemplateRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ItemBillTemplate::class);
     }
-
-    // /**
-    //  * @return ItemBillTemplate[] Returns an array of ItemBillTemplate objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('i.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?ItemBillTemplate
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

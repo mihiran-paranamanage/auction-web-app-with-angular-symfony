@@ -8,15 +8,19 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Load master data
+ * Class Version0002
+ * @package DoctrineMigrations
  */
 final class Version0002 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Load master data';
     }
 
+    /**
+     * @param Schema $schema
+     */
     public function up(Schema $schema): void
     {
         // up() migration
@@ -55,13 +59,13 @@ final class Version0002 extends AbstractMigration
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_admin_id, @data_group_item_id, 1, 1, 1, 1);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
-                            VALUES (@user_role_admin_id, @data_group_bid_id, 1, 1, 1, 1);");
+                            VALUES (@user_role_admin_id, @data_group_bid_id, 1, 1, 0, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
-                            VALUES (@user_role_admin_id, @data_group_bid_history_id, 1, 1, 1, 1);");
+                            VALUES (@user_role_admin_id, @data_group_bid_history_id, 1, 0, 0, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
-                            VALUES (@user_role_admin_id, @data_group_configure_auto_bid_id, 1, 1, 1, 1);");
+                            VALUES (@user_role_admin_id, @data_group_configure_auto_bid_id, 1, 1, 1, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
-                            VALUES (@user_role_admin_id, @data_group_admin_dashboard_id, 1, 1, 1, 1);");
+                            VALUES (@user_role_admin_id, @data_group_admin_dashboard_id, 1, 0, 0, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_admin_id, @data_group_user_details, 1, 0, 1, 0);");
 
@@ -70,7 +74,7 @@ final class Version0002 extends AbstractMigration
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_regular_id, @data_group_bid_id, 1, 1, 0, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
-                            VALUES (@user_role_regular_id, @data_group_bid_history_id, 0, 0, 0, 0);");
+                            VALUES (@user_role_regular_id, @data_group_bid_history_id, 1, 0, 0, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_regular_id, @data_group_configure_auto_bid_id, 1, 1, 1, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
@@ -137,6 +141,9 @@ final class Version0002 extends AbstractMigration
         $this->addSql("INSERT INTO `config` (`property`, `value`) VALUES ('email_notification_enabled', '1');");
     }
 
+    /**
+     * @param Schema $schema
+     */
     public function down(Schema $schema): void
     {
         // down() migration

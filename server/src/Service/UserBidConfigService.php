@@ -112,10 +112,12 @@ class UserBidConfigService extends BaseService
         return array(
             'id' => $userBidConfig->getId(),
             'userId' => $userBidConfig->getUser()->getId(),
+            'userName' => $userBidConfig->getUser()->getUsername(),
             'maxBidAmount' => $userBidConfig->getMaxBidAmount(),
             'currentBidAmount' => $userBidConfig->getCurrentBidAmount(),
             'notifyPercentage' => $userBidConfig->getNotifyPercentage(),
-            'isAutoBidEnabled' => $userBidConfig->getIsAutoBidEnabled()
+            'isAutoBidEnabled' => $userBidConfig->getIsAutoBidEnabled(),
+            'isMaxBidExceedNotified' => $userBidConfig->getIsMaxBidExceedNotified()
         );
     }
 

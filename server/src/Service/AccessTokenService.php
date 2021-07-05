@@ -95,6 +95,7 @@ class AccessTokenService extends BaseService
     {
         return array(
             'id' => $accessToken->getId(),
+            'userId' => $accessToken->getUser()->getId(),
             'username' => $accessToken->getUser()->getUsername(),
             'token' => $accessToken->getToken()
         );

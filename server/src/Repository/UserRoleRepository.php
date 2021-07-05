@@ -14,6 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRoleRepository extends ServiceEntityRepository
 {
+    /**
+     * UserRoleRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, UserRole::class);
