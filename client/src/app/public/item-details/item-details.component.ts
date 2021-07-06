@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {ItemService} from '../../services/item/item.service';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
@@ -10,13 +10,14 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {UserService} from '../../services/user/user.service';
 import {ConfigService} from '../../services/config/config.service';
 import {EventListenerService} from '../../services/event-listener/event-listener.service';
+import {CommonService} from '../../services/common/common.service';
 
 @Component({
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
   styleUrls: ['./item-details.component.sass']
 })
-export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
+export class ItemDetailsComponent implements OnInit, OnDestroy {
 
   title = 'Item Details';
   submitButtonLabel = 'Submit Bid';
@@ -25,6 +26,7 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
   itemId?: number;
   remainingTime = '0 day(s), 00 hr(s), 00 min(s), 00 sec(s)';
   allowSubmit = true;
+  isItemClosed = false;
   changeItemBid = true;
   showBidHistoryBtn = false;
   updateRemainingTimeInterval?: any;
@@ -55,21 +57,20 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
     private configService: ConfigService,
     private snackbarService: SnackbarService,
     private eventListenerService: EventListenerService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private commonService: CommonService
   ) {
     this.subscribeForEvents();
   }
 
-  currencyInputValidators = [Validators.required, Validators.pattern(/^\d+(.\d{2})?$/)];
-
   bidForm = this.formBuilder.group({
     itemId: [undefined],
-    bid: [0, this.currencyInputValidators],
+    bid: [0, this.commonService.getCurrencyInputValidators()],
     isAutoBid: [false],
     accessToken: [localStorage.getItem('accessToken')]
   });
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.route.params
       .subscribe(
         (params: Params) => {
@@ -130,8 +131,13 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
 
     if (--diff <= 0) {
       this.allowSubmit = false;
+      this.isItemClosed = true;
       this.submitButtonLabel = 'Bid Closed';
-      this.remainingTime = '0 day(s), 00 hr(s), 00 min(s), 00 sec(s)';
+      if (this.item.awardedUserId) {
+        this.remainingTime = 'This item is awarded to: ' + this.item.awardedUserFirstName + ' ' + this.item.awardedUserLastName;
+      } else {
+        this.remainingTime = 'This item is closed!';
+      }
       clearInterval(this.updateRemainingTimeInterval);
     }
   }
@@ -150,7 +156,7 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
     if (this.changeItemBid) {
       this.bidForm = this.formBuilder.group({
         itemId: [this.item.id],
-        bid: [this.item.bid ? (+this.item.bid + 1).toFixed(2) : 0, this.currencyInputValidators],
+        bid: [this.item.bid ? (+this.item.bid + 1).toFixed(2) : 0, this.commonService.getCurrencyInputValidators()],
         isAutoBid: [this.item.isAutoBidEnabled],
         accessToken: [localStorage.getItem('accessToken')]
       });
@@ -173,8 +179,8 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
       this.socket = new WebSocket(webSocketUrl);
     }
     const that = this;
-    this.socket.onmessage = (msg: string) => {
-      console.log(msg);
+    this.socket.onmessage = (msg: any) => {
+      console.log(JSON.parse(msg.data));
       // that.fetchItemDetails();
     };
   }

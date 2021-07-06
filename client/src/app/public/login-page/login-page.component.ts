@@ -6,6 +6,7 @@ import {Router} from '@angular/router';
 import {AccessToken} from '../../interfaces/access-token';
 import {UserService} from '../../services/user/user.service';
 import {EventListenerService} from '../../services/event-listener/event-listener.service';
+import {CommonService} from '../../services/common/common.service';
 
 @Component({
   selector: 'app-login-page',
@@ -31,16 +32,15 @@ export class LoginPageComponent implements OnInit {
     private itemService: ItemService,
     private userService: UserService,
     private snackbarService: SnackbarService,
-    private eventListenerService: EventListenerService
+    private eventListenerService: EventListenerService,
+    private commonService: CommonService
   ) {
     this.subscribeForEvents();
   }
 
-  textInputValidators = [Validators.required, Validators.maxLength(100)];
-
   loginForm = this.formBuilder.group({
-    username: ['', this.textInputValidators],
-    password: ['', this.textInputValidators]
+    username: ['', this.commonService.getTextInputValidators()],
+    password: ['', this.commonService.getTextInputValidators()]
   });
 
   ngOnInit(): void {

@@ -219,7 +219,7 @@ class ItemService extends BaseService
     public function checkStatusAndAwardItem(Item $item) : void
     {
         $currentDateTime = DateTime::createFromFormat('Y-m-d H:i', date("Y-m-d H:i"));
-        if ($item->getCloseDateTime() < $currentDateTime) {
+        if ($item->getCloseDateTime() <= $currentDateTime) {
             if (!$item->getIsClosed()) {
                 $item->setIsClosed(true);
                 $highestBid = $this->bidRepository->getHighestBidOfItem($item);

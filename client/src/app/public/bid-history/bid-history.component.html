@@ -8,7 +8,7 @@
   <table mat-table [dataSource]="dataSource" matSort>
 
     <ng-container matColumnDef="itemName">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Item Name </th>
+      <th mat-header-cell *matHeaderCellDef> Item Name </th>
       <td mat-cell *matCellDef="let bid"> {{bid.itemName}} </td>
     </ng-container>
 

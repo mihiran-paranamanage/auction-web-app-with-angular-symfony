@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ItemService} from '../../services/item/item.service';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {MatTableDataSource} from '@angular/material/table';
@@ -14,7 +14,7 @@ import {UserBid} from '../../interfaces/user-bid';
   templateUrl: './bid-history.component.html',
   styleUrls: ['./bid-history.component.sass']
 })
-export class BidHistoryComponent implements AfterViewInit {
+export class BidHistoryComponent implements OnInit {
 
   title = 'Bid History';
   itemId?: number;
@@ -33,7 +33,7 @@ export class BidHistoryComponent implements AfterViewInit {
     private router: Router
   ) { }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.checkPermissions();
     this.route.params
       .subscribe(

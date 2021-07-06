@@ -36,13 +36,13 @@
 
         <mat-grid-tile [colspan]="1" [rowspan]="1" [style.color]="'gray'">
           <ng-container>
-            <h4>{{'Closes at: '}}{{ item.closeDateTime | date: 'MMM d, y, h:mm a' }}</h4>
+            <h4>{{isItemClosed ? 'Closed at: ' : 'Closes at: '}}{{ item.closeDateTime | date: 'MMM d, y, h:mm a' }}</h4>
           </ng-container>
         </mat-grid-tile>
 
         <mat-grid-tile [colspan]="1" [rowspan]="1">
           <ng-container>
-            <h4><i>{{'Current Bid: '}}{{ item.bid | currency:'USD' }}</i></h4>
+            <h4><i>{{isItemClosed ? 'Winning Bid: ' : 'Current Bid: '}}{{ item.bid | currency:'USD' }}</i></h4>
           </ng-container>
         </mat-grid-tile>
 

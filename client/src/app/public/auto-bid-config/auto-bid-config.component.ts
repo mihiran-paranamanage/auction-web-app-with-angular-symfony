@@ -6,6 +6,7 @@ import {AutoBidConfig} from '../../interfaces/auto-bid-config';
 import {Observable} from 'rxjs';
 import {ConfigService} from '../../services/config/config.service';
 import {EventListenerService} from '../../services/event-listener/event-listener.service';
+import {CommonService} from '../../services/common/common.service';
 
 @Component({
   selector: 'app-auto-bid-config',
@@ -30,17 +31,15 @@ export class AutoBidConfigComponent implements AfterViewInit {
     private itemService: ItemService,
     private configService: ConfigService,
     private snackbarService: SnackbarService,
-    private eventListenerService: EventListenerService
+    private eventListenerService: EventListenerService,
+    private commonService: CommonService
   ) {
     this.subscribeForEvents();
   }
 
-  currencyInputValidators = [Validators.required, Validators.pattern(/^\d+(.\d{2})?$/)];
-  percentageInputValidators = [Validators.required, Validators.pattern(/^([0-9]|([1-9][0-9])|100)$/)];
-
   autoBidConfigForm = this.formBuilder.group({
-    maxBidAmount: [0, this.currencyInputValidators],
-    notifyPercentage: [100, this.percentageInputValidators],
+    maxBidAmount: [0, this.commonService.getCurrencyInputValidators()],
+    notifyPercentage: [100, this.commonService.getPercentageInputValidators()],
     isAutoBidEnabled: [false],
     accessToken: [localStorage.getItem('accessToken')]
   });
@@ -62,8 +61,8 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   updateAutoBidConfigForm(): void {
     this.autoBidConfigForm = this.formBuilder.group({
-      maxBidAmount: [this.autoBidConfig.maxBidAmount, this.currencyInputValidators],
-      notifyPercentage: [this.autoBidConfig.notifyPercentage, this.percentageInputValidators],
+      maxBidAmount: [this.autoBidConfig.maxBidAmount, this.commonService.getCurrencyInputValidators()],
+      notifyPercentage: [this.autoBidConfig.notifyPercentage, this.commonService.getPercentageInputValidators()],
       isAutoBidEnabled: [this.autoBidConfig.isAutoBidEnabled],
       accessToken: [localStorage.getItem('accessToken')]
     });

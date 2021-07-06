@@ -16,7 +16,7 @@ export class UserBidHistoryComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   dataSource = new MatTableDataSource<UserBid>(this.bids);
-  displayedColumns: string[] = ['itemName', 'bid', 'isAutoBid', 'dateTime', 'closeDateTime', 'status'];
+  displayedColumns: string[] = ['itemName', 'bid', 'isAutoBid', 'dateTime', 'itemCloseDateTime', 'itemStatus'];
 
   constructor() { }
 

@@ -31,19 +31,13 @@ export class AddItemComponent implements OnInit {
     this.subscribeForEvents();
   }
 
-  textInputValidators = [Validators.required, Validators.maxLength(100)];
-  textLongInputValidators = [Validators.required, Validators.maxLength(2000)];
-  currencyInputValidators = [Validators.required, Validators.pattern(/^\d+(.\d{2})?$/)];
-  dateInputValidators = [Validators.required];
-  timeInputValidators = [Validators.required, Validators.pattern(/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/)];
-
   itemForm = this.formBuilder.group({
-    name: ['', this.textInputValidators],
-    description: ['', this.textLongInputValidators],
-    price: ['', this.currencyInputValidators],
-    bid: ['', this.currencyInputValidators],
-    closeDate: ['', this.dateInputValidators],
-    closeTime: ['', this.timeInputValidators],
+    name: ['', this.commonService.getTextInputValidators()],
+    description: ['', this.commonService.getTextLongInputValidators()],
+    price: ['', this.commonService.getCurrencyInputValidators()],
+    bid: ['', this.commonService.getCurrencyInputValidators()],
+    closeDate: ['', this.commonService.getDateInputValidators()],
+    closeTime: ['', this.commonService.getTimeInputValidators()],
     accessToken: [localStorage.getItem('accessToken')]
   });
 

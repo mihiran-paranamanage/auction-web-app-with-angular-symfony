@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import {Item} from '../../interfaces/item';
 
@@ -7,17 +7,30 @@ import {Item} from '../../interfaces/item';
   templateUrl: './item-bid.component.html',
   styleUrls: ['./item-bid.component.sass']
 })
-export class ItemBidComponent implements AfterViewInit {
+export class ItemBidComponent implements OnInit {
 
   buttonLabel = 'Bid Now';
+  buttonColor?: string;
   @Input() item!: Item;
 
   constructor(
     private router: Router
   ) { }
 
-  ngAfterViewInit(): void {
-    this.buttonLabel = this.item.isClosed ? 'View Item' : 'Bid Now';
+  isBidClosed(item: Item): boolean {
+    const closeDateTime = (item && item.closeDateTime) ? new Date(item.closeDateTime) : new Date();
+    const diff = (closeDateTime.getTime() - Date.now()) / 1000;
+    return diff <= 0;
+  }
+
+  ngOnInit(): void {
+    if (this.item.isClosed || this.isBidClosed(this.item)) {
+      this.buttonLabel = 'View Item';
+      this.buttonColor = undefined;
+    } else {
+      this.buttonLabel = 'Bid Now';
+      this.buttonColor = 'primary';
+    }
   }
 
   onBid(): void {

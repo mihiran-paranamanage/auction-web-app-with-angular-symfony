@@ -23,19 +23,13 @@ export class ItemDetailsFormComponent implements OnInit {
     }
   ) { }
 
-  textInputValidators = [Validators.required, Validators.maxLength(100)];
-  textLongInputValidators = [Validators.required, Validators.maxLength(2000)];
-  currencyInputValidators = [Validators.required, Validators.pattern(/^\d+(.\d{2})?$/)];
-  dateInputValidators = [Validators.required];
-  timeInputValidators = [Validators.required, Validators.pattern(/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/)];
-
   itemForm = this.formBuilder.group({
-    name: [this.data.item.name, this.textInputValidators],
-    description: [this.data.item.description, this.textLongInputValidators],
-    price: [this.data.item.price, this.currencyInputValidators],
-    bid: [this.data.item.bid, this.currencyInputValidators],
-    closeDate: [this.commonService.stringToDate(this.data.item.closeDateTime), this.dateInputValidators],
-    closeTime: [this.commonService.stringToHHMM(this.data.item.closeDateTime), this.timeInputValidators],
+    name: [this.data.item.name, this.commonService.getTextInputValidators()],
+    description: [this.data.item.description, this.commonService.getTextLongInputValidators()],
+    price: [this.data.item.price, this.commonService.getCurrencyInputValidators()],
+    bid: [this.data.item.bid, this.commonService.getCurrencyInputValidators()],
+    closeDate: [this.commonService.stringToDate(this.data.item.closeDateTime), this.commonService.getDateInputValidators()],
+    closeTime: [this.commonService.stringToHHMM(this.data.item.closeDateTime), this.commonService.getTimeInputValidators()],
     accessToken: [localStorage.getItem('accessToken')]
   });
 
