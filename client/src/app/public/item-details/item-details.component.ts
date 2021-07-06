@@ -11,6 +11,7 @@ import {UserService} from '../../services/user/user.service';
 import {ConfigService} from '../../services/config/config.service';
 import {EventListenerService} from '../../services/event-listener/event-listener.service';
 import {CommonService} from '../../services/common/common.service';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-item-details',
@@ -156,11 +157,15 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
+  getNextBid(item: Item): string {
+    return item.bid ? (+item.bid + 1).toFixed(2) : '0.00';
+  }
+
   updateBidForm(): void {
     if (this.changeItemBid) {
       this.bidForm = this.formBuilder.group({
         itemId: [this.item.id],
-        bid: [this.item.bid ? (+this.item.bid + 1).toFixed(2) : 0, this.commonService.getCurrencyInputValidators()],
+        bid: [this.getNextBid(this.item), this.commonService.getCurrencyInputValidators()],
         isAutoBid: [this.item.isAutoBidEnabled],
         accessToken: [localStorage.getItem('accessToken')]
       });
@@ -182,10 +187,16 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
       const webSocketUrl = localStorage.getItem('webSocketUrl') + this.item.id;
       this.socket = new WebSocket(webSocketUrl);
     }
-    const that = this;
     this.socket.onmessage = (msg: any) => {
-      console.log(JSON.parse(msg.data));
-      // that.fetchItemDetails();
+      const item = JSON.parse(msg.data);
+      this.item$ = this.item$.pipe(
+        tap(() => item)
+      );
+      this.checkForChangeItemBid(item);
+      this.item = item;
+      if (this.changeItemBid) {
+        this.bidForm.controls.bid.setValue(this.getNextBid(this.item));
+      }
     };
   }
 

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Bid;
+use App\Entity\Item;
 use App\Entity\User;
 use App\Repository\AccessTokenRepository;
 use App\Repository\BidRepository;
@@ -162,6 +163,16 @@ class BidService extends BaseService
             'isAutoBid' => $bid->getIsAutoBid(),
             'dateTime' => $bid->getDateTime()->format('Y-m-d H:i')
         );
+    }
+
+    /**
+     * @param Item $item
+     * @param string $accessToken
+     * @return array
+     */
+    public function formatItemResponse(Item $item, string $accessToken) : array
+    {
+        return $this->getItemService()->formatItemResponse($item, $accessToken);
     }
 
     /**

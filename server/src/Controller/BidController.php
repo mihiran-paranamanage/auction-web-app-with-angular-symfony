@@ -194,7 +194,8 @@ class BidController extends BaseController
         $this->checkAuthorization($params['accessToken'], BaseService::DATA_GROUP_BID, BaseService::PERMISSION_TYPE_CAN_CREATE);
         $bid = $this->getBidService()->saveBid($params);
         $bidResponse = $this->getBidService()->formatBidResponse($bid);
-        $this->getEventPublisher()->publishToWS($params['itemId'], json_encode($bidResponse));
+        $itemResponse = $this->getBidService()->formatItemResponse($bid->getItem(), $params['accessToken']);
+        $this->getEventPublisher()->publishToWS($params['itemId'], json_encode($itemResponse));
         $this->getBidService()->pushNewBidNotificationToEmailQueue($bid, false);
         $this->getEventPublisher()->sendEmails();
         return new JsonResponse($bidResponse, Response::HTTP_CREATED);
