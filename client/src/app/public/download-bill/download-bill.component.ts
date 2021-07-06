@@ -17,6 +17,8 @@ export class DownloadBillComponent implements OnInit {
   }
 
   onDownload(): void {
-    console.log('downloaded');
+    const urlQuery = '?accessToken=' + localStorage.getItem('accessToken') + '&itemId=' + this.awardedItem.id;
+    const url = localStorage.getItem('serverUrl') + '/items/downloadBill' + urlQuery;
+    window.open(url);
   }
 }

@@ -11,10 +11,10 @@ import {UserBid} from '../../interfaces/user-bid';
 
 @Component({
   selector: 'app-bid-history',
-  templateUrl: './bid-history.component.html',
-  styleUrls: ['./bid-history.component.sass']
+  templateUrl: './item-bid-history.component.html',
+  styleUrls: ['./item-bid-history.component.sass']
 })
-export class BidHistoryComponent implements OnInit {
+export class ItemBidHistoryComponent implements OnInit {
 
   title = 'Bid History';
   itemId?: number;

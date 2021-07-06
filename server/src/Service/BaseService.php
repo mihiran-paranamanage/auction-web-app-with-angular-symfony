@@ -24,6 +24,7 @@ class BaseService
     const DATA_GROUP_CONFIGURE_AUTO_BID = 'configure_auto_bid';
     const DATA_GROUP_ITEM = 'item';
     const DATA_GROUP_USER_DETAILS = 'user_details';
+    const DATA_GROUP_ITEM_BILL = 'item_bill';
 
     const PERMISSION_TYPE_CAN_READ = 'canRead';
     const PERMISSION_TYPE_CAN_CREATE = 'canCreate';
@@ -34,6 +35,8 @@ class BaseService
     const EMAIL_NOTIFICATION_BID_CLOSED_AND_AWARDED = 'Bid Closed And Awarded Notification';
     const EMAIL_NOTIFICATION_BID_CLOSED_AND_AWARDED_WINNER = 'Bid Closed And Awarded Notification - Winner';
     const EMAIL_NOTIFICATION_MAX_AUTO_BID_EXCEEDED = 'Maximum Auto Bid Exceeded Notification';
+
+    const ITEM_BILL_ITEM_AWARDED_BILL = 'Item Awarded Bill';
 
     private $emailNotificationTemplateRepository;
     private $userRoleDataGroupRepository;

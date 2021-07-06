@@ -38,12 +38,14 @@ final class Version0002 extends AbstractMigration
         $this->addSql("INSERT INTO `data_group` (`name`) VALUES ('configure_auto_bid');");
         $this->addSql("INSERT INTO `data_group` (`name`) VALUES ('admin_dashboard');");
         $this->addSql("INSERT INTO `data_group` (`name`) VALUES ('user_details');");
+        $this->addSql("INSERT INTO `data_group` (`name`) VALUES ('item_bill');");
         $this->addSql("SET @data_group_item_id := (SELECT `id` FROM `data_group` WHERE `name`='item');");
         $this->addSql("SET @data_group_bid_id := (SELECT `id` FROM `data_group` WHERE `name`='bid');");
         $this->addSql("SET @data_group_bid_history_id := (SELECT `id` FROM `data_group` WHERE `name`='bid_history');");
         $this->addSql("SET @data_group_configure_auto_bid_id := (SELECT `id` FROM `data_group` WHERE `name`='configure_auto_bid');");
         $this->addSql("SET @data_group_admin_dashboard_id := (SELECT `id` FROM `data_group` WHERE `name`='admin_dashboard');");
         $this->addSql("SET @data_group_user_details := (SELECT `id` FROM `data_group` WHERE `name`='user_details');");
+        $this->addSql("SET @data_group_item_bill := (SELECT `id` FROM `data_group` WHERE `name`='item_bill');");
 
         // Users
         $this->addSql("INSERT INTO `user` (`username`, `password`, `user_role_id`, `email`, `first_name`, `last_name`) VALUES ('admin1', 'e00cf25ad42683b3df678c61f42c6bda', @user_role_admin_id, 'admin1@gmail.com', 'John', 'Doe');");
@@ -68,6 +70,8 @@ final class Version0002 extends AbstractMigration
                             VALUES (@user_role_admin_id, @data_group_admin_dashboard_id, 1, 0, 0, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_admin_id, @data_group_user_details, 1, 0, 1, 0);");
+        $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
+                            VALUES (@user_role_admin_id, @data_group_item_bill, 1, 0, 0, 0);");
 
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_regular_id, @data_group_item_id, 1, 0, 0, 0);");
@@ -81,6 +85,8 @@ final class Version0002 extends AbstractMigration
                             VALUES (@user_role_regular_id, @data_group_admin_dashboard_id, 0, 0, 0, 0);");
         $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
                             VALUES (@user_role_regular_id, @data_group_user_details, 1, 0, 1, 0);");
+        $this->addSql("INSERT INTO `user_role_data_group` (`user_role_id`, `data_group_id`, `can_read`, `can_create`, `can_update`, `can_delete`) 
+                            VALUES (@user_role_regular_id, @data_group_item_bill, 1, 0, 0, 0);");
 
         // Access tokens
         $this->addSql("INSERT INTO `access_token` (`user_id`, `token`) VALUES (@user_admin1_id, 'af874ho9s8dfush6');");
@@ -127,13 +133,17 @@ final class Version0002 extends AbstractMigration
 <p><br />Thank you.<br /><br />This is an automated notification.</p>');");
 
         // Item Bill Templates
-        $this->addSql("INSERT INTO `item_bill_template` (`name`, `template`) VALUES ('Item Awarded Bill', '<p>Congratulations !!!
-<br /><br />You are awarded the item, #itemName#.</p>
-<p>Item Details:</p>
-<p>- Item: #itemName#</p>
-<p>- Item Owner: #itemOwnerFirstName# #itemOwnerLastName#</p>
-<p>- Winning Bid: $#winningBid#</p>
-<p>- Timestamp: #dateTime#</p>');");
+        $this->addSql("INSERT INTO `item_bill_template` (`name`, `template`) VALUES ('Item Awarded Bill', '<p style=\"text-align: center;\"><span style=\"color: #ff0000; font-size: 18pt;\"><strong>Congratulations !!!</strong></span></p>
+<p><br /><span style=\"font-size: 12pt;\">You are awarded the item, <strong>#itemName#</strong>.</span></p>
+<p></p>
+<p><span style=\"font-size: 12pt;\">Item Details:</span></p>
+<ul>
+<li><span style=\"font-size: 12pt;\">Item: #itemName#</span></li>
+<li><span style=\"font-size: 12pt;\">Item Owner: #itemOwnerFirstName# #itemOwnerLastName#</span></li>
+<li><span style=\"font-size: 12pt;\">Winning Bid: $#winningBid#</span></li>
+<li><span style=\"font-size: 12pt;\">Timestamp: #dateTime#</span></li>
+</ul>
+');");
 
         // Configurations
         $this->addSql("INSERT INTO `config` (`property`, `value`) VALUES ('MAILER_DSN', 'smtp://3bdf49e6b2f7d1:95d86fe3c23e6a@smtp.mailtrap.io:2525/?encryption=ssl&auth_mode=login');");

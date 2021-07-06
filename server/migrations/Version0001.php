@@ -8,13 +8,14 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Auto-generated Migration: Please modify to your needs!
+ * Class Version0001
+ * @package DoctrineMigrations
  */
 final class Version0001 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Load schema';
     }
 
     public function up(Schema $schema): void

@@ -40,7 +40,7 @@ import { ItemDetailsFormComponent } from './public/item-details-form/item-detail
 import { ItemBidComponent } from './public/item-bid/item-bid.component';
 import { AutoBidConfigComponent } from './public/auto-bid-config/auto-bid-config.component';
 import { ItemDetailsComponent } from './public/item-details/item-details.component';
-import { BidHistoryComponent } from './public/bid-history/bid-history.component';
+import { ItemBidHistoryComponent } from './public/item-bid-history/item-bid-history.component';
 import { HomePageComponent } from './public/home-page/home-page.component';
 import { LoginPageComponent } from './public/login-page/login-page.component';
 import { MainComponent } from './main/main/main.component';
@@ -69,7 +69,7 @@ import { DownloadBillComponent } from './public/download-bill/download-bill.comp
     ItemBidComponent,
     AutoBidConfigComponent,
     ItemDetailsComponent,
-    BidHistoryComponent,
+    ItemBidHistoryComponent,
     HomePageComponent,
     LoginPageComponent,
     MainComponent,
