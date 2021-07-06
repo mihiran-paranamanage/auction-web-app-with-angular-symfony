@@ -2,15 +2,10 @@ import { Injectable } from '@angular/core';
 import {Observable, ObservableInput, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {catchError, map, tap} from 'rxjs/operators';
-
-import {Item} from '../../interfaces/item';
-import {ItemEventListenerService} from '../item-event-listener/item-event-listener.service';
 import {Permission} from '../../interfaces/permission';
-import {AutoBidConfig} from '../../interfaces/auto-bid-config';
-import {Bid} from '../../interfaces/bid';
-import {ItemBid} from '../../interfaces/item-bid';
 import {AccessToken} from '../../interfaces/access-token';
 import {UserDetails} from '../../interfaces/user-details';
+import {EventListenerService} from '../event-listener/event-listener.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,13 +14,8 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
-    private itemEventListenerService: ItemEventListenerService
+    private eventListenerService: EventListenerService
   ) { }
-
-  handleError(error: any): ObservableInput<any> {
-    this.itemEventListenerService.onFailure(error);
-    return of([]);
-  }
 
   getPermissions(url: string): Observable<Permission[]> {
     return this.http.get<Permission>(url)
@@ -57,8 +47,13 @@ export class UserService {
   updateUserDetails(url: string, userDetails: UserDetails): Observable<UserDetails> {
     return this.http.put<UserDetails>(url, userDetails)
       .pipe(
-        tap(response => this.itemEventListenerService.onUpdatedUserDetails(response)),
+        tap(response => this.eventListenerService.onUpdated(response)),
         catchError(error => this.handleError(error))
       );
+  }
+
+  handleError(error: any): ObservableInput<any> {
+    this.eventListenerService.onFailure(error);
+    return of([]);
   }
 }

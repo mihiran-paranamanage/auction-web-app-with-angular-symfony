@@ -1,8 +1,7 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {ItemService} from '../../services/item/item.service';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
-import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
 import {Item} from '../../interfaces/item';
 import {Bid} from '../../interfaces/bid';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
@@ -10,6 +9,7 @@ import {Observable} from 'rxjs';
 import {ActivatedRoute, Params} from '@angular/router';
 import {UserService} from '../../services/user/user.service';
 import {ConfigService} from '../../services/config/config.service';
+import {EventListenerService} from '../../services/event-listener/event-listener.service';
 
 @Component({
   selector: 'app-item-details',
@@ -22,16 +22,15 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
   submitButtonLabel = 'Submit Bid';
   isAutoBidEnabled = false;
   socket: any = undefined;
-
   itemId?: number;
   remainingTime = '0 day(s), 00 hr(s), 00 min(s), 00 sec(s)';
   allowSubmit = true;
   changeItemBid = true;
-  updateRemainingTimeInterval?: any;
   showBidHistoryBtn = false;
+  updateRemainingTimeInterval?: any;
   item$!: Observable<Item>;
 
-  private item: Item = {
+  item: Item = {
     id: undefined,
     name: '',
     description: '',
@@ -41,7 +40,7 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
     accessToken: ''
   };
 
-  private autoBidConfig: AutoBidConfig = {
+  autoBidConfig: AutoBidConfig = {
     id: undefined,
     maxBidAmount: 0,
     currentBidAmount: 0,
@@ -55,10 +54,10 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
     private userService: UserService,
     private configService: ConfigService,
     private snackbarService: SnackbarService,
-    private itemEventListenerService: ItemEventListenerService,
+    private eventListenerService: EventListenerService,
     private route: ActivatedRoute
   ) {
-    this.subscribeForItemEvents();
+    this.subscribeForEvents();
   }
 
   currencyInputValidators = [Validators.required, Validators.pattern(/^\d+(.\d{2})?$/)];
@@ -92,12 +91,16 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
     this.item$ = this.itemService.getItem(url);
     this.itemService.getItem(url)
       .subscribe(item => {
-        this.changeItemBid = !this.item.bid || !item.bid || this.bidForm.value.bid < (+item.bid + 1);
+        this.checkForChangeItemBid(item);
         this.item = item;
         this.fetchAutoBigConfig();
         this.checkBidHistoryPermissions();
         this.subscribeForItemDetailsChangeEvent();
       });
+  }
+
+  checkForChangeItemBid(item: Item): void {
+    this.changeItemBid = !this.item.bid || !item.bid || this.bidForm.value.bid < (+item.bid + 1);
   }
 
   updateRemainingTime(): void {
@@ -139,11 +142,11 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
       .subscribe(autoBidConfig => {
         this.autoBidConfig = autoBidConfig;
         this.isAutoBidEnabled = !!autoBidConfig.isAutoBidEnabled;
-        this.updateAutoBidConfigForm();
+        this.updateBidForm();
       });
   }
 
-  updateAutoBidConfigForm(): void {
+  updateBidForm(): void {
     if (this.changeItemBid) {
       this.bidForm = this.formBuilder.group({
         itemId: [this.item.id],
@@ -154,22 +157,25 @@ export class ItemDetailsComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  subscribeForItemEvents(): void {
-    this.itemEventListenerService.bidEventSaveEmit$.subscribe(bid => {
+  subscribeForEvents(): void {
+    this.eventListenerService.eventSaveEmit$.subscribe(bid => {
       this.onSaved(bid);
     });
-    this.itemEventListenerService.itemEventFailureEmit$.subscribe(error => {
+    this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }
 
   subscribeForItemDetailsChangeEvent(): void {
     if (!this.socket) {
-      this.socket = new WebSocket('ws://localhost:5001/' + this.item.id);
+      // @ts-ignore
+      const webSocketUrl = localStorage.getItem('webSocketUrl') + this.item.id;
+      this.socket = new WebSocket(webSocketUrl);
     }
     const that = this;
-    this.socket.onmessage = function(msg: string) {
-      that.fetchItemDetails();
+    this.socket.onmessage = (msg: string) => {
+      console.log(msg);
+      // that.fetchItemDetails();
     };
   }
 

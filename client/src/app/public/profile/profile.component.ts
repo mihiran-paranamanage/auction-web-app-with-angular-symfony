@@ -1,15 +1,12 @@
 import {AfterViewInit, Component} from '@angular/core';
 import {Observable} from 'rxjs';
 import {UserDetails} from '../../interfaces/user-details';
-import {UserService} from "../../services/user/user.service";
-import {ItemEventListenerService} from "../../services/item-event-listener/item-event-listener.service";
-import {SnackbarService} from "../../services/snackbar/snackbar.service";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {Item} from "../../interfaces/item";
-import {ItemDetailsFormComponent} from "../item-details-form/item-details-form.component";
-import {ItemForm} from "../../interfaces/item-form";
-import {UserDetailsForm} from "../../interfaces/user-details-form";
-import {UserDetailsFormComponent} from "../user-details-form/user-details-form.component";
+import {UserService} from '../../services/user/user.service';
+import {SnackbarService} from '../../services/snackbar/snackbar.service';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {UserDetailsForm} from '../../interfaces/user-details-form';
+import {UserDetailsFormComponent} from '../user-details-form/user-details-form.component';
+import {EventListenerService} from '../../services/event-listener/event-listener.service';
 
 @Component({
   selector: 'app-profile',
@@ -24,11 +21,11 @@ export class ProfileComponent implements AfterViewInit {
 
   constructor(
     private userService: UserService,
-    private itemEventListenerService: ItemEventListenerService,
+    private eventListenerService: EventListenerService,
     private snackbarService: SnackbarService,
     private matDialog: MatDialog
   ) {
-    this.subscribeForItemEvents();
+    this.subscribeForEvents();
   }
 
   ngAfterViewInit(): void {
@@ -45,11 +42,11 @@ export class ProfileComponent implements AfterViewInit {
       });
   }
 
-  subscribeForItemEvents(): void {
-    this.itemEventListenerService.itemEventUpdateEmit$.subscribe(item => {
+  subscribeForEvents(): void {
+    this.eventListenerService.eventUpdateEmit$.subscribe(item => {
       this.onUpdatedUserDetails(item);
     });
-    this.itemEventListenerService.itemEventFailureEmit$.subscribe(error => {
+    this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }
@@ -82,12 +79,15 @@ export class ProfileComponent implements AfterViewInit {
     const url = localStorage.getItem('serverUrl') + '/users/userDetails';
     const userDetails: UserDetails = {
       id: undefined,
+      userRoleId: undefined,
       username: undefined,
       password: result.password ? result.password : undefined,
       userRoleName: undefined,
       email: result.email,
       firstName: result.firstName,
       lastName: result.lastName,
+      bids: undefined,
+      awardedItems: undefined,
       accessToken: result.accessToken
     };
     this.userService.updateUserDetails(url, userDetails)

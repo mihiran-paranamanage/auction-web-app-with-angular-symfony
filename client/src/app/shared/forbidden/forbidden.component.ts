@@ -13,5 +13,4 @@ export class ForbiddenComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }

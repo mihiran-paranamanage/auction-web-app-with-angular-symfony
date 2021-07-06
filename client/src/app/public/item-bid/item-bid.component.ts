@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input} from '@angular/core';
 import { Router } from '@angular/router';
 import {Item} from '../../interfaces/item';
 
@@ -7,15 +7,17 @@ import {Item} from '../../interfaces/item';
   templateUrl: './item-bid.component.html',
   styleUrls: ['./item-bid.component.sass']
 })
-export class ItemBidComponent implements OnInit {
+export class ItemBidComponent implements AfterViewInit {
 
+  buttonLabel = 'Bid Now';
   @Input() item!: Item;
 
   constructor(
     private router: Router
   ) { }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.buttonLabel = this.item.isClosed ? 'View Item' : 'Bid Now';
   }
 
   onBid(): void {

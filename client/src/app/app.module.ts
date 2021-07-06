@@ -25,7 +25,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatNativeDateModule } from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-
 import { AppComponent } from './app.component';
 import { ItemListComponent } from './public/item-list/item-list.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
@@ -47,10 +46,11 @@ import { LoginPageComponent } from './public/login-page/login-page.component';
 import { MainComponent } from './main/main/main.component';
 import { ForbiddenComponent } from './shared/forbidden/forbidden.component';
 import { ProfileComponent } from './public/profile/profile.component';
-import {MatTabsModule} from "@angular/material/tabs";
+import {MatTabsModule} from '@angular/material/tabs';
 import { UserBidHistoryComponent } from './public/user-bid-history/user-bid-history.component';
 import { UserAwardedItemHistoryComponent } from './public/user-awarded-item-history/user-awarded-item-history.component';
 import { UserDetailsFormComponent } from './public/user-details-form/user-details-form.component';
+import { DownloadBillComponent } from './public/download-bill/download-bill.component';
 
 @NgModule({
   declarations: [
@@ -77,40 +77,43 @@ import { UserDetailsFormComponent } from './public/user-details-form/user-detail
     ProfileComponent,
     UserBidHistoryComponent,
     UserAwardedItemHistoryComponent,
-    UserDetailsFormComponent
+    UserDetailsFormComponent,
+    DownloadBillComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatCardModule,
-        MatDividerModule,
-        MatGridListModule,
-        MatButtonModule,
-        MatSnackBarModule,
-        MatSidenavModule,
-        MatListModule,
-        MatIconModule,
-        ReactiveFormsModule,
-        HttpClientModule,
-        MatBottomSheetModule,
-        MatDialogModule,
-        NoopAnimationsModule,
-        MatDatepickerModule,
-        MatCheckboxModule,
-        MatNativeDateModule,
-        MatTabsModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatDividerModule,
+    MatGridListModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    MatBottomSheetModule,
+    MatDialogModule,
+    NoopAnimationsModule,
+    MatDatepickerModule,
+    MatCheckboxModule,
+    MatNativeDateModule,
+    MatTabsModule
+  ],
   providers: [
     CurrencyPipe,
     MatDatepickerModule
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule { }

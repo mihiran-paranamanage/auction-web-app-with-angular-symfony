@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
+import {EventListenerService} from '../../services/event-listener/event-listener.service';
 
 @Component({
   selector: 'app-main',
@@ -11,17 +11,18 @@ export class MainComponent implements OnInit {
   authenticated = !!localStorage.getItem('accessToken');
 
   constructor(
-    private itemEventListenerService: ItemEventListenerService
+    private eventListenerService: EventListenerService
   ) {
-    this.subscribeForItemEvents();
+    this.subscribeForEvents();
   }
 
   ngOnInit(): void {
     localStorage.setItem('serverUrl', 'http://localhost:8001/api');
+    localStorage.setItem('webSocketUrl', 'ws://localhost:5001/');
   }
 
-  subscribeForItemEvents(): void {
-    this.itemEventListenerService.onChangeAuthenticationEventEmit$.subscribe(() => {
+  subscribeForEvents(): void {
+    this.eventListenerService.onChangeAuthenticationEventEmit$.subscribe(() => {
       this.onChangeAuthentication();
     });
   }

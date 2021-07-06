@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
-
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
-import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
 import {Router} from '@angular/router';
-import {CommonService} from "../../services/common/common.service";
-import {UserService} from "../../services/user/user.service";
+import {CommonService} from '../../services/common/common.service';
+import {UserService} from '../../services/user/user.service';
+import {EventListenerService} from '../../services/event-listener/event-listener.service';
 
 @Component({
   selector: 'app-add-item',
@@ -18,7 +17,6 @@ export class AddItemComponent implements OnInit {
 
   title = 'Add Item';
   submitButtonLabel = 'Add';
-
   minCloseDate = new Date();
 
   constructor(
@@ -27,10 +25,10 @@ export class AddItemComponent implements OnInit {
     private commonService: CommonService,
     private userService: UserService,
     private snackbarService: SnackbarService,
-    private itemEventListenerService: ItemEventListenerService,
+    private eventListenerService: EventListenerService,
     private router: Router
   ) {
-    this.subscribeForItemEvents();
+    this.subscribeForEvents();
   }
 
   textInputValidators = [Validators.required, Validators.maxLength(100)];
@@ -53,11 +51,11 @@ export class AddItemComponent implements OnInit {
     this.checkPermissions();
   }
 
-  subscribeForItemEvents(): void {
-    this.itemEventListenerService.itemEventAddEmit$.subscribe(item => {
+  subscribeForEvents(): void {
+    this.eventListenerService.eventSaveEmit$.subscribe(item => {
       this.onAdded(item);
     });
-    this.itemEventListenerService.itemEventFailureEmit$.subscribe(error => {
+    this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }

@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
 import {ItemActionDeleteConfirmationComponent} from '../item-action-delete-confirmation/item-action-delete-confirmation.component';

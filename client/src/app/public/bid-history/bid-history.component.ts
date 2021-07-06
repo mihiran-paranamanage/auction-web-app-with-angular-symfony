@@ -1,13 +1,13 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {ItemService} from '../../services/item/item.service';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
-import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
-import {ItemBid} from '../../interfaces/item-bid';
 import {MatTableDataSource} from '@angular/material/table';
-import {Item} from '../../interfaces/item';
 import {MatPaginator} from '@angular/material/paginator';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {UserService} from "../../services/user/user.service";
+import {UserService} from '../../services/user/user.service';
+import {Bid} from '../../interfaces/bid';
+import {MatSort} from '@angular/material/sort';
+import {UserBid} from '../../interfaces/user-bid';
 
 @Component({
   selector: 'app-bid-history',
@@ -17,19 +17,18 @@ import {UserService} from "../../services/user/user.service";
 export class BidHistoryComponent implements AfterViewInit {
 
   title = 'Bid History';
-
   itemId?: number;
-  private bids: ItemBid[] = [];
-  dataSource = new MatTableDataSource<Item>(this.bids);
-  displayedColumns: string[] = ['user', 'bid', 'dateTime'];
+  bids: Bid[] = [];
+  dataSource = new MatTableDataSource<UserBid>(this.bids);
+  displayedColumns: string[] = ['itemName', 'bid', 'isAutoBid', 'dateTime'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private itemService: ItemService,
     private userService: UserService,
     private snackbarService: SnackbarService,
-    private itemEventListenerService: ItemEventListenerService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -56,8 +55,9 @@ export class BidHistoryComponent implements AfterViewInit {
   }
 
   updateTableDataSource(): void {
-    this.dataSource = new MatTableDataSource<Item>(this.bids);
+    this.dataSource = new MatTableDataSource<UserBid>(this.bids);
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   checkPermissions(): void {

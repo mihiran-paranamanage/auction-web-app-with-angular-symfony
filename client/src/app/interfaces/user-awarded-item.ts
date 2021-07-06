@@ -1,12 +1,15 @@
 export interface UserAwardedItem {
   id?: number;
   name?: string;
+  description?: string;
+  price?: number;
   bid?: number;
   closeDateTime?: string;
-  winningBid?: {
-    id?: number;
-    bid?: number;
-    isAutoBid?: boolean;
-    dateTime?: string;
-  };
+  isAutoBidEnabled?: boolean;
+  isClosed?: boolean;
+  isAwardNotified?: boolean;
+  winningBidId?: number;
+  winningBid?: number;
+  winningBidIsAutoBid?: boolean;
+  winningBidDateTime?: string;
 }

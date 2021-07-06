@@ -10,7 +10,7 @@ export interface UserDetails {
   email?: string;
   firstName?: string;
   lastName?: string;
-  accessToken?: string;
   bids?: UserBid[];
   awardedItems?: UserAwardedItem[];
+  accessToken?: string;
 }

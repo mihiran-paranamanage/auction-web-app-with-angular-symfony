@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-
 import {MenuItem} from '../../interfaces/menu-item';
 import {ItemService} from '../../services/item/item.service';
 import {Permission} from '../../interfaces/permission';
-import {UserService} from "../../services/user/user.service";
+import {UserService} from '../../services/user/user.service';
 
 @Component({
   selector: 'app-sidenav-menu-items',

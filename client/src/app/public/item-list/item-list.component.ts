@@ -3,10 +3,9 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
-
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
-import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
+import {EventListenerService} from '../../services/event-listener/event-listener.service';
 
 @Component({
   selector: 'app-item-list',
@@ -16,8 +15,7 @@ import {ItemEventListenerService} from '../../services/item-event-listener/item-
 export class ItemListComponent implements AfterViewInit {
 
   title = 'Admin Dashboard';
-
-  private items: Item[] = [];
+  items: Item[] = [];
   dataSource = new MatTableDataSource<Item>(this.items);
   displayedColumns: string[] = ['name', 'description', 'price', 'bid', 'closeDateTime', 'actions'];
 
@@ -27,23 +25,23 @@ export class ItemListComponent implements AfterViewInit {
   constructor(
     private itemService: ItemService,
     private snackbarService: SnackbarService,
-    private itemEventListenerService: ItemEventListenerService
+    private eventListenerService: EventListenerService
   ) {
-    this.subscribeForItemEvents();
+    this.subscribeForEvents();
   }
 
   ngAfterViewInit(): void {
     this.fetchItems();
   }
 
-  subscribeForItemEvents(): void {
-    this.itemEventListenerService.itemEventUpdateEmit$.subscribe(item => {
+  subscribeForEvents(): void {
+    this.eventListenerService.eventUpdateEmit$.subscribe(item => {
       this.onUpdated(item);
     });
-    this.itemEventListenerService.itemEventDeleteEmit$.subscribe(() => {
+    this.eventListenerService.eventDeleteEmit$.subscribe(() => {
       this.onDeleted();
     });
-    this.itemEventListenerService.itemEventFailureEmit$.subscribe(error => {
+    this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }

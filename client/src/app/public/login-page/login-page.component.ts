@@ -4,8 +4,8 @@ import {ItemService} from '../../services/item/item.service';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {Router} from '@angular/router';
 import {AccessToken} from '../../interfaces/access-token';
-import {ItemEventListenerService} from '../../services/item-event-listener/item-event-listener.service';
 import {UserService} from '../../services/user/user.service';
+import {EventListenerService} from '../../services/event-listener/event-listener.service';
 
 @Component({
   selector: 'app-login-page',
@@ -31,9 +31,9 @@ export class LoginPageComponent implements OnInit {
     private itemService: ItemService,
     private userService: UserService,
     private snackbarService: SnackbarService,
-    private itemEventListenerService: ItemEventListenerService
+    private eventListenerService: EventListenerService
   ) {
-    this.subscribeForItemEvents();
+    this.subscribeForEvents();
   }
 
   textInputValidators = [Validators.required, Validators.maxLength(100)];
@@ -46,11 +46,11 @@ export class LoginPageComponent implements OnInit {
   ngOnInit(): void {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('permissions');
-    this.itemEventListenerService.onChangeAuthentication();
+    this.eventListenerService.onChangeAuthentication();
   }
 
-  subscribeForItemEvents(): void {
-    this.itemEventListenerService.itemEventFailureEmit$.subscribe(error => {
+  subscribeForEvents(): void {
+    this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }
@@ -77,7 +77,7 @@ export class LoginPageComponent implements OnInit {
   postLoginAction(): void {
     if (this.accessToken.token) {
       localStorage.setItem('accessToken', this.accessToken.token);
-      this.itemEventListenerService.onChangeAuthentication();
+      this.eventListenerService.onChangeAuthentication();
       this.router.navigate(['/home']).then(() => {
         window.location.reload();
       });

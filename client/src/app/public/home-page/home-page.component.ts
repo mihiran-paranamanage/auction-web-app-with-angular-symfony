@@ -2,7 +2,6 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
 
@@ -14,8 +13,7 @@ import {ItemService} from '../../services/item/item.service';
 export class HomePageComponent implements AfterViewInit {
 
   title = 'Home Page';
-
-  private items: Item[] = [];
+  items: Item[] = [];
   dataSource = new MatTableDataSource<Item>(this.items);
   displayedColumns: string[] = ['name', 'description', 'price', 'bid', 'closeDateTime', 'actions'];
 
@@ -52,11 +50,5 @@ export class HomePageComponent implements AfterViewInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
-  }
-
-  isBidClosed(item: Item): boolean {
-    const closeDateTime = (item && item.closeDateTime) ? new Date(item.closeDateTime) : new Date();
-    const diff = (closeDateTime.getTime() - Date.now()) / 1000;
-    return diff > 0;
   }
 }

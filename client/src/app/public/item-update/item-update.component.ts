@@ -1,11 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
 import {ItemDetailsFormComponent} from '../item-details-form/item-details-form.component';
 import {ItemForm} from '../../interfaces/item-form';
-import {CommonService} from "../../services/common/common.service";
+import {CommonService} from '../../services/common/common.service';
 
 @Component({
   selector: 'app-item-update',

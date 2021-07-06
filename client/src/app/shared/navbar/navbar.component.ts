@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
-import {Observable} from "rxjs";
-import {UserDetails} from "../../interfaces/user-details";
-import {UserService} from "../../services/user/user.service";
+import {Observable} from 'rxjs';
+import {UserDetails} from '../../interfaces/user-details';
+import {UserService} from '../../services/user/user.service';
 
 @Component({
   selector: 'app-navbar',

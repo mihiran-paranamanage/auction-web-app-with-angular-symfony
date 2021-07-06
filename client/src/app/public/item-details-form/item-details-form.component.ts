@@ -1,10 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
-import {CommonService} from "../../services/common/common.service";
+import {CommonService} from '../../services/common/common.service';
 
 @Component({
   selector: 'app-item-details-form',

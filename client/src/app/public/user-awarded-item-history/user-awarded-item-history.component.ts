@@ -1,9 +1,8 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, ViewChild} from '@angular/core';
 import {UserAwardedItem} from '../../interfaces/user-awarded-item';
-import {MatPaginator} from "@angular/material/paginator";
-import {MatSort} from "@angular/material/sort";
-import {MatTableDataSource} from "@angular/material/table";
-import {UserBid} from "../../interfaces/user-bid";
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 
 @Component({
   selector: 'app-user-awarded-item-history',
@@ -16,8 +15,8 @@ export class UserAwardedItemHistoryComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  dataSource = new MatTableDataSource<UserBid>(this.awardedItems);
-  displayedColumns: string[] = ['item', 'bid', 'isAutoBid', 'dateTime'];
+  dataSource = new MatTableDataSource<UserAwardedItem>(this.awardedItems);
+  displayedColumns: string[] = ['name', 'winningBid', 'winningBidIsAutoBid', 'winningBidDateTime', 'actions'];
 
   constructor() {
     this.updateTableDataSource();
@@ -28,7 +27,7 @@ export class UserAwardedItemHistoryComponent implements AfterViewInit {
   }
 
   updateTableDataSource(): void {
-    this.dataSource = new MatTableDataSource<UserBid>(this.awardedItems);
+    this.dataSource = new MatTableDataSource<UserAwardedItem>(this.awardedItems);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
