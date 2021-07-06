@@ -1,5 +1,5 @@
-import {AfterViewInit, Component} from '@angular/core';
-import {Observable} from 'rxjs';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
+import {Observable, Subscription} from 'rxjs';
 import {UserDetails} from '../../interfaces/user-details';
 import {UserService} from '../../services/user/user.service';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
@@ -13,11 +13,13 @@ import {EventListenerService} from '../../services/event-listener/event-listener
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.sass']
 })
-export class ProfileComponent implements AfterViewInit {
+export class ProfileComponent implements AfterViewInit, OnDestroy {
 
   title = 'My Profile';
   userDetails$!: Observable<UserDetails>;
   userDetails: UserDetails = {};
+  subscriptionEventUpdateEmit?: Subscription;
+  subscriptionEventFailureEmit?: Subscription;
 
   constructor(
     private userService: UserService,
@@ -32,6 +34,11 @@ export class ProfileComponent implements AfterViewInit {
     this.fetchUserDetails();
   }
 
+  ngOnDestroy(): void {
+    this.subscriptionEventUpdateEmit?.unsubscribe();
+    this.subscriptionEventFailureEmit?.unsubscribe();
+  }
+
   fetchUserDetails(): void {
     const urlQuery = '?accessToken=' + localStorage.getItem('accessToken') + '&include=bids,awardedItems';
     const url = localStorage.getItem('serverUrl') + '/users/userDetails' + urlQuery;
@@ -43,10 +50,10 @@ export class ProfileComponent implements AfterViewInit {
   }
 
   subscribeForEvents(): void {
-    this.eventListenerService.eventUpdateEmit$.subscribe(item => {
+    this.subscriptionEventUpdateEmit = this.eventListenerService.eventUpdateEmit$.subscribe(item => {
       this.onUpdatedUserDetails(item);
     });
-    this.eventListenerService.eventFailureEmit$.subscribe(error => {
+    this.subscriptionEventFailureEmit = this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }

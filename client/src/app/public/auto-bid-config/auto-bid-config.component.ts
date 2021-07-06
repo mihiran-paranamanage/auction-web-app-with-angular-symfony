@@ -1,9 +1,9 @@
-import {AfterViewInit, Component} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
+import {FormBuilder} from '@angular/forms';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {ItemService} from '../../services/item/item.service';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {ConfigService} from '../../services/config/config.service';
 import {EventListenerService} from '../../services/event-listener/event-listener.service';
 import {CommonService} from '../../services/common/common.service';
@@ -13,11 +13,13 @@ import {CommonService} from '../../services/common/common.service';
   templateUrl: './auto-bid-config.component.html',
   styleUrls: ['./auto-bid-config.component.sass']
 })
-export class AutoBidConfigComponent implements AfterViewInit {
+export class AutoBidConfigComponent implements AfterViewInit, OnDestroy {
 
   title = 'Auto Bid Configurations';
   submitButtonLabel = 'Save';
   autoBidConfig$!: Observable<AutoBidConfig>;
+  subscriptionEventSaveEmit?: Subscription;
+  subscriptionEventFailureEmit?: Subscription;
 
   private autoBidConfig: AutoBidConfig = {
     id: undefined,
@@ -46,6 +48,11 @@ export class AutoBidConfigComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.fetchAutoBigConfig();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptionEventSaveEmit?.unsubscribe();
+    this.subscriptionEventFailureEmit?.unsubscribe();
   }
 
   fetchAutoBigConfig(): void {
@@ -90,10 +97,10 @@ export class AutoBidConfigComponent implements AfterViewInit {
   }
 
   subscribeForEvents(): void {
-    this.eventListenerService.eventSaveEmit$.subscribe(autoBidConfig => {
+    this.subscriptionEventSaveEmit = this.eventListenerService.eventSaveEmit$.subscribe(autoBidConfig => {
       this.onSaved(autoBidConfig);
     });
-    this.eventListenerService.eventFailureEmit$.subscribe(error => {
+    this.subscriptionEventFailureEmit = this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }

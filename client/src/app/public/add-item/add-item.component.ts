@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder} from '@angular/forms';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
@@ -7,17 +7,20 @@ import {Router} from '@angular/router';
 import {CommonService} from '../../services/common/common.service';
 import {UserService} from '../../services/user/user.service';
 import {EventListenerService} from '../../services/event-listener/event-listener.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-add-item',
   templateUrl: './add-item.component.html',
   styleUrls: ['./add-item.component.sass']
 })
-export class AddItemComponent implements OnInit {
+export class AddItemComponent implements OnInit, OnDestroy {
 
   title = 'Add Item';
   submitButtonLabel = 'Add';
   minCloseDate = new Date();
+  subscriptionEventSaveEmit?: Subscription;
+  subscriptionEventFailureEmit?: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -45,11 +48,16 @@ export class AddItemComponent implements OnInit {
     this.checkPermissions();
   }
 
+  ngOnDestroy(): void {
+    this.subscriptionEventSaveEmit?.unsubscribe();
+    this.subscriptionEventFailureEmit?.unsubscribe();
+  }
+
   subscribeForEvents(): void {
-    this.eventListenerService.eventSaveEmit$.subscribe(item => {
+    this.subscriptionEventSaveEmit = this.eventListenerService.eventSaveEmit$.subscribe(item => {
       this.onAdded(item);
     });
-    this.eventListenerService.eventFailureEmit$.subscribe(error => {
+    this.subscriptionEventFailureEmit = this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }

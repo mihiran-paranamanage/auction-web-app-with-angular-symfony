@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder} from '@angular/forms';
 import {ItemService} from '../../services/item/item.service';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {Item} from '../../interfaces/item';
 import {Bid} from '../../interfaces/bid';
 import {AutoBidConfig} from '../../interfaces/auto-bid-config';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute, Params} from '@angular/router';
 import {UserService} from '../../services/user/user.service';
 import {ConfigService} from '../../services/config/config.service';
@@ -31,6 +31,8 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
   showBidHistoryBtn = false;
   updateRemainingTimeInterval?: any;
   item$!: Observable<Item>;
+  subscriptionEventSaveEmit?: Subscription;
+  subscriptionEventFailureEmit?: Subscription;
 
   item: Item = {
     id: undefined,
@@ -85,6 +87,8 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
     if (this.socket) {
       this.socket.close();
     }
+    this.subscriptionEventSaveEmit?.unsubscribe();
+    this.subscriptionEventFailureEmit?.unsubscribe();
   }
 
   fetchItemDetails(): void {
@@ -164,10 +168,10 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
   }
 
   subscribeForEvents(): void {
-    this.eventListenerService.eventSaveEmit$.subscribe(bid => {
+    this.subscriptionEventSaveEmit = this.eventListenerService.eventSaveEmit$.subscribe(bid => {
       this.onSaved(bid);
     });
-    this.eventListenerService.eventFailureEmit$.subscribe(error => {
+    this.subscriptionEventFailureEmit = this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }

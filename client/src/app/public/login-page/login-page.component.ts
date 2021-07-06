@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder} from '@angular/forms';
 import {ItemService} from '../../services/item/item.service';
 import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {Router} from '@angular/router';
@@ -7,18 +7,20 @@ import {AccessToken} from '../../interfaces/access-token';
 import {UserService} from '../../services/user/user.service';
 import {EventListenerService} from '../../services/event-listener/event-listener.service';
 import {CommonService} from '../../services/common/common.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.sass']
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent implements OnInit, OnDestroy {
 
   title = 'Sign in';
   submitButtonLabel = 'Sign in';
   showLoginError = false;
   loginErrorMessage = 'Invalid username or password';
+  subscriptionEventFailureEmit?: Subscription;
 
   accessToken: AccessToken = {
     id: undefined,
@@ -49,8 +51,12 @@ export class LoginPageComponent implements OnInit {
     this.eventListenerService.onChangeAuthentication();
   }
 
+  ngOnDestroy(): void {
+    this.subscriptionEventFailureEmit?.unsubscribe();
+  }
+
   subscribeForEvents(): void {
-    this.eventListenerService.eventFailureEmit$.subscribe(error => {
+    this.subscriptionEventFailureEmit = this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }

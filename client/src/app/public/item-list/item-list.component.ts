@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -6,18 +6,22 @@ import {SnackbarService} from '../../services/snackbar/snackbar.service';
 import {Item} from '../../interfaces/item';
 import {ItemService} from '../../services/item/item.service';
 import {EventListenerService} from '../../services/event-listener/event-listener.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
   styleUrls: ['./item-list.component.sass']
 })
-export class ItemListComponent implements AfterViewInit {
+export class ItemListComponent implements AfterViewInit, OnDestroy {
 
   title = 'Admin Dashboard';
   items: Item[] = [];
   dataSource = new MatTableDataSource<Item>(this.items);
   displayedColumns: string[] = ['name', 'description', 'price', 'bid', 'closeDateTime', 'actions'];
+  subscriptionEventUpdateEmit?: Subscription;
+  subscriptionEventDeleteEmit?: Subscription;
+  subscriptionEventFailureEmit?: Subscription;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -34,14 +38,20 @@ export class ItemListComponent implements AfterViewInit {
     this.fetchItems();
   }
 
+  ngOnDestroy(): void {
+    this.subscriptionEventUpdateEmit?.unsubscribe();
+    this.subscriptionEventDeleteEmit?.unsubscribe();
+    this.subscriptionEventFailureEmit?.unsubscribe();
+  }
+
   subscribeForEvents(): void {
-    this.eventListenerService.eventUpdateEmit$.subscribe(item => {
+    this.subscriptionEventUpdateEmit = this.eventListenerService.eventUpdateEmit$.subscribe(item => {
       this.onUpdated(item);
     });
-    this.eventListenerService.eventDeleteEmit$.subscribe(() => {
+    this.subscriptionEventDeleteEmit = this.eventListenerService.eventDeleteEmit$.subscribe(() => {
       this.onDeleted();
     });
-    this.eventListenerService.eventFailureEmit$.subscribe(error => {
+    this.subscriptionEventFailureEmit = this.eventListenerService.eventFailureEmit$.subscribe(error => {
       this.onFailure(error);
     });
   }
