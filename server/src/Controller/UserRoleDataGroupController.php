@@ -26,35 +26,47 @@ class UserRoleDataGroupController extends BaseController
      * @apiSuccess {Json} Object Object containing permission data
      * @apiSuccessExample Success-Response:
      *  {
-     *    "item":{
-     *      "canRead":true,
-     *      "canCreate":true,
-     *      "canUpdate":true,
-     *      "canDelete":true
+     *    "item": {
+     *      "canRead": true,
+     *      "canCreate": true,
+     *      "canUpdate": true,
+     *      "canDelete": true
      *    },
-     *    "bid":{
-     *      "canRead":true,
-     *      "canCreate":true,
-     *      "canUpdate":true,
-     *      "canDelete":true
+     *    "bid": {
+     *      "canRead": true,
+     *      "canCreate": true,
+     *      "canUpdate": false,
+     *      "canDelete": false
      *    },
-     *    "bid_history":{
-     *      "canRead":true,
-     *      "canCreate":true,
-     *      "canUpdate":true,
-     *      "canDelete":true
+     *    "bid_history": {
+     *      "canRead": true,
+     *      "canCreate": false,
+     *      "canUpdate": false,
+     *      "canDelete": false
      *    },
-     *    "configure_auto_bid":{
-     *      "canRead":true,
-     *      "canCreate":true,
-     *      "canUpdate":true,
-     *      "canDelete":true
+     *    "configure_auto_bid": {
+     *      "canRead": true,
+     *      "canCreate": true,
+     *      "canUpdate": true,
+     *      "canDelete": false
      *    },
-     *    "admin_dashboard":{
-     *      "canRead":true,
-     *      "canCreate":true,
-     *      "canUpdate":true,
-     *      "canDelete":true
+     *    "admin_dashboard": {
+     *      "canRead": true,
+     *      "canCreate": false,
+     *      "canUpdate": false,
+     *      "canDelete": false
+     *    },
+     *    "user_details": {
+     *      "canRead": true,
+     *      "canCreate": false,
+     *      "canUpdate": true,
+     *      "canDelete": false
+     *    },
+     *    "item_bill": {
+     *      "canRead": true,
+     *      "canCreate": false,
+     *      "canUpdate": false,
+     *      "canDelete": false
      *    }
      *  }
      * @apiError (400) BadRequest Bad Request

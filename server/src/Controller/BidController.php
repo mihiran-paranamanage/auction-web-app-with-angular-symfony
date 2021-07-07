@@ -104,7 +104,7 @@ class BidController extends BaseController
      * @apiGroup BID
      * @apiSubGroup Bid
      * @apiParam {String} accessToken - Access Token
-     * @apiParam {String} [filter[itemId]] - Item Id
+     * @apiParam {Number} [filter[itemId]] - Item Id
      * @apiSampleRequest http://localhost:8001/api/bids
      * @apiSuccess {Json} Object Object containing bids data
      * @apiSuccessExample Success-Response:
@@ -112,14 +112,22 @@ class BidController extends BaseController
      *    {
      *      "id":1,
      *      "userId":1,
+     *      "username":"admin1",
      *      "itemId":1,
-     *      "bid":"1500.00",
+     *      "itemName":"Item 1",
+     *      "bid":"1951.00",
      *      "isAutoBid":false,
-     *      "dateTime":"2021-06-20 22:50",
-     *      "user":{
-     *        "userId":1,
-     *        "username":"admin1"
-     *      }
+     *      "dateTime":"2021-07-08 21:10"
+     *    },
+     *    {
+     *      "id":3,
+     *      "userId":1,
+     *      "username":"admin1",
+     *      "itemId":1,
+     *      "itemName":"Item 1",
+     *      "bid":"1953.00",
+     *      "isAutoBid":true,
+     *      "dateTime":"2021-07-08 21:16"
      *    }
      *  ]
      * @apiError (400) BadRequest Bad Request
@@ -145,36 +153,32 @@ class BidController extends BaseController
     }
 
     /**
-     * @api {post} http://localhost:8001/api/bids/:id Bid - Post
+     * @api {post} http://localhost:8001/api/bids Bid - Post
      * @apiDescription Save Bid
      * @apiName saveBid
      * @apiGroup BID
      * @apiSubGroup Bid
      * @apiParam {Json} Object Object containing bid data with access token
-     * @apiSampleRequest http://localhost:8001/api/bids/1
+     * @apiSampleRequest http://localhost:8001/api/bids
      * @apiParamExample {Json} Parameter Object-Example:
      *  {
      *    "itemId":1,
-     *    "bid":"1800.00",
+     *    "bid":"1956.00",
      *    "isAutoBid":true,
-     *    "accessToken":"df874ho9s8dfush9"
+     *    "accessToken":"af874ho9s8dfush6"
      *  }
      * @apiSuccess {Json} Object Object containing bid data
      * @apiSuccessExample Success-Response:
-     *  [
-     *    {
-     *      "id":1,
-     *      "userId":3,
-     *      "itemId":1,
-     *      "bid":"1800.00",
-     *      "isAutoBid":true,
-     *      "dateTime":"2021-06-20 22:50",
-     *      "user":{
-     *        "userId":3,
-     *        "username":"user1"
-     *      }
-     *    }
-     *  ]
+     *  {
+     *    "id":7,
+     *    "userId":1,
+     *    "username":"admin1",
+     *    "itemId":1,
+     *    "itemName":"Item 1",
+     *    "bid":"1956.00",
+     *    "isAutoBid":true,
+     *    "dateTime":"2021-07-08 22:40"
+     *  }
      * @apiError (400) BadRequest Bad Request
      * @apiError (401) Unauthorized Unauthorized
      * @apiError (404) NotFound Not Found

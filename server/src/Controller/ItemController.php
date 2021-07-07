@@ -115,13 +115,40 @@ class ItemController extends BaseController
      * @apiSuccessExample Success-Response:
      *  [
      *    {
-     *      "id":1,
-     *      "name":"Item 1",
-     *      "description":"Description 1",
-     *      "price":"1500.00",
-     *      "bid":"1800.00",
-     *      "closeDateTime":"2021-06-21 12:15",
-     *      "isAutoBidEnabled":false
+     *      "id": 1,
+     *      "name": "Item 1",
+     *      "description": "Description 1",
+     *      "price": "1800.00",
+     *      "bid": "1950.00",
+     *      "closeDateTime": "2021-07-08 16:20",
+     *      "isAutoBidEnabled": true,
+     *      "isClosed": false,
+     *      "isAwardNotified": false,
+     *      "awardedUserId": null,
+     *      "awardedUsername": null,
+     *      "awardedUserRoleId": null,
+     *      "awardedUserRoleName": null,
+     *      "awardedUserEmail": null,
+     *      "awardedUserFirstName": null,
+     *      "awardedUserLastName": null
+     *    },
+     *    {
+     *      "id": 2,
+     *      "name": "Item 4",
+     *      "description": "Description 4",
+     *      "price": "400.00",
+     *      "bid": "460.00",
+     *      "closeDateTime": "2021-07-07 21:45",
+     *      "isAutoBidEnabled": false,
+     *      "isClosed": true,
+     *      "isAwardNotified": true,
+     *      "awardedUserId": 3,
+     *      "awardedUsername": "user1",
+     *      "awardedUserRoleId": 2,
+     *      "awardedUserRoleName": "Regular",
+     *      "awardedUserEmail": "user1@gmail.com",
+     *      "awardedUserFirstName": "Mike",
+     *      "awardedUserLastName": "Smith"
      *    }
      *  ]
      * @apiError (400) BadRequest Bad Request
@@ -158,15 +185,24 @@ class ItemController extends BaseController
      * @apiSampleRequest http://localhost:8001/api/items/1
      * @apiSuccess {Json} Object Object containing item data
      * @apiSuccessExample Success-Response:
-     *  {
-     *    "id":1,
-     *    "name":"Item 1",
-     *    "description":"Description 1",
-     *    "price":"1500.00",
-     *    "bid":"1800.00",
-     *    "closeDateTime":"2021-06-21 12:15",
-     *    "isAutoBidEnabled":false
-     *  }
+     *    {
+     *      "id": 2,
+     *      "name": "Item 4",
+     *      "description": "Description 4",
+     *      "price": "400.00",
+     *      "bid": "460.00",
+     *      "closeDateTime": "2021-07-07 21:45",
+     *      "isAutoBidEnabled": false,
+     *      "isClosed": true,
+     *      "isAwardNotified": true,
+     *      "awardedUserId": 3,
+     *      "awardedUsername": "user1",
+     *      "awardedUserRoleId": 2,
+     *      "awardedUserRoleName": "Regular",
+     *      "awardedUserEmail": "user1@gmail.com",
+     *      "awardedUserFirstName": "Mike",
+     *      "awardedUserLastName": "Smith"
+     *    }
      * @apiError (400) BadRequest Bad Request
      * @apiError (401) Unauthorized Unauthorized
      * @apiError (404) NotFound Not Found
@@ -197,27 +233,35 @@ class ItemController extends BaseController
      * @apiSampleRequest http://localhost:8001/api/items
      * @apiParamExample {Json} Parameter Object-Example:
      *  {
-     *    "name":"Item 1",
-     *    "description":"Description 1",
+     *    "name":"Item 3",
+     *    "description":"Description 3",
      *    "price":"1500",
-     *    "bid":"1800",
-     *    "closeDateTime":"2021-06-20 16:20",
+     *    "bid":"1600",
+     *    "closeDateTime":"2021-07-08 10:50",
      *    "accessToken":"af874ho9s8dfush6"
      *  }
      * @apiSuccess {Json} Object Object containing item data
      * @apiSuccessExample Success-Response:
      *  {
-     *    "id":1,
-     *    "name":"Item 1",
-     *    "description":"Description 1",
+     *    "id":3,
+     *    "name":"Item 3",
+     *    "description":"Description 3",
      *    "price":"1500",
-     *    "bid":"1800",
-     *    "closeDateTime":"2021-06-20 16:20",
-     *    "isAutoBidEnabled":false
+     *    "bid":"1600",
+     *    "closeDateTime":"2021-07-08 10:50",
+     *    "isAutoBidEnabled":false,
+     *    "isClosed":false,
+     *    "isAwardNotified":false,
+     *    "awardedUserId":null,
+     *    "awardedUsername":null,
+     *    "awardedUserRoleId":null,
+     *    "awardedUserRoleName":null,
+     *    "awardedUserEmail":null,
+     *    "awardedUserFirstName":null,
+     *    "awardedUserLastName":null
      *  }
      * @apiError (400) BadRequest Bad Request
      * @apiError (401) Unauthorized Unauthorized
-     * @apiError (404) NotFound Not Found
      */
     /**
      * @param Request $request
@@ -243,23 +287,32 @@ class ItemController extends BaseController
      * @apiSampleRequest http://localhost:8001/api/items/1
      * @apiParamExample {Json} Parameter Object-Example:
      *  {
-     *    "name":"Item 1",
-     *    "description":"Description 1",
-     *    "price":"1500",
-     *    "bid":"1800",
-     *    "closeDateTime":"2021-06-20 16:20",
+     *    "name":"Item 3",
+     *    "description":"Description 3",
+     *    "price":"1500.00",
+     *    "bid":"1600.00",
+     *    "closeDateTime":"2021-07-08 10:50",
      *    "accessToken":"af874ho9s8dfush6"
      *  }
      * @apiSuccess {Json} Object Object containing item data
      * @apiSuccessExample Success-Response:
      *  {
-     *    "id":1,
-     *    "name":"Item 1",
-     *    "description":"Description 1",
-     *    "price":"1500",
-     *    "bid":"1800",
-     *    "closeDateTime":"2021-06-20 16:20",
-     *    "isAutoBidEnabled":false
+     *    "id":3,
+     *    "name":"Item 3",
+     *    "description":"Description 3",
+     *    "price":"1500.00",
+     *    "bid":"1600.00",
+     *    "closeDateTime":"2021-07-08 10:50",
+     *    "isAutoBidEnabled":false,
+     *    "isClosed":false,
+     *    "isAwardNotified":false,
+     *    "awardedUserId":null,
+     *    "awardedUsername":null,
+     *    "awardedUserRoleId":null,
+     *    "awardedUserRoleName":null,
+     *    "awardedUserEmail":null,
+     *    "awardedUserFirstName":null,
+     *    "awardedUserLastName":null
      *  }
      * @apiError (400) BadRequest Bad Request
      * @apiError (401) Unauthorized Unauthorized

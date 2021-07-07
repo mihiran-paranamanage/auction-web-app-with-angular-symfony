@@ -96,11 +96,14 @@ class UserBidConfigController extends BaseController
      * @apiSuccess {Json} Object Object containing auto bid config data
      * @apiSuccessExample Success-Response:
      *  {
-     *    "id":1,
-     *    "userId":1,
-     *    "maxBidAmount":"2500.00",
-     *    "currentBidAmount":"1250.00",
-     *    "notifyPercentage":90
+     *    "id": 1,
+     *    "userId": 1,
+     *    "userName": "admin1",
+     *    "maxBidAmount": "2500.00",
+     *    "currentBidAmount": "1250.00",
+     *    "notifyPercentage": 90,
+     *    "isAutoBidEnabled": true,
+     *    "isMaxBidExceedNotified": false
      *  }
      * @apiError (400) BadRequest Bad Request
      * @apiError (401) Unauthorized Unauthorized
@@ -133,6 +136,7 @@ class UserBidConfigController extends BaseController
      *  {
      *    "maxBidAmount":"2500.00",
      *    "notifyPercentage":"90",
+     *    "isAutoBidEnabled":true,
      *    "accessToken":"af874ho9s8dfush6"
      *  }
      * @apiSuccess {Json} Object Object containing auto bid config data
@@ -140,9 +144,12 @@ class UserBidConfigController extends BaseController
      *  {
      *    "id":1,
      *    "userId":1,
+     *    "userName":"admin1",
      *    "maxBidAmount":"2500.00",
      *    "currentBidAmount":"1250.00",
-     *    "notifyPercentage":90
+     *    "notifyPercentage":90,
+     *    "isAutoBidEnabled":true,
+     *    "isMaxBidExceedNotified":false
      *  }
      * @apiError (400) BadRequest Bad Request
      * @apiError (401) Unauthorized Unauthorized

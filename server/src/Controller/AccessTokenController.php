@@ -91,11 +91,13 @@ class AccessTokenController extends BaseController
      * @apiGroup AUTHENTICATION
      * @apiSubGroup Access Token
      * @apiParam {String} username - Username
+     * @apiParam {String} password - Password
      * @apiSampleRequest http://localhost:8001/api/accessToken
      * @apiSuccess {Json} Object Object containing access token data
      * @apiSuccessExample Success-Response:
      *  {
      *    "id": 1,
+     *    "userId": 1,
      *    "username": "admin1",
      *    "token": "af874ho9s8dfush6"
      *  }

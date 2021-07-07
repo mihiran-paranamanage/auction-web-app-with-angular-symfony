@@ -102,6 +102,96 @@ class UserController extends BaseController
     }
 
     /**
+     * @api {get} http://localhost:8001/api/users/userDetails User Details - Get
+     * @apiDescription Get User Details
+     * @apiName getUserDetails
+     * @apiGroup USER
+     * @apiSubGroup User
+     * @apiParam {String} accessToken - Access Token
+     * @apiParam {String} [include] - Include Parameters as Comma Seperated values
+     * <br />(Supported include parameters are, "items", "bids", "awardedItems")
+     * @apiSampleRequest http://localhost:8001/api/users/userDetails
+     * @apiSuccess {Json} Object Object containing user details
+     * @apiSuccessExample Success-Response:
+     *  {
+     *    "id": 3,
+     *    "username": "user1",
+     *    "userRoleId": 2,
+     *    "userRoleName": "Regular",
+     *    "email": "user1@gmail.com",
+     *    "firstName": "Mike",
+     *    "lastName": "Smith",
+     *    "items": [
+     *      {
+     *        "id": 1,
+     *        "name": "Item 1",
+     *        "description": "Description 1",
+     *        "price": "1800.00",
+     *        "bid": "1950.00",
+     *        "closeDateTime": "2021-07-08 16:20",
+     *        "isClosed": false,
+     *        "isAwardNotified": false,
+     *        "itemStatus": "In progress"
+     *      },
+     *      {
+     *        "id": 2,
+     *        "name": "Item 4",
+     *        "description": "Description 4",
+     *        "price": "400.00",
+     *        "bid": "460.00",
+     *        "closeDateTime": "2021-07-07 21:45",
+     *        "isClosed": true,
+     *        "isAwardNotified": true,
+     *        "itemStatus": "Won"
+     *      }
+     *    ],
+     *    "bids": [
+     *      {
+     *        "id": 2,
+     *        "userId": 3,
+     *        "username": "user1",
+     *        "itemId": 1,
+     *        "itemName": "Item 1",
+     *        "itemStatus": "In progress",
+     *        "itemCloseDateTime": "2021-07-08 16:20",
+     *        "bid": "1950.00",
+     *        "isAutoBid": false,
+     *        "dateTime": "2021-07-07 21:12"
+     *      },
+     *      {
+     *        "id": 5,
+     *        "userId": 3,
+     *        "username": "user1",
+     *        "itemId": 2,
+     *        "itemName": "Item 4",
+     *        "itemStatus": "Won",
+     *        "itemCloseDateTime": "2021-07-07 21:45",
+     *        "bid": "460.00",
+     *        "isAutoBid": false,
+     *        "dateTime": "2021-07-07 21:37"
+     *      }
+     *    ],
+     *    "awardedItems": [
+     *      {
+     *        "id": 2,
+     *        "name": "Item 4",
+     *        "description": "Description 4",
+     *        "price": "400.00",
+     *        "bid": "460.00",
+     *        "closeDateTime": "2021-07-07 21:45",
+     *        "isClosed": true,
+     *        "isAwardNotified": true,
+     *        "winningBidId": 5,
+     *        "winningBid": "460.00",
+     *        "winningBidIsAutoBid": false,
+     *        "winningBidDateTime": "2021-07-07 21:37"
+     *      }
+     *    ]
+     *  }
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     */
+    /**
      * @param Request $request
      * @return JsonResponse
      * @Route("/users/userDetails", name="getUserDetails", methods={"GET"})
@@ -116,6 +206,37 @@ class UserController extends BaseController
         return new JsonResponse($this->getUserService()->formatUserDetailsResponse($user, $includeParams), Response::HTTP_OK);
     }
 
+    /**
+     * @api {put} http://localhost:8001/api/users/userDetails User Details - Put
+     * @apiDescription Update User Details
+     * @apiName updateUserDetails
+     * @apiGroup USER
+     * @apiSubGroup User
+     * @apiParam {Json} Object Object containing user details with access token
+     * @apiSampleRequest http://localhost:8001/api/users/userDetails
+     * @apiParamExample {Json} Parameter Object-Example:
+     *  {
+     *    "password":"admin1",
+     *    "email":"admin1@gmail.com",
+     *    "firstName":"John",
+     *    "lastName":"Doe",
+     *    "accessToken":"af874ho9s8dfush6"
+     *  }
+     * @apiSuccess {Json} Object Object containing user details
+     * @apiSuccessExample Success-Response:
+     *  {
+     *    "id":1,
+     *    "username":"admin1",
+     *    "userRoleId":1,
+     *    "userRoleName":"Admin",
+     *    "email":"admin1@gmail.com",
+     *    "firstName":"John",
+     *    "lastName":"Doe"
+     *  }
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     * @apiError (404) NotFound Not Found
+     */
     /**
      * @param Request $request
      * @return JsonResponse

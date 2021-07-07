@@ -108,6 +108,20 @@ class ItemBillController extends BaseController
     }
 
     /**
+     * @api {get} http://localhost:8001/api/items/downloadBill Download Item Bill - Get
+     * @apiDescription Download Item Bill
+     * @apiName downloadItemBill
+     * @apiGroup ITEM
+     * @apiSubGroup Item
+     * @apiParam {String} accessToken - Access Token
+     * @apiParam {Number} itemId - Item Id
+     * @apiSampleRequest http://localhost:8001/api/items/downloadBill
+     * @apiSuccess {Attachment} Attachment Pdf containing item bill
+     * @apiError (400) BadRequest Bad Request
+     * @apiError (401) Unauthorized Unauthorized
+     * @apiError (404) NotFound Not Found
+     */
+    /**
      * @param Request $request
      * @return PdfResponse
      * @Route("/items/downloadBill", name="downloadItemBill", methods={"GET"})
