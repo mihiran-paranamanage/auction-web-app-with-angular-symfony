@@ -17,4 +17,9 @@ sudo docker exec -it auction_mysql mysql -uroot -p1234 -hauction_mysql -e "CREAT
 # sudo docker exec -it auction_php php bin/console make:migration
 sudo docker exec -it auction_php php bin/console doctrine:migrations:migrate
 
+# Cron job for sending emails
+# Runs every minutes
+sudo docker exec -it auction_php sh -c "echo '* * * * * /usr/local/bin/php /var/www/symfony/bin/console app:send-emails' | crontab -"
+sudo docker exec -it auction_php cron
+
 echo "Installation Completed. Browse http://localhost:4200/";

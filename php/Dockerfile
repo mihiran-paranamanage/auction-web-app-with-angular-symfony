@@ -39,8 +39,11 @@ RUN git clone https://github.com/mkoppanen/php-zmq /tmp/php-zmq \
     && make test \
     && docker-php-ext-enable zmq
 
-# wkhtmltopdf
+# Wkhtmltopdf
 RUN apt-get install -y wkhtmltopdf
+
+# Cron with nano editor
+RUN apt-get install -y cron nano
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN curl -sS https://get.symfony.com/cli/installer | bash && mv /root/.symfony/bin/symfony /usr/local/bin/symfony

@@ -108,7 +108,6 @@ class UserBidConfigController extends BaseController
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      * @Route("/autoBidConfig", name="getUserBidConfig", methods={"GET"})
      */
     public function getUserBidConfig(Request $request): JsonResponse
@@ -119,7 +118,6 @@ class UserBidConfigController extends BaseController
         $userBidConfig = $this->getUserBidConfigService()->getUserBidConfig($accessToken);
         $userBidConfigResponse = $this->getUserBidConfigService()->formatUserBidConfigResponse($userBidConfig);
         $this->getUserBidConfigService()->checkMaxAutoBidAmountStatus($userBidConfig);
-        $this->getEventPublisher()->sendEmails();
         return new JsonResponse($userBidConfigResponse, Response::HTTP_OK);
     }
 
@@ -152,7 +150,6 @@ class UserBidConfigController extends BaseController
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      * @Route("/autoBidConfig", name="saveUserBidConfig", methods={"PUT"})
      */
     public function saveUserBidConfig(Request $request): JsonResponse
@@ -163,7 +160,6 @@ class UserBidConfigController extends BaseController
         $userBidConfig = $this->getUserBidConfigService()->saveUserBidConfig($params);
         $userBidConfigResponse = $this->getUserBidConfigService()->formatUserBidConfigResponse($userBidConfig);
         $this->getUserBidConfigService()->checkMaxAutoBidAmountStatus($userBidConfig);
-        $this->getEventPublisher()->sendEmails();
         return new JsonResponse($userBidConfigResponse, Response::HTTP_OK);
     }
 

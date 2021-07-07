@@ -183,7 +183,6 @@ class BidController extends BaseController
      * @param Request $request
      * @return JsonResponse
      * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      * @throws \WebSocket\BadOpcodeException
      * @Route("/bids", name="saveBid", methods={"POST"})
      */
@@ -197,7 +196,6 @@ class BidController extends BaseController
         $itemResponse = $this->getBidService()->formatItemResponse($bid->getItem(), $params['accessToken']);
         $this->getEventPublisher()->publishToWS($params['itemId'], json_encode($itemResponse));
         $this->getBidService()->pushNewBidNotificationToEmailQueue($bid, false);
-        $this->getEventPublisher()->sendEmails();
         return new JsonResponse($bidResponse, Response::HTTP_CREATED);
     }
 
