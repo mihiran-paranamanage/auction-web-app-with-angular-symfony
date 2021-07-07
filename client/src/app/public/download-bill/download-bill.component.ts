@@ -9,6 +9,7 @@ import {UserAwardedItem} from '../../interfaces/user-awarded-item';
 export class DownloadBillComponent implements OnInit {
 
   buttonLabel = 'Download Bill';
+  downloadIcon = 'download';
   @Input() awardedItem!: UserAwardedItem;
 
   constructor() { }
