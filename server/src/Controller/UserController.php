@@ -25,6 +25,7 @@ use Respect\Validation\Validator as v;
  */
 class UserController extends BaseController
 {
+    const INCLUDE_ITEMS = 'items';
     const INCLUDE_BIDS = 'bids';
     const INCLUDE_AWARDED_ITEMS = 'awardedItems';
 
@@ -134,7 +135,7 @@ class UserController extends BaseController
      */
     protected function validateGetRequest(Request $request) : void
     {
-        $includeValues = array(self::INCLUDE_BIDS, self::INCLUDE_AWARDED_ITEMS);
+        $includeValues = array(self::INCLUDE_ITEMS, self::INCLUDE_BIDS, self::INCLUDE_AWARDED_ITEMS);
         $validator = v::keySet(
             v::key('accessToken', v::stringVal()->notEmpty(), true),
             v::key('include', v::stringType()

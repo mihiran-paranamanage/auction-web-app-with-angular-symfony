@@ -51,6 +51,7 @@ import { UserBidHistoryComponent } from './public/user-bid-history/user-bid-hist
 import { UserAwardedItemHistoryComponent } from './public/user-awarded-item-history/user-awarded-item-history.component';
 import { UserDetailsFormComponent } from './public/user-details-form/user-details-form.component';
 import { DownloadBillComponent } from './public/download-bill/download-bill.component';
+import { UserItemHistoryComponent } from './public/user-item-history/user-item-history.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { DownloadBillComponent } from './public/download-bill/download-bill.comp
     UserBidHistoryComponent,
     UserAwardedItemHistoryComponent,
     UserDetailsFormComponent,
-    DownloadBillComponent
+    DownloadBillComponent,
+    UserItemHistoryComponent
   ],
   imports: [
     BrowserModule,

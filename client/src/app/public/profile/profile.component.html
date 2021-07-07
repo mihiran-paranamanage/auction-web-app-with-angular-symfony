@@ -62,6 +62,9 @@
 
 <ng-container *ngIf="userDetails$ | async as userDetails">
   <mat-tab-group dynamicHeight>
+    <mat-tab label="Item History">
+      <app-user-item-history [items]="userDetails.items"></app-user-item-history>
+    </mat-tab>
     <mat-tab label="Bid History">
       <app-user-bid-history [bids]="userDetails.bids"></app-user-bid-history>
     </mat-tab>

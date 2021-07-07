@@ -108,6 +108,9 @@ class UserService extends BaseService
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
         );
+        if (in_array(UserController::INCLUDE_ITEMS, $includeParams)) {
+            $userDetails['items'] = $this->getUserItems($user);
+        }
         if (in_array(UserController::INCLUDE_BIDS, $includeParams)) {
             $userDetails['bids'] = $this->getUserBids($user);
         }
@@ -115,6 +118,30 @@ class UserService extends BaseService
             $userDetails['awardedItems'] = $this->getUserAwardedItems($user);
         }
         return $userDetails;
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    protected function getUserItems(User $user) : array
+    {
+        $userItems = array();
+        $items = $this->itemRepository->findItemsByUser($user);
+        foreach ($items as $item) {
+            $userItem = array();
+            $userItem['id'] = $item->getId();
+            $userItem['name'] = $item->getName();
+            $userItem['description'] = $item->getDescription();
+            $userItem['price'] = $item->getPrice();
+            $userItem['bid'] = $item->getBid();
+            $userItem['closeDateTime'] = $item->getCloseDateTime()->format('Y-m-d H:i');
+            $userItem['isClosed'] = $item->getIsClosed();
+            $userItem['isAwardNotified'] = $item->getIsAwardNotified();
+            $userItem['itemStatus'] = $this->getItemService()->getItemStatus($item, $user);
+            $userItems[] = $userItem;
+        }
+        return $userItems;
     }
 
     /**

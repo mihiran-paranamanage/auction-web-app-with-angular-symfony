@@ -40,7 +40,7 @@ export class ProfileComponent implements AfterViewInit, OnDestroy {
   }
 
   fetchUserDetails(): void {
-    const urlQuery = '?accessToken=' + localStorage.getItem('accessToken') + '&include=bids,awardedItems';
+    const urlQuery = '?accessToken=' + localStorage.getItem('accessToken') + '&include=items,bids,awardedItems';
     const url = localStorage.getItem('serverUrl') + '/users/userDetails' + urlQuery;
     this.userDetails$ = this.userService.getUserDetails(url);
     this.userService.getUserDetails(url)

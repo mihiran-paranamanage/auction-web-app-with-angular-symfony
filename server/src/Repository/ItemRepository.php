@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Item;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -52,6 +53,20 @@ class ItemRepository extends ServiceEntityRepository
         if (isset($params['sortField']) && isset($params['sortOrder'])) {
             $q->orderBy('u.'.$params['sortField'], $params['sortOrder']);
         }
+        return $q->getQuery()->getResult();
+    }
+
+    /**
+     * @param User $user
+     * @return int|mixed|string
+     */
+    public function findItemsByUser(User $user) {
+        $q = $this->createQueryBuilder('u')
+            ->select('u')
+            ->distinct()
+            ->leftJoin('u.bids', 'b')
+            ->andWhere('b.user = :user')
+            ->setParameter('user', $user);
         return $q->getQuery()->getResult();
     }
 
