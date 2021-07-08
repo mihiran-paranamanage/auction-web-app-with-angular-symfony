@@ -30,6 +30,7 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
   isItemClosed = false;
   changeItemBid = true;
   showBidHistoryBtn = false;
+  showDownloadBillBtn = false;
   updateRemainingTimeInterval?: any;
   item$!: Observable<Item>;
   subscriptionEventSaveEmit?: Subscription;
@@ -140,6 +141,9 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
       this.submitButtonLabel = 'Bid Closed';
       if (this.item.awardedUserId) {
         this.remainingTime = 'This item is awarded to: ' + this.item.awardedUserFirstName + ' ' + this.item.awardedUserLastName;
+        const loggedInUserId = localStorage.getItem('loggedInUserId');
+        // @ts-ignore
+        this.showDownloadBillBtn = +loggedInUserId === this.item.awardedUserId;
       } else {
         this.remainingTime = 'This item is closed!';
       }

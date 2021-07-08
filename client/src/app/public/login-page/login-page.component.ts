@@ -24,6 +24,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
 
   accessToken: AccessToken = {
     id: undefined,
+    userId: undefined,
     username: '',
     token: '',
   };
@@ -46,6 +47,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    localStorage.removeItem('loggedInUserId');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('permissions');
     this.eventListenerService.onChangeAuthentication();
@@ -82,6 +84,8 @@ export class LoginPageComponent implements OnInit, OnDestroy {
 
   postLoginAction(): void {
     if (this.accessToken.token) {
+      // @ts-ignore
+      localStorage.setItem('loggedInUserId', this.accessToken.userId);
       localStorage.setItem('accessToken', this.accessToken.token);
       this.eventListenerService.onChangeAuthentication();
       this.router.navigate(['/home']).then(() => {

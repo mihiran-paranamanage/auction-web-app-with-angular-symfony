@@ -35,8 +35,11 @@
         </mat-grid-tile>
 
         <mat-grid-tile [colspan]="1" [rowspan]="1" [style.color]="'gray'">
-          <ng-container>
+          <ng-container *ngIf="!showDownloadBillBtn">
             <h4>{{isItemClosed ? 'Closed at: ' : 'Closes at: '}}{{ item.closeDateTime | date: 'MMM d, y, h:mm a' }}</h4>
+          </ng-container>
+          <ng-container *ngIf="showDownloadBillBtn">
+            <app-download-bill [awardedItem]="item"></app-download-bill>
           </ng-container>
         </mat-grid-tile>
 
