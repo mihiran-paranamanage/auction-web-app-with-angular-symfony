@@ -50,7 +50,7 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 2. Users can see current bid amount and its percentage of the maximum bid amount.
 3. "Save" button will be disabled if the form values are invalid.
 4. Once the user save the configuration details, current bid amount, and the percentage will be updated.
-5. Users can set the "Notify Percentage" to let them know once the bid amount reaches to that percentage. In this, case user can see the notification message "Warning: 90% of the maximum bid amount is reserved!".
+5. Users can set the "Notify Percentage" to let them know once the bid amount reaches to that percentage. In this case, user can see the notification message "Warning: 90% of the maximum bid amount is reserved!".
 6. Ones the maximum auto-bid amount reaches, auto-bidding process will be stopped, and a warning notification will be shown.
 7. Users can enable/disable the auto-bidding process with the checkbox "Enable Auto Bid". When this is disabled, user cannot enable the "Activate Auto Bid" from the item details page.
 
@@ -115,8 +115,8 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 2. "sudo docker exec -it auction_websocket sh" - For the websocket container
 3. "sudo docker exec -it auction_mysql mysql -uroot -p1234" - For the mysql container
 
-* Checking the docket logs
-1. "sudo docker-compose logs -f <docker-compose-service-name>"
+* Checking the docker logs
+1. "sudo docker-compose logs -f [docker-compose-service-name]"
 2. "sudo docker-compose logs -f php" - For the php container
 3. "sudo docker-compose logs -f websocket" - For the websocket container
 4. "sudo docker-compose logs -f client" - For the angular client container
@@ -156,9 +156,9 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 6. Browse http://localhost:4200/
 
 * With the 4th step, It wil run "sudo docker-compose build" and "sudo docker-compose up -d" docker commands to build and up the containers. At the first time, this will take around 20-30 minutes since it needs to pull all the related docker images.
-* While running the ./installer.sh script, it will ask to enter sudo password, at the end it will prompt a warning message saying, "WARNING! You are about to execute a migration in database "auction_mysql" that could result in schema changes and data loss. Are you sure you wish to continue? (yes/no) [yes]:"
+* While running the "installer.sh" script, it will ask to enter sudo password, at the end it will prompt a warning message saying, "WARNING! You are about to execute a migration in database "auction_mysql" that could result in schema changes and data loss. Are you sure you wish to continue? (yes/no) [yes]:"
 * Just hit enter (since the default option is "yes") then installation will be completed.
-* You can re-install the system by running the ./installer.sh script again. Now it won't take more than 1 minute.
+* You can re-install the system by running the "installer.sh" script again. Now it won't take more than 1 minute.
 * This system uses local ports 4200, 3306, 8001, 5000, 5001, 9000, 9001. So, after the installation some docker containers will not be getting up if you already used one of these ports.
 * For example, if you use MySQL locally with 3306 port, MySQL container will not work. In that case, you may have to stop the local MySQL service by running, "sudo service mysql stop" and then run the "installer.sh" script again.
 * If you get any npm errors (like npm ERR!) while installing, give full permission to the application root folder, delete "client/package-lock.json" file and run the "installer.sh" script again.
