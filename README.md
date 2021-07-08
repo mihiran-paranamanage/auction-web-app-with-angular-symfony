@@ -132,7 +132,8 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 
 * Add/Change the Cron Task (Cronjob)
 1. By default, the send-emails cron task is running every minute.
-2. To change that time interval or add a new cron task, First, login to the docker php container (sudo docker exec -it auction_php bash), run the command "crontab -l" to check the existing crontab, run the command "crontab -e" to open it from the nano text editor. After edit the crontab, press "Ctrl+X", and then press "Y" to save the changes.
+2. To change that time interval or add a new cron task, First, login to the docker php container (sudo docker exec -it auction_php bash), run the command "crontab -l" to check the existing crontab, run the command "crontab -e" to open it from the nano text editor. After edit the crontab, press "Ctrl+X", and then press "Y" to save the changes. Finally, run the command "cron" to start the cron task.
+3. If you get an error something similar to, "cron: can't lock /var/run/crond.pid, otherpid may be 246: Resource temporarily unavailable", kill the PID mentioned in the error message (here it is "246") by running "kill 246", and run the "cron" command again.
 
 ### Used Technologies
 
