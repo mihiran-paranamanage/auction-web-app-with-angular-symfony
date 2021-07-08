@@ -6,6 +6,10 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 
 ### Features & Behaviours
 
+* Images & Videos
+1. Images of the application can be found in the images folder.
+2. Video of the application can be found here, https://drive.google.com/drive/folders/1mZjjC_NEZQTcPBP4auC_BIaGpki-6e7j?usp=sharing.
+
 * Home Page
 1. List of items.
 2. Users can filter items by "Item Name", "Description", "Price", "Current Bid" and "Closing Date & Time".
