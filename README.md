@@ -157,7 +157,8 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 3. Move into the "auction-web-app-with-angular-symfony" root folder (cd auction-web-app-with-angular-symfony).
 4. Run the installer script ("./installer.sh" or "sudo bash ./installer.sh").
 5. Check whether any error occurred in the terminal (like "npm ERR!" or php "Fatal error:"). If there is any error shown, please read the below instructions.
-6. Browse http://localhost:4200/
+6. Set "MAILER_DSN" to send emails from the "config" table in the database (see the Configurations section under the Features & Behaviours).
+7. Browse http://localhost:4200/
 
 * With the 4th step, It wil run "sudo docker-compose build" and "sudo docker-compose up -d" docker commands to build and up the containers. At the first time, this will take around 20-30 minutes since it needs to pull all the related docker images.
 * While running the "installer.sh" script, it will ask to enter sudo password, at the end it will prompt a warning message saying, "WARNING! You are about to execute a migration in database "auction_mysql" that could result in schema changes and data loss. Are you sure you wish to continue? (yes/no) [yes]:"
