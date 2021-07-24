@@ -1,6 +1,6 @@
 # Web-based Auction Application with Angular and Symfony
 
-This is a web-based auction application that is developed specially for an antique item seller.
+This is a web-based, real-time auction application that is developed specially for an antique item seller.
 The application allows users to view list of items and bid on the items.
 Additionally, with the auto-bidding feature, it allows users to activate auto-bidding functionality for selected items in order to bid automatically.
 
