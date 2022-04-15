@@ -4,6 +4,21 @@ This is a web-based, real-time auction application that is developed specially f
 The application allows users to view list of items and bid on the items.
 Additionally, with the auto-bidding feature, it allows users to activate auto-bidding functionality for selected items in order to bid automatically.
 
+### Images & Videos
+* Images of the application can be found in the _images_ folder.
+* [Click here](https://drive.google.com/drive/folders/1mZjjC_NEZQTcPBP4auC_BIaGpki-6e7j?usp=sharing) to see the Demo video.
+
+### Languages & Tools
+
+* Angular 11.2
+* Angular Material
+* Symfony 5.3.2
+* Symfony Mailer
+* Websocket with Ratchet 0.4
+* MySQL 8.0
+* REST APIs
+* Docker + Docker Compose
+
 ### Features & Behaviours
 
 * Home Page
@@ -134,21 +149,6 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 1. By default, the send-emails cron task is running every minute.
 2. To change that time interval or add a new cron task, First, login to the docker php container (sudo docker exec -it auction_php bash), run the command "crontab -l" to check the existing crontab, run the command "crontab -e" to open it from the nano text editor. After edit the crontab, press "Ctrl+X", and then press "Y" to save the changes. Finally, run the command "cron" to start the cron task.
 3. If you get an error something similar to, "cron: can't lock /var/run/crond.pid, otherpid may be 246: Resource temporarily unavailable", kill the PID mentioned in the error message (here it is "246") by running "kill 246", and run the "cron" command again.
-
-### Images & Videos
-1. Images of the application can be found in the images folder.
-2. Video of the application can be found here, https://drive.google.com/drive/folders/1mZjjC_NEZQTcPBP4auC_BIaGpki-6e7j?usp=sharing.
-
-### Used Technologies
-
-1. Angular 11.2
-2. Angular Material
-3. Symfony 5.3.2
-4. Symfony Mailer
-5. Websocket with Ratchet 0.4
-6. MySQL 8.0
-7. REST APIs
-8. Docker + Docker Compose
 
 ### Installation (on Ubuntu)
 
