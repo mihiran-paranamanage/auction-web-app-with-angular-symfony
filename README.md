@@ -126,15 +126,15 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 2. Credentials - [System: MySql, Server: auction_mysql, Username: root, Password: 1234, Database: auction_mysql]
 
 * Login to docker containers
-1. "sudo docker exec -it auction_php bash" - For the php container
-2. "sudo docker exec -it auction_websocket sh" - For the websocket container
-3. "sudo docker exec -it auction_mysql mysql -uroot -p1234" - For the mysql container
+1. `sudo docker exec -it auction_php bash` - For the php container
+2. `sudo docker exec -it auction_websocket sh` - For the websocket container
+3. `sudo docker exec -it auction_mysql mysql -uroot -p1234` - For the mysql container
 
 * Checking the docker logs
-1. "sudo docker-compose logs -f [docker-compose-service-name]"
-2. "sudo docker-compose logs -f php" - For the php container
-3. "sudo docker-compose logs -f websocket" - For the websocket container
-4. "sudo docker-compose logs -f client" - For the angular client container
+1. `sudo docker-compose logs -f [docker-compose-service-name]`
+2. `sudo docker-compose logs -f php` - For the php container
+3. `sudo docker-compose logs -f websocket` - For the websocket container
+4. `sudo docker-compose logs -f client` - For the angular client container
 
 * Used local ports
 1. 4200 - Angular client app
@@ -147,29 +147,29 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 
 * Add/Change the Cron Task (Cronjob)
 1. By default, the send-emails cron task is running every minute.
-2. To change that time interval or add a new cron task, First, login to the docker php container (sudo docker exec -it auction_php bash), run the command "crontab -l" to check the existing crontab, run the command "crontab -e" to open it from the nano text editor. After edit the crontab, press "Ctrl+X", and then press "Y" to save the changes. Finally, run the command "cron" to start the cron task.
-3. If you get an error something similar to, "cron: can't lock /var/run/crond.pid, otherpid may be 246: Resource temporarily unavailable", kill the PID mentioned in the error message (here it is "246") by running "kill 246", and run the "cron" command again.
+2. To change that time interval or add a new cron task, First, login to the docker php container (`sudo docker exec -it auction_php bash`), run the command `crontab -l` to check the existing crontab, run the command `crontab -e` to open it from the nano text editor. After edit the crontab, press "Ctrl+X", and then press "Y" to save the changes. Finally, run the command `cron` to start the cron task.
+3. If you get an error something similar to, "cron: can't lock /var/run/crond.pid, otherpid may be 246: Resource temporarily unavailable", kill the PID mentioned in the error message (here it is "246") by running `kill 246`, and run the `cron` command again.
 
 ### Installation (on Ubuntu)
 
 1. Install Docker and Docker Compose (Refer https://docs.docker.com/engine/install/ubuntu/ and https://docs.docker.com/compose/install/).
-2. Clone this repo (git clone https://github.com/mihiran-paranamana/auction-web-app-with-angular-symfony.git).
-3. Move into the "auction-web-app-with-angular-symfony" root folder (cd auction-web-app-with-angular-symfony).
-4. Run the installer script ("./installer.sh" or "sudo bash ./installer.sh").
+2. Clone this repo (`git clone https://github.com/mihiran-paranamana/auction-web-app-with-angular-symfony.git`).
+3. Move into the _auction-web-app-with-angular-symfony_ root folder (`cd auction-web-app-with-angular-symfony`).
+4. Run the installer script (`./installer.sh` or `sudo bash ./installer.sh`).
 5. Check whether any error occurred in the terminal (like "npm ERR!" or php "Fatal error:"). If there is any error shown, please read the below instructions.
 6. Set "MAILER_DSN" to send emails from the "config" table in the database (see the Configurations section under the Features & Behaviours).
 7. Browse http://localhost:4200/
 
-* With the 4th step, It wil run "sudo docker-compose build" and "sudo docker-compose up -d" docker commands to build and up the containers. At the first time, this will take around 20-30 minutes since it needs to pull all the related docker images.
+* With the 4th step, It wil run `sudo docker-compose build` and `sudo docker-compose up -d` docker commands to build and up the containers. At the first time, this will take around 20-30 minutes since it needs to pull all the related docker images.
 * While running the "installer.sh" script, it will ask to enter sudo password, at the end it will prompt a warning message saying, "WARNING! You are about to execute a migration in database "auction_mysql" that could result in schema changes and data loss. Are you sure you wish to continue? (yes/no) [yes]:"
 * Just hit enter (since the default option is "yes") then installation will be completed.
 * You can re-install the system by running the "installer.sh" script again. Now it won't take more than 1 minute.
 * This system uses local ports 4200, 3306, 8001, 5000, 5001, 9000, 9001. So, after the installation some docker containers will not be getting up if you already used one of these ports.
-* For example, if you use MySQL locally with 3306 port, MySQL container will not work. In that case, you may have to stop the local MySQL service by running, "sudo service mysql stop" and then run the "installer.sh" script again.
+* For example, if you use MySQL locally with 3306 port, MySQL container will not work. In that case, you may have to stop the local MySQL service by running, `sudo service mysql stop` and then run the "installer.sh" script again.
 * If you get any npm errors (like npm ERR!) while installing, give full permission to the application root folder, delete "client/package-lock.json" file and run the "installer.sh" script again.
 * If you get any composer errors while installing, give full permission to the application root folder, delete "server/composer-lock.json" file and run the "installer.sh" script again.
-* If you get any composer errors something like, "Fatal error: Uncaught LogicException: Symfony Runtime is missing. Try running 'composer require symfony/runtime'", First, log into the docker php container (sudo docker exec -it auction_php bash), then run the mentioned command in the error message (In this case, it is "composer require symfony/runtime") inside the php docker container, exit from the container with "Ctrl+D", and finally, run the "installer.sh" script again.
-* If you get any cron task failure (like, "no crontab for root"), change the crontab to add a new cron task (see the Change the Cron Task section). To run send-emails task in every minute, add the cron task "* * * * * /usr/local/bin/php /var/www/symfony/bin/console app:send-emails" to the crontab (put a new line after the cron task in the crontab).
+* If you get any composer errors something like, "Fatal error: Uncaught LogicException: Symfony Runtime is missing. Try running `composer require symfony/runtime`", First, log into the docker php container (sudo docker exec -it auction_php bash), then run the mentioned command in the error message (In this case, it is `composer require symfony/runtime`) inside the php docker container, exit from the container with "Ctrl+D", and finally, run the "installer.sh" script again.
+* If you get any cron task failure (like, "no crontab for root"), change the crontab to add a new cron task (see the Change the Cron Task section). To run send-emails task in every minute, add the cron task `* * * * * /usr/local/bin/php /var/www/symfony/bin/console app:send-emails` to the crontab (put a new line after the cron task in the crontab).
 
 ### Installation (on Windows or Mac)
 
