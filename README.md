@@ -119,7 +119,7 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 4. You can log into the database and change the accessibility if needed.
 5. To do that, Access the database by the url, http://localhost:9001/ to log in to the database.
 6. Credentials to access the database are, [System: MySql, Server: auction_mysql, Username: root, Password: 1234, Database: auction_mysql].
-7. If you need to log into the php docker container in order to install composer libraries (if needed), go to the root folder, and run the docker command, "sudo docker exec -it auction_php bash".
+7. If you need to log into the php docker container in order to install composer libraries (if needed), go to the root folder, and run the docker command, `sudo docker exec -it auction_php bash`.
 
 * Login to the database
 1. Browse http://localhost:9001/
