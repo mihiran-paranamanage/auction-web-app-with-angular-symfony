@@ -150,7 +150,7 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 7. REST APIs
 8. Docker + Docker Compose
 
-### Install (on Ubuntu)
+### Installation (on Ubuntu)
 
 1. Install Docker and Docker Compose (Refer https://docs.docker.com/engine/install/ubuntu/ and https://docs.docker.com/compose/install/).
 2. Clone this repo (git clone https://github.com/mihiran-paranamana/auction-web-app-with-angular-symfony.git).
@@ -171,7 +171,7 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 * If you get any composer errors something like, "Fatal error: Uncaught LogicException: Symfony Runtime is missing. Try running 'composer require symfony/runtime'", First, log into the docker php container (sudo docker exec -it auction_php bash), then run the mentioned command in the error message (In this case, it is "composer require symfony/runtime") inside the php docker container, exit from the container with "Ctrl+D", and finally, run the "installer.sh" script again.
 * If you get any cron task failure (like, "no crontab for root"), change the crontab to add a new cron task (see the Change the Cron Task section). To run send-emails task in every minute, add the cron task "* * * * * /usr/local/bin/php /var/www/symfony/bin/console app:send-emails" to the crontab (put a new line after the cron task in the crontab).
 
-### Install (on Windows or Mac)
+### Installation (on Windows or Mac)
 
 1. Install Docker Desktop (Refer https://docs.docker.com/docker-for-windows/install/ or https://docs.docker.com/docker-for-mac/install/).
 2. Follow the above Ubuntu installation process. With docker, you won't have to do any other OS specific installation steps. Use the docker terminal to run the above commands.
