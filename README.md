@@ -110,7 +110,7 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 5. User passwords are encrypted by MD5 encryption in database. 
 
 * APIdoc
-1. Go to the apidoc folder and click on the index.html file and open it from your browser. Then you can see all the details of the APIs.
+1. Go to the _apidoc_ folder and click on the index.html file and open it from your browser. Then you can see all the details of the APIs.
 
 * Credentials 
 1. By default, the system has 2 Admin users and 2 Regular users as [username: admin1, password: admin1], [username: admin2, password: admin2], [username: user1, password: user1], [username: user2, password: user2].
