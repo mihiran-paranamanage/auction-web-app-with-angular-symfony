@@ -1,4 +1,4 @@
-# Web-based Auction Application with Angular and Symfony 
+# Web-based Auction Application with Angular and Symfony
 
 This is a web-based, real-time auction application that is developed specially for an antique item seller.
 The application allows users to view list of items and bid on the items.
