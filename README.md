@@ -6,7 +6,7 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 
 ### Images & Videos
 * Images of the application can be found in the _images_ folder.
-* [Click here](https://drive.google.com/drive/folders/1mZjjC_NEZQTcPBP4auC_BIaGpki-6e7j?usp=sharing) to see the Demo.
+* [Click here](https://drive.google.com/drive/folders/1mZjjC_NEZQTcPBP4auC_BIaGpki-6e7j?usp=sharing) to see the demo video.
 
 ### Languages & Tools
 
