@@ -12,6 +12,7 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 
 * Angular 11.2
 * Angular Material
+* TypeScript
 * Symfony 5.3.2
 * Symfony Mailer
 * Websocket with Ratchet 0.4
