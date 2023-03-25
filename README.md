@@ -179,5 +179,5 @@ Additionally, with the auto-bidding feature, it allows users to activate auto-bi
 
 ### Contact Details
 
-* Email: mihiran.hlrm@gmail.com
-* SkypeId: live:mihiran.hlrm
+* Email: mihiranpg@gmail.com
+* LinkedIn: https://www.linkedin.com/in/mihiran-paranamana
